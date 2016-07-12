@@ -1,0 +1,33 @@
+.ajaximage {
+  float: left;
+}
+
+.ajaximage .progress {
+  background: #333;
+  width: 200px;
+}
+
+.ajaximage img {
+  width: 200px;
+  padding: 5px 0;
+  display: block;
+  margin-bottom: 3px;
+}
+
+.ajaximage a.file-link:hover img {
+  opacity: 0.8;
+}
+
+.ajaximage .progress,
+.ajaximage .file-link,
+.ajaximage .file-remove,
+.ajaximage .file-input {
+  display: none;
+}
+
+.ajaximage.progress-active .progress,
+.ajaximage.img-active .file-link,
+.ajaximage.img-active .file-remove,
+.ajaximage.form-active .file-input {
+  display: block;
+}
