@@ -13,14 +13,14 @@ Including another URLconf
     1. Import the include() function: from django.conf.urls import url, include
     2. Add a URL to urlpatterns:  url(r'^blog/', include('blog.urls'))
 """
-from django.conf.urls import url, include
-from django.conf.urls.static import static
-from django.conf import settings
-from django.contrib import admin
+from django.conf.urls import url
+from rest_framework import routers
+from .views import IndexView, PlaceViewSet
+
+router = routers.DefaultRouter()
+router.register(r'api', PlaceViewSet)
 
 urlpatterns = [
-    url(r'', include('places.urls')),
-    url(r'^admin/', admin.site.urls),
-    url(r'^ajaximage/', include('ajaximage.urls')),
+    url(r'^$', IndexView.as_view(), name="index"),
 ]
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += router.urls

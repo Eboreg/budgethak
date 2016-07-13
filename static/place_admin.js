@@ -1,3 +1,4 @@
+// Används ej f.n.
 function loadOSM() {
 	var map = L.map('admin_map', {
 		zoomControl : false,
@@ -108,6 +109,7 @@ django.jQuery(function($) {
 		return "";
 	}
 	
+	// Submitta ej formuläret vid enter i autocompleterutan
 	$("#pac-input").on('keypress', function(e) {
 		return e.which !== 13;
 	});

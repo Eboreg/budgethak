@@ -6,6 +6,7 @@ from rest_framework.response import Response
 from .serializers import PlaceSerializer, PlaceListSerializer
 from .models import Place
 from django.shortcuts import get_object_or_404
+from django.views.generic.base import TemplateView
 
 
 """
@@ -28,6 +29,7 @@ class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
                                             lat__lte=float(so[0]),
                                             lng__lte=float(so[1]),
                                             )
+            # Filtrera bort platser som är tillfälligt stängda just nu:
             queryset = [p for p in queryset if not p.is_temporarily_closed()]
         except (IndexError, ValueError, AttributeError):
             pass
@@ -39,3 +41,7 @@ class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
         place = get_object_or_404(queryset, pk=pk)
         serializer = PlaceSerializer(place)
         return Response(serializer.data)
+    
+    
+class IndexView(TemplateView):
+    template_name = 'index.html'
