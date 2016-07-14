@@ -91,7 +91,6 @@ define([
 			_.each(markerEventNames, function(markerEventName) {
 				var handler = function() {
 					this.trigger('marker:'+markerEventName);
-					console.log("marker:"+markerEventName);
 				};
 				handler = _.bind(handler, this);
 				this.marker.on(markerEventName, handler);
@@ -114,7 +113,6 @@ define([
 			var infoWindowEventNames = ['add', 'remove', 'popupopen', 'popupclose'];
 			_.each(infoWindowEventNames, function(infoWindowEventName) {
 				var handler = function() {
-					console.log('infoWindow:'+infoWindowEventName);
 					this.trigger('infoWindow:'+infoWindowEventName);
 				};
 				handler = _.bind(handler, this);

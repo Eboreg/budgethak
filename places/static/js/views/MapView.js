@@ -19,7 +19,8 @@ define([
 	'leaflet-markercluster',
 	'utils',
 	'views/PlaceMarkerView',
-], function(Backbone, _, L, markercluster, utils, PlaceMarkerView) {
+	'views/UserPlaceView',
+], function(Backbone, _, L, markercluster, utils, PlaceMarkerView, UserPlaceView) {
 	var MapView = Backbone.View.extend({
 		el : '#map-element',
 		// Vi kan inte använda events-hashen eftersom den behandlas före initialize(), varför ej map:* kommer att funka
@@ -40,12 +41,14 @@ define([
 			return this;
 		},
 		onLoad : function() {
-			console.log('onLoad');
 			this.markercluster = L.markerClusterGroup({
 				maxClusterRadius : utils.maxClusterRadius,
 			});
 			this.map.addLayer(this.markercluster);
 			this.collection.fetch({merge : true, remove : false, sort : false });
+			new UserPlaceView({
+				mapview : this,
+			});
 		},
 		panTo : function(latlng) {
 			this.map.panTo(latlng);
