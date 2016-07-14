@@ -1,3 +1,5 @@
+var urlroot = '/';
+
 require.config({
 	waitSeconds : 120,
 	paths : {
@@ -5,11 +7,8 @@ require.config({
 		'underscore' : '//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min',
 		'backbone' : '//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.3.3/backbone-min',
 		'jquery' : '//code.jquery.com/jquery-3.1.0.min',
-		'leaflet' : '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0-rc.1/leaflet',
-		'leaflet-markercluster' : '//cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.0-rc.1.0/leaflet.markercluster',
-		'leaflet-usermarker' : '../lib/leaflet-usermarker/leaflet.usermarker',
-		'router' : '../places/js/router',
-		'utils' : '../places/js/utils',
+		'leaflet' : '//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet',
+		'leaflet-markerclusterer' : '//cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/0.5.0/leaflet.markercluster',
 	},
 	shim : {
 		'underscore' : {
@@ -22,16 +21,13 @@ require.config({
 		'leaflet' : {
 			exports : 'L',
 		},
-		'leaflet-markercluster' : {
-			deps : ['leaflet'],
-		},
-		'leaflet-usermarker' : {
+		'leaflet-markerclusterer' : {
 			deps : ['leaflet'],
 		},
 	},
 });
 
-require(['router', 'backbone', 'utils'], function(Router, Backbone, utils) {
+require(['router', 'backbone'], function(Router, Backbone) {
 	new Router();
 	//Backbone.history.start();
 
@@ -39,7 +35,7 @@ require(['router', 'backbone', 'utils'], function(Router, Backbone, utils) {
 	// root folder to '/' by default.  Change in app.js.
 	Backbone.history.start({
 		pushState : true,
-		root : utils.urlroot
+		root : urlroot
 	});
 
 	// All navigation that is relative should be passed through the navigate
@@ -52,7 +48,7 @@ require(['router', 'backbone', 'utils'], function(Router, Backbone, utils) {
 			attr : $(this).attr("href")
 		};
 		// Get the absolute root.
-		var root = location.protocol + "//" + location.host + utils.urlroot;
+		var root = location.protocol + "//" + location.host + urlroot;
 
 		// Ensure the root is part of the anchor href, meaning it's relative.
 		if (href.prop.slice(0, root.length) === root) {

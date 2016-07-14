@@ -18,7 +18,7 @@ from rest_framework import routers
 from .views import IndexView, PlaceViewSet
 
 router = routers.DefaultRouter()
-router.register(r'api', PlaceViewSet)
+router.register(r'api/places', PlaceViewSet)
 
 urlpatterns = [
     url(r'^$', IndexView.as_view(), name="index"),
