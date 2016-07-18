@@ -1,3 +1,5 @@
+# -*- coding: utf-8 -*-
+
 from __future__ import unicode_literals
 
 from django.db import models
@@ -27,8 +29,10 @@ class Place(models.Model):
     
     def save(self, *args, **kwargs):
         if not self.id:
+            super(Place, self).save(*args, **kwargs)
             self.slug = '-'.join([slugify(self.name), str(self.id)])
-        super(Place, self).save(*args, **kwargs)
+        else:
+            super(Place, self).save(*args, **kwargs)
         
     def is_temporarily_closed(self):
         current_date = datetime.now().date() 
@@ -41,8 +45,33 @@ class Place(models.Model):
         elif self.temporarily_closed_from <= current_date and self.temporarily_closed_until >= current_date:
             return True
         else:
-            return False     
+            return False
         
+    def is_open_now(self):
+        """ Returnerar None om okänt. """
+        now = datetime.now()
+        current_weekday = now.weekday()
+        if current_weekday == 0:
+            weekday_yesterday = 6
+        else:
+            weekday_yesterday = current_weekday - 1
+        current_time = now.time()
+        # Loopa igenom platsens OpeningHours:
+        for day in self.opening_hours.all():
+            # Loopa igenom veckodagarna inom aktuell öppettid-post:
+            for weekday in range(day.start_weekday, day.end_weekday + 1):
+                # Om det t.ex. är lördag kl. 01:00 och stängningstid för fredag är 02:00 -> öppet nu:
+                if weekday == weekday_yesterday and day.closing_time < day.opening_time and current_time < day.closing_time:
+                    return True
+                elif weekday == current_weekday:
+                    if day.closing_time < day.opening_time and current_time >= day.opening_time:
+                        return True
+                    elif day.opening_time <= current_time < day.closing_time:
+                        return True
+                    else:
+                        return False 
+        return None
+    
     
 class OpeningHours(models.Model):
     place = models.ForeignKey('Place', on_delete=models.CASCADE, related_name='opening_hours')
