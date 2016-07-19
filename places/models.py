@@ -4,8 +4,8 @@ from __future__ import unicode_literals
 
 from django.db import models
 from django.utils.dates import WEEKDAYS
-from django.template.defaultfilters import slugify
 from ajaximage.fields import AjaxImageField
+from autoslug import AutoSlugField
 from datetime import datetime
 
 
@@ -25,15 +25,8 @@ class Place(models.Model):
     date_published = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
     image = AjaxImageField(upload_to="place_images", max_width=1024, null=True, blank=True) 
-    slug = models.SlugField(max_length=55, editable=False, default='')
+    slug = AutoSlugField(unique=True, populate_from=lambda place: "-".join((place.name, place.city)))
     
-    def save(self, *args, **kwargs):
-        if not self.id:
-            super(Place, self).save(*args, **kwargs)
-            self.slug = '-'.join([slugify(self.name), str(self.id)])
-        else:
-            super(Place, self).save(*args, **kwargs)
-        
     def is_temporarily_closed(self):
         current_date = datetime.now().date() 
         if self.temporarily_closed_from == None and self.temporarily_closed_until == None:
@@ -79,3 +72,8 @@ class OpeningHours(models.Model):
     end_weekday = models.PositiveSmallIntegerField(choices=WEEKDAYS.items(), default=0)
     opening_time = models.TimeField()
     closing_time = models.TimeField()
+
+    def save(self, *args, **kwargs):
+        if self.start_weekday > self.end_weekday:
+            self.end_weekday = self.start_weekday
+        return super(OpeningHours, self).save(*args, **kwargs)

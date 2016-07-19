@@ -24,10 +24,12 @@ define([
 	var MapView = Backbone.View.extend({
 		el : '#map-element',
 		// Vi kan inte använda events-hashen eftersom den behandlas före initialize(), varför ej map:* kommer att funka
-		mapEvents : {},
+		mapEvents : {
+			'load' : 'onLoad'
+		},
 	
 		initialize : function(options) {
-			_.bindAll(this, 'render', 'panToUser', 'addPlace', 'onLoad');
+			_.bindAll(this, 'render', 'addPlace', 'onLoad', 'cron30min');
 			this.listenTo(this.collection, 'add', this.addPlace);
 		},
 		render : function() {
@@ -36,7 +38,6 @@ define([
 				zoomControl : false,
 			});
 			this.bindMapEvents();
-			this.on('map:load', this.onLoad);
 			this.map.setView([59.3219, 18.0720], 13);
 			L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 				attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
@@ -56,12 +57,6 @@ define([
 		},
 		panTo : function(latlng) {
 			this.map.panTo(latlng);
-		},
-		panToUser : function() {},
-		zoomIn : function(val) {
-			if (this.map.getZoom() < val) {
-				this.map.setZoom(val);
-			}
 		},
 		// Skapande av markör och tillägg av denna i this.markercluster sker i PlaceMarkerView::render()
 		addPlace : function(model) {
