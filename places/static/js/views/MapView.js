@@ -27,12 +27,13 @@ define([
 		mapEvents : {},
 	
 		initialize : function(options) {
-			_.bindAll(this, 'render', 'panToUser', 'addMarker', 'onLoad');
-			this.listenTo(this.collection, 'add', this.addMarker);
+			_.bindAll(this, 'render', 'panToUser', 'addPlace', 'onLoad');
+			this.listenTo(this.collection, 'add', this.addPlace);
 		},
 		render : function() {
 			this.map = L.map(this.el, {
 				maxZoom : utils.maxZoom,
+				zoomControl : false,
 			});
 			this.bindMapEvents();
 			this.on('map:load', this.onLoad);
@@ -61,12 +62,16 @@ define([
 				this.map.setZoom(val);
 			}
 		},
-		addMarker : function(item) {
+		// Skapande av markör och tillägg av denna i this.markercluster sker i PlaceMarkerView::render()
+		addPlace : function(model) {
 			var placemarkerview = new PlaceMarkerView({
-				model : item,
+				model : model,
 			});
+			placemarkerview.mapview = this;
 			placemarkerview.render();
-			this.markercluster.addLayer(placemarkerview.marker);
+		},
+		filterByMaxBeerPrice : function(price) {
+			this.trigger('filterByMaxBeerPrice', price);
 		},
 		/**
 		 * Delegerar alla Leaflet-events till View-events med namn 'map:<leaflet-eventnamn>'.

@@ -17,7 +17,7 @@ define([
 		events : {
 		},
 		markerEvents : {
-			'click' : 'openInfoWindow',
+			'click' : 'openInfoWindow', 
 		},
 		infoWindowEvents : {
 			'remove' : 'removeInfoWindow', 
@@ -26,19 +26,29 @@ define([
 
 		initialize : function() {
 			this.listenTo(this.model, 'remove', this.clear);
-/*
-			$(window).resize({ that : this }, function(e) {
-				e.data.that.setInfoWindowImageWidth();
-				e.data.that.refreshInfoWindow();
-			});
-*/
 		},	
+		// Innan denna körs måste this.mapview ha satts av MapView, annars baj
 		render : function() {
+			this.listenTo(this.mapview, 'filterByMaxBeerPrice', this.filterByMaxBeerPrice);
 			this.marker = new L.marker([this.model.get('lat'), this.model.get('lng')], {
 				icon : utils.placeIcon,
 			});
 			this.bindMarkerEvents();
-		},	
+			this.showMarker();
+		},
+		showMarker : function() {
+			this.mapview.markercluster.addLayer(this.marker);
+		},
+		hideMarker : function() {
+			this.mapview.markercluster.removeLayer(this.marker);
+		},
+		filterByMaxBeerPrice : function(price) {
+			if (this.model.get('beer_price') > price) {
+				this.hideMarker();
+			} else {
+				this.showMarker();
+			}
+		},
 		/**
 		 * Ritar om markören. Körs när något i modellen ändrats (typiskt sett openNow).
 		 */
