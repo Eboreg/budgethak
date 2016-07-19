@@ -7,10 +7,15 @@ from django.utils.dates import WEEKDAYS
 from ajaximage.fields import AjaxImageField
 from autoslug import AutoSlugField
 from datetime import datetime
+from django.core.exceptions import ValidationError
+
+def concat_name_city(place):
+    return "-".join((place.name, place.city))
+
 
 
 class Place(models.Model):
-    name = models.CharField(max_length=50)
+    name = models.CharField(max_length=50, blank=False)
     lat = models.DecimalField(decimal_places=7, max_digits=10)
     lng = models.DecimalField(decimal_places=7, max_digits=10)
     street_address = models.CharField(max_length=200)
@@ -25,7 +30,8 @@ class Place(models.Model):
     date_published = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
     image = AjaxImageField(upload_to="place_images", max_width=1024, null=True, blank=True) 
-    slug = AutoSlugField(unique=True, populate_from=lambda place: "-".join((place.name, place.city)))
+    #slug = AutoSlugField(unique=True, populate_from=lambda place: "-".join((place.name, place.city)))
+    slug = AutoSlugField(unique=True, populate_from=concat_name_city)
     
     def is_temporarily_closed(self):
         current_date = datetime.now().date() 
@@ -70,10 +76,15 @@ class OpeningHours(models.Model):
     place = models.ForeignKey('Place', on_delete=models.CASCADE, related_name='opening_hours')
     start_weekday = models.PositiveSmallIntegerField(choices=WEEKDAYS.items(), default=0)
     end_weekday = models.PositiveSmallIntegerField(choices=WEEKDAYS.items(), default=0)
-    opening_time = models.TimeField()
-    closing_time = models.TimeField()
+    opening_time = models.TimeField(null=True, blank=True)
+    closing_time = models.TimeField(null=True, blank=True)
+    closed_entire_day = models.BooleanField(default=False)
 
     def save(self, *args, **kwargs):
         if self.start_weekday > self.end_weekday:
             self.end_weekday = self.start_weekday
+        if self.opening_time == None and self.closing_time == None:
+            self.closed_entire_day = True
+        else:
+            self.closed_entire_day = False
         return super(OpeningHours, self).save(*args, **kwargs)

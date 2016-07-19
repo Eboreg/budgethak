@@ -1,11 +1,23 @@
 # -*- coding: utf-8 -*-
 from django.contrib import admin
+from django.forms import ModelForm
 from .models import Place, OpeningHours
+from django.core.exceptions import ValidationError
 
 
+class OpeningHoursInlineForm(ModelForm):
+    def clean(self):
+        cleaned_data = super(OpeningHoursInlineForm, self).clean()
+        opening_time = cleaned_data.get('opening_time')
+        closing_time = cleaned_data.get('closing_time')
+        if (opening_time == None and closing_time != None) or (opening_time != None and closing_time == None):
+            raise ValidationError("Både öppnings- och stängningstid måste vara angivna, eller ingen")
+             
+        
 class OpeningHoursInline(admin.TabularInline):
     model = OpeningHours
     extra = 7
+    form = OpeningHoursInlineForm
     
 
 class PlaceAdmin(admin.ModelAdmin):
@@ -25,14 +37,12 @@ class PlaceAdmin(admin.ModelAdmin):
     class Media:
         css = { "all": (
                         "admin/css/place.css", 
-                        #"https://npmcdn.com/leaflet@0.7.7/dist/leaflet.css",
-                        #"https://cdnjs.cloudflare.com/ajax/libs/leaflet-geocoder-mapzen/1.4.1/leaflet-geocoder-mapzen.css",
-                        #"lib/L.GeoSearch/src/css/l.geosearch.css",
-                        ) }
+                        )
+               }
         js = (
               "admin/js/place.js",
               "https://maps.googleapis.com/maps/api/js?key=AIzaSyAiF3cmg81Ro5PHFY2iA3HOy5Hfx3Gs0Oc&libraries=places",
               )
-    
-    
+
+
 admin.site.register(Place, PlaceAdmin)
