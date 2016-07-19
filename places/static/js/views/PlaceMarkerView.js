@@ -15,21 +15,29 @@ define([
 ], function(Backbone, _, L, utils, $) {
 	var PlaceMarkerView = Backbone.View.extend({
 		events : {
-			"load #info-window-image" : "refreshInfoWindow",
 		},
 		markerEvents : {
 			'click' : 'openInfoWindow',
-			//'popupclose' : 'closeInfoWindow',
 		},
 		infoWindowEvents : {
+			'remove' : 'removeInfoWindow', 
 		},
-		
+		infoWindowIsOpen : false,
+
+		initialize : function() {
+			this.listenTo(this.model, 'remove', this.clear);
+/*
+			$(window).resize({ that : this }, function(e) {
+				e.data.that.setInfoWindowImageWidth();
+				e.data.that.refreshInfoWindow();
+			});
+*/
+		},	
 		render : function() {
 			this.marker = new L.marker([this.model.get('lat'), this.model.get('lng')], {
 				icon : utils.placeIcon,
 			});
 			this.bindMarkerEvents();
-			this.listenTo(this.model, 'remove', this.clear);
 		},	
 		/**
 		 * Ritar om markören. Körs när något i modellen ändrats (typiskt sett openNow).
@@ -49,36 +57,56 @@ define([
 			if (!this.infoWindow) {
 				this.infoWindowTemplate = _.template($("#placeInfoWindowText").html());
 	   			this.infoWindow = new L.popup({
-	   				maxWidth : "auto",
+	   				//maxWidth : "auto",
+	   				maxWidth : utils.infoWindowImageWidth + 40,
 	   				autoClose : true,
+	   				autoPan : true,
 	   			}).setContent('Hämtar data ...');
 	    		this.bindInfoWindowEvents();
 	    		this.listenTo(this.model, 'change', this.updateInfoWindow);
-		    	this.marker.bindPopup(this.infoWindow);
 	    		this.model.fetch();
-	    		this.marker.openPopup();
+		    	this.marker.bindPopup(this.infoWindow);
 			}
-	    },
-	    closeInfoWindow : function() {
-			this.stopListening(Backbone, 'userplace:change');
-//			this.marker.closePopup();
+			this.infoWindowIsOpen = true;
 	    },
 	    updateInfoWindow : function() {
 			var $content = $("<div />");
 			$content.html(this.infoWindowTemplate(this.model.toJSON()));
 			// När bilden laddats in i DOM måste popupen uppdateras
 			if (this.model.get('image') != '') {
-				var $image = $content.find("#info-window-image");
-				$image.on('load', { that : this }, function(e) {
+				this.$infoWindowImage = $content.find(".info-window-image");
+				this.$infoWindowImage.on('load', { that : this }, function(e) {
+					e.data.that.setInfoWindowImageWidth();
+					e.data.that.refreshInfoWindow();
+		    		e.data.that.marker.openPopup();
+				});
+				$(window).resize({ that : this }, function(e) {
+					e.data.that.setInfoWindowImageWidth();
 					e.data.that.refreshInfoWindow();
 				});
+			} else {
+	    		this.marker.openPopup();
 			}
 			this.infoWindow.setContent($content[0]);
-			this.refreshInfoWindow();
+			//this.refreshInfoWindow();
 	    },
 		refreshInfoWindow : function() {
-			this.infoWindow.update();
+			if (this.infoWindowIsOpen) {
+				this.infoWindow.update();
+//				this.marker.openPopup();
+			}
 		},
+		setInfoWindowImageWidth : function() {
+			if (this.$infoWindowImage) {
+				this.$infoWindowImage.width(utils.infoWindowImageWidth);
+				this.$infoWindowImage.css("max-width", $(window).width() * 0.75);
+			}
+		},
+		removeInfoWindow : function() {
+			delete this.$infoWindowImage;
+			this.infoWindowIsOpen = false;
+		},
+
 	    /**
 		 * Delegerar valda Leaflet-events till View-events med namn 'marker:<leaflet-eventnamn>'.
 		 * Binder även explicit angivna lyssnare till Leaflet-events via this.markerEvents.
@@ -113,6 +141,7 @@ define([
 			var infoWindowEventNames = ['add', 'remove', 'popupopen', 'popupclose'];
 			_.each(infoWindowEventNames, function(infoWindowEventName) {
 				var handler = function() {
+					console.log('infoWindow:'+infoWindowEventName);
 					this.trigger('infoWindow:'+infoWindowEventName);
 				};
 				handler = _.bind(handler, this);

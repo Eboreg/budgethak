@@ -37,7 +37,9 @@ define([
 			this.bindMapEvents();
 			this.on('map:load', this.onLoad);
 			this.map.setView([59.3219, 18.0720], 13);
-			L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {}).addTo(this.map);
+			L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
+				attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
+			}).addTo(this.map);
 			return this;
 		},
 		onLoad : function() {

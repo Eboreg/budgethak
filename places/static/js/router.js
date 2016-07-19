@@ -12,12 +12,9 @@ define([
 			'*default' : 'showMap',
 		},
 		showPlace : function(slug) {
-			console.log('Router::showPlace()', slug);
 			Backbone.trigger('router:showplace');
-			//App.showCafe(slug);
 		},
 		showMap : function() {
-			console.log('Router::showMap()');
 			Backbone.trigger('router:showmap');
 			App.showMap();
 		},

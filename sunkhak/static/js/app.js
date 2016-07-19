@@ -64,6 +64,10 @@ require(['router', 'backbone', 'utils'], function(Router, Backbone, utils) {
 			// trigger the correct events. The Router's internal `navigate` method
 			// calls this anyways.  The fragment is sliced from the root.
 			Backbone.history.navigate(href.attr, true);
+		} else {
+			// Om extern länk: öppna alltid i nytt fönster
+			evt.preventDefault();
+			window.open(href.prop);
 		}
 	});
 });
