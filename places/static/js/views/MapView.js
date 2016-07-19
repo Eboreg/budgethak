@@ -41,6 +41,7 @@ define([
 			L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 				attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
 			}).addTo(this.map);
+			window.setInterval(this.cron30min, 60000);
 			return this;
 		},
 		onLoad : function() {
@@ -48,7 +49,7 @@ define([
 				maxClusterRadius : utils.maxClusterRadius,
 			});
 			this.map.addLayer(this.markercluster);
-			this.collection.fetch({merge : true, remove : false, sort : false });
+			this.collection.fetch();
 			new UserPlaceView({
 				mapview : this,
 			});
@@ -66,8 +67,8 @@ define([
 		addPlace : function(model) {
 			var placemarkerview = new PlaceMarkerView({
 				model : model,
+				mapview : this,
 			});
-			placemarkerview.mapview = this;
 			placemarkerview.render();
 		},
 		// openNow == true om sådant filter ska tillämpas
@@ -76,7 +77,13 @@ define([
 			openNow = openNow || false;
 			this.trigger('filter', maxBeerPrice, openNow);
 		},
-		/**
+		cron30min : function() {
+			var d = new Date();
+			if (d.getMinutes() % 30 === 0) {
+				this.collection.fetch();
+			}
+		},
+		/**		/**
 		 * Delegerar alla Leaflet-events till View-events med namn 'map:<leaflet-eventnamn>'.
 		 * Binder även explicit angivna lyssnare till Leaflet-events via this.mapEvents.
 		 */

@@ -23,7 +23,10 @@ define([
 		},
 		popupIsOpen : false,
 
-		// Innan denna körs måste this.mapview ha satts av MapView, annars baj
+		initialize : function(options) {
+			this.mapview = options.mapview || {};
+		},
+		// Innan denna körs måste this.mapview ha satts, annars baj
 		render : function() {
 			this.listenTo(this.mapview, 'filter', this.filter);
 			this.marker = new L.marker([this.model.get('lat'), this.model.get('lng')], {
@@ -31,6 +34,7 @@ define([
 			});
 			this.bindMarkerEvents();
 			this.showMarker();
+			return this;
 		},
 		showMarker : function() {
 			this.mapview.markercluster.addLayer(this.marker);
