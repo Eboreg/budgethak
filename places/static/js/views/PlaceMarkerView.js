@@ -10,7 +10,7 @@ define([
 	'utils',
 	'jquery',
 	'models/Place',
-	'view/MapView',
+	'views/MapView',
 ], function(Backbone, _, L, utils, $) {
 	var PlaceMarkerView = Backbone.View.extend({
 		events : {
@@ -70,7 +70,7 @@ define([
 			$content.html(this.popupTemplate(this.model.toJSON()));
 			// När bilden laddats in i DOM måste popupen uppdateras
 			if (this.model.get('image') != '') {
-				this.$popupImage = $content.find(".info-window-image");
+				this.$popupImage = $content.find(".place-popup-image");
 				this.$popupImage.on('load', { that : this }, function(e) {
 					e.data.that.setPopupImageWidth();
 					e.data.that.refreshPopup();

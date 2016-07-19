@@ -19,8 +19,8 @@
             </div>
             <div id="message-console"></div>
         </section>
-        <script id="placeInfoWindowText" type="text/template">
-            <div class="info-window">
+        <script id="placePopupText" type="text/template">
+            <div class="place-popup">
                 <p><strong><%- name %></strong></p>
                 <p><%- street_address %>, <%- city %></p>
                 <p>
@@ -29,7 +29,7 @@
                 </p>
                 <% if (image != '') { %>
                     <p>
-                        <img src="{{ MEDIA_URL }}<%= image %>" class="info-window-image" />
+                        <img src="{{ MEDIA_URL }}<%= image %>" class="place-popup-image" />
                     </p>
                 <% } %>
             </div>
