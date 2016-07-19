@@ -13,12 +13,22 @@ class OpeningHoursSerialiser(serializers.ModelSerializer):
 class PlaceSerializer(serializers.ModelSerializer):
     opening_hours = OpeningHoursSerialiser(many=True)
     beer_price_until = serializers.TimeField(format='%H:%M')
+    open_now = serializers.SerializerMethodField()
     
     class Meta:
         model = Place
         
+    def get_open_now(self, obj):
+        return obj.is_open_now()
+
         
 class PlaceListSerializer(serializers.ModelSerializer):
+    open_now = serializers.SerializerMethodField()
+    
     class Meta:
         model = Place
-        fields = ('pk', 'name', 'lat', 'lng', 'beer_price')
+        fields = ('pk', 'name', 'lat', 'lng', 'beer_price', 'open_now',)
+        
+    def get_open_now(self, obj):
+        return obj.is_open_now()
+    

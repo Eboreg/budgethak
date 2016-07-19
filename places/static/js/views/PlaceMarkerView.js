@@ -29,7 +29,7 @@ define([
 		},	
 		// Innan denna körs måste this.mapview ha satts av MapView, annars baj
 		render : function() {
-			this.listenTo(this.mapview, 'filterByMaxBeerPrice', this.filterByMaxBeerPrice);
+			this.listenTo(this.mapview, 'filter', this.filter);
 			this.marker = new L.marker([this.model.get('lat'), this.model.get('lng')], {
 				icon : utils.placeIcon,
 			});
@@ -42,8 +42,8 @@ define([
 		hideMarker : function() {
 			this.mapview.markercluster.removeLayer(this.marker);
 		},
-		filterByMaxBeerPrice : function(price) {
-			if (this.model.get('beer_price') > price) {
+		filter : function(maxBeerPrice, openNow) {
+			if ((openNow && this.model.get('open_now') === false) || this.model.get('beer_price') > maxBeerPrice) {
 				this.hideMarker();
 			} else {
 				this.showMarker();

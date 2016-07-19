@@ -70,8 +70,11 @@ define([
 			placemarkerview.mapview = this;
 			placemarkerview.render();
 		},
-		filterByMaxBeerPrice : function(price) {
-			this.trigger('filterByMaxBeerPrice', price);
+		// openNow == true om sådant filter ska tillämpas
+		filter : function(maxBeerPrice, openNow) {
+			maxBeerPrice = maxBeerPrice || 40;
+			openNow = openNow || false;
+			this.trigger('filter', maxBeerPrice, openNow);
 		},
 		/**
 		 * Delegerar alla Leaflet-events till View-events med namn 'map:<leaflet-eventnamn>'.
