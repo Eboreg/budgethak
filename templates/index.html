@@ -11,6 +11,7 @@
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.0-rc.1.0/MarkerCluster.css" />
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.0-rc.1.0/MarkerCluster.Default.css" />
         <link rel="stylesheet" href="{{ STATIC_URL }}lib/leaflet-usermarker/leaflet.usermarker.css" />
+        <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
     </head>
     <body>
         <section id="app">
@@ -19,6 +20,13 @@
             </div>
             <div id="message-console"></div>
         </section>
+        <script id="menuBar" type="text/template">
+            <div id="menu-bar">
+                <div class="w3-card-4 menu-bar-element">
+                    <i class="material-icons menu-bar-icon" id="my-location-icon">my_location</i>
+                </div>
+            </div>
+        </script>
         <script id="placePopupText" type="text/template">
             <div class="place-popup">
                 <p><strong><%- name %></strong></p>

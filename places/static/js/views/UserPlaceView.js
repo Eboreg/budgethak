@@ -16,22 +16,31 @@ define([
 	var UserPlaceView = Backbone.View.extend({
 		initialize : function(options) {
 			this.mapview = options.mapview || {};
-			this.mapview.map.on("locationfound", function(location) {
-				if (!this.marker) {
-					this.marker = L.userMarker(location.latlng, {
-						smallIcon : true,
-					}).addTo(this.mapview.map);
-					this.mapview.map.flyTo(location.latlng, 15);
-				}
-				this.marker.setLatLng(location.latlng);
-				this.marker.setAccuracy(location.accuracy);
-			}, this);
-			this.mapview.map.locate({
-				watch : true,
-				locate : true,
-				setView : false,
-				maxZoom : 15,
-				enableHighAccuracy : true,
+			// Första gången man klickar, börjar vi söka efter position:
+			this.listenToOnce(this.mapview, 'goto-my-position-clicked', function() {
+				// Denna kommer att triggas varje gång en ny position är funnen:
+				this.mapview.map.on("locationfound", function(location) {
+					if (!this.marker) {
+						this.marker = L.userMarker(location.latlng, {
+							smallIcon : true,
+						}).addTo(this.mapview.map);
+						this.mapview.map.flyTo(location.latlng, 17);
+					}
+					this.marker.setLatLng(location.latlng);
+					this.marker.setAccuracy(location.accuracy);
+					// Spola ev. lyssning på gammal position och lägg till ny:
+					this.stopListening(this.mapview, 'goto-my-position-clicked');
+					this.listenTo(this.mapview, 'goto-my-position-clicked', function() {
+						this.mapview.map.flyTo(location.latlng, 17);
+					});
+				}, this);
+				this.mapview.map.locate({
+					watch : true,
+					locate : true,
+					setView : false,
+					maxZoom : 15,
+					enableHighAccuracy : true,
+				});
 			});
 		},
 		/**

@@ -29,7 +29,7 @@ define([
 		},
 	
 		initialize : function(options) {
-			_.bindAll(this, 'render', 'addPlace', 'onLoad', 'cron30min');
+			_.bindAll(this, 'render', 'addPlace', 'onLoad', 'cron30min', 'gotoMyPositionClicked');
 			this.listenTo(this.collection, 'add', this.addPlace);
 		},
 		render : function() {
@@ -42,8 +42,20 @@ define([
 			L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 				attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
 			}).addTo(this.map);
+			this.menuBar = L.control({
+				position : 'topleft',
+			});
+			this.menuBar.onAdd = function(map) {
+				var template = _.template($("#menuBar").html());
+				return $(template())[0];
+			};
+			this.menuBar.addTo(this.map);
+			$("#my-location-icon").click(this.gotoMyPositionClicked);
 			window.setInterval(this.cron30min, 60000);
 			return this;
+		},
+		gotoMyPositionClicked: function() {
+			this.trigger("goto-my-position-clicked");
 		},
 		onLoad : function() {
 			this.markercluster = L.markerClusterGroup({
