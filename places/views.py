@@ -19,8 +19,8 @@ class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
     
     def list(self, request, *args, **kwargs):
         queryset = Place.objects.all()
-        # Filtrera bort platser som är tillfälligt stängda just nu:
-        queryset = [p for p in queryset if not p.is_temporarily_closed()]
+        # Filtrera bort platser som är tillfälligt stängda just nu eller har visible == False:
+        queryset = [p for p in queryset if not p.is_temporarily_closed() and p.visible]
         serializer = PlaceListSerializer(queryset, many=True)
         return Response(serializer.data)
         

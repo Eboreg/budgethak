@@ -20,7 +20,9 @@ define([
 	'utils',
 	'views/PlaceMarkerView',
 	'views/UserPlaceView',
-], function(Backbone, _, L, markercluster, utils, PlaceMarkerView, UserPlaceView) {
+	'jquery',
+	'jquery-ui'
+], function(Backbone, _, L, markercluster, utils, PlaceMarkerView, UserPlaceView, $) {
 	var MapView = Backbone.View.extend({
 		el : '#map-element',
 		// Vi kan inte använda events-hashen eftersom den behandlas före initialize(), varför ej map:* kommer att funka
@@ -30,7 +32,8 @@ define([
 		filterClosedPlaces : false,
 	
 		initialize : function(options) {
-			_.bindAll(this, 'render', 'addPlace', 'onLoad', 'cron30min', 'gotoMyPositionClicked', 'filterClosedPlacesClicked');
+			_.bindAll(this, 'render', 'addPlace', 'onLoad', 'cron30min', 'gotoMyPositionClicked', 'filterClosedPlacesClicked',
+							'filterMaxBeerPriceChanged');
 			this.listenTo(this.collection, 'add', this.addPlace);
 		},
 		render : function() {
@@ -53,12 +56,28 @@ define([
 			});
 			this.menuBar.onAdd = function(map) {
 				var template = _.template($("#menuBar").html());
-				return $(template())[0];
+				return $(template({ 'max_beer_price' : utils.maxBeerPrice }))[0];
 			};
 			this.menuBar.addTo(this.map);
+			var menuBarElement = this.menuBar.getContainer();
+			L.DomEvent.disableClickPropagation(menuBarElement);
+			L.DomEvent.disableScrollPropagation(menuBarElement);
 			$("#my-location-icon").click(this.gotoMyPositionClicked);
 			$("#filter-closed-places-icon").click(this.filterClosedPlacesClicked);
 			$("#filter-closed-places-checkbox").change(this.filterClosedPlacesClicked);
+			$("#max-beer-price-slider").slider({
+				value : 40,
+				min : 20,
+				max : utils.maxBeerPrice,
+				step : 5,
+				slide : function(event, ui) {
+					$("#max-beer-price").text(ui.value);
+				},
+				change : this.filterMaxBeerPriceChanged,
+			});
+		},
+		filterMaxBeerPriceChanged : function(event, ui) {
+			this.filter({ maxBeerPrice : ui.value });
 		},
 		filterClosedPlacesClicked : function() {
 			this.filterClosedPlaces = !this.filterClosedPlaces;

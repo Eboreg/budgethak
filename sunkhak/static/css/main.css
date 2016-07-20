@@ -32,12 +32,18 @@ body {
     color: goldenrod;
 }
 .menu-bar-icon {
-    cursor: pointer;
     font-size: 24px !important;
+}
+.menu-bar-icon.link {
+    cursor: pointer;
 }
 .menu-bar-element .active {
     color: gold;
 }
-#my-location-icon:hover {
+#my-location-icon:active {
     color: gold;
+}
+#max-beer-price-slider {
+    width: 200px;
+    margin: 6px 20px 0 10px;
 }

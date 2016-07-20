@@ -65,6 +65,7 @@ define([
 	   				maxWidth : utils.popupImageWidth + 40,
 	   				autoClose : true,
 	   				autoPan : true,
+	   				autoPanPaddingTopLeft : [5, $("#menu-bar").height() + 5],
 	   			}).setContent('Hämtar data ...');
 	    		this.bindPopupEvents();
 	    		this.listenTo(this.model, 'change', this.updatePopup);

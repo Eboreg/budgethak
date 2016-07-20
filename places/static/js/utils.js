@@ -5,7 +5,8 @@ define(['leaflet'], function(L) {
 		maxZoom : 18,
 		maxClusterRadius : 15,
 		defaultStartPos : [59.3219, 18.0720],
-		infoWindowImageWidth : 750,
+		popupImageWidth : 650,
+		maxBeerPrice : 40,
 		placeIcon : L.icon({
 			iconUrl : '/media/beermug.png',
 			iconSize : [30, 28.234],

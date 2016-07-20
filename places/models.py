@@ -30,7 +30,7 @@ class Place(models.Model):
     date_published = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
     image = AjaxImageField(upload_to="place_images", max_width=1024, null=True, blank=True) 
-    #slug = AutoSlugField(unique=True, populate_from=lambda place: "-".join((place.name, place.city)))
+    visible = models.BooleanField(default=True)
     slug = AutoSlugField(unique=True, populate_from=concat_name_city)
     
     def is_temporarily_closed(self):

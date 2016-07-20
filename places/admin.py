@@ -22,11 +22,11 @@ class OpeningHoursInline(admin.TabularInline):
 
 class PlaceAdmin(admin.ModelAdmin):
     inlines = [OpeningHoursInline]
-    list_display = ('name', 'street_address', 'city', 'beer_price', 'beer_price_until', 'date_updated')
+    list_display = ('name', 'street_address', 'city', 'beer_price', 'beer_price_until', 'date_updated', 'visible')
     save_on_top = True
     fieldsets = (
         (None, {
-            'fields' : ('name', 'lat', 'lng', 'street_address', 'city', 'beer_price', 'beer_price_until', 'uteservering', 'comment', 'image'),
+            'fields' : ('name', 'lat', 'lng', 'street_address', 'city', 'beer_price', 'beer_price_until', 'uteservering', 'comment', 'visible', 'image'),
             'classes' : ('half-size',),
             }),
         ('Tillfälligt stängt?', {

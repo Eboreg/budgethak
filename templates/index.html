@@ -12,6 +12,7 @@
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.0-rc.1.0/MarkerCluster.Default.css" />
         <link rel="stylesheet" href="{{ STATIC_URL }}lib/leaflet-usermarker/leaflet.usermarker.css" />
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" />
+        <link rel="stylesheet" href="{{ STATIC_URL }}lib/jquery-ui-1.12.0.custom/jquery-ui.min.css" />
     </head>
     <body>
         <section id="app">
@@ -24,10 +25,15 @@
             <table id="menu-bar">
                 <tr>
                     <td class="w3-container w3-card-4 menu-bar-element">
-                        <i class="fa fa-location-arrow menu-bar-icon" id="my-location-icon" title="Gå till min position"></i>
+                        <i class="fa fa-location-arrow menu-bar-icon link" id="my-location-icon" title="Gå till min position"></i>
                     </td>
-                    <td class="w3-container w3-card-4 w3-large menu-bar-element">
-                        <i class="fa fa-clock-o menu-bar-icon" id="filter-closed-places-icon" title="Dölj stängda platser"></i>
+                    <td class="w3-container w3-card-4 menu-bar-element">
+                        <i class="fa fa-clock-o menu-bar-icon link" id="filter-closed-places-icon" title="Dölj stängda platser"></i>
+                    </td>
+                    <td class="w3-container w3-card-4 menu-bar-element">
+                        <i class="fa fa-money menu-bar-icon w3-left" title="Max ölpris"></i>
+                        <div id="max-beer-price-slider" class="w3-left w3-large"></div>
+                        <p class="w3-left w3-large"><span id="max-beer-price"><%= max_beer_price %></span> kr</p>
                     </td>
                 </tr>
             </table>
