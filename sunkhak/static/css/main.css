@@ -20,15 +20,20 @@ body {
     top: 0 !important;
 }
 
-#menu-bar {
-    margin: 0;
-    border-spacing: 10px 0;
-    border-collapse: separate;
+
+/** MENU BAR **/
+#menu-bar-container {
+    white-space: nowrap;
+    margin: 10px 10px 0 10px;
+    display: flex;
+}
+.menu-bar-row {
+    display: flex;
 }
 .menu-bar-element {
     background-color: white;
     padding: 10px 20px;
-    margin-left: 10px;
+    margin: 0;
     color: goldenrod;
 }
 .menu-bar-icon {
@@ -37,13 +42,57 @@ body {
 .menu-bar-icon.link {
     cursor: pointer;
 }
-.menu-bar-element .active {
-    color: gold;
-}
+.menu-bar-element .active,
 #my-location-icon:active {
     color: gold;
 }
+#max-beer-price-element {
+    display: flex;
+}
 #max-beer-price-slider {
-    width: 200px;
     margin: 6px 20px 0 10px;
+}
+
+/* DATORER/PADDOR */
+@media (min-width: 602px) {
+    #menu-bar-container {
+        margin-left: 0;
+        box-shadow: none !important;
+    }
+    .menu-bar-element {
+        margin-left: 10px;
+    }
+    #max-beer-price-slider {
+        width: 200px;
+    }
+}
+
+/* MOBILER */
+@media (max-width: 601px) {
+    /*.leaflet-top {
+        width: 100%;
+        display: flex;
+        flex-direction: column;
+    }*/
+    .menu-bar-row {
+        display: none;
+        flex: 0 1 auto;
+    }
+    .menu-bar-element {
+        box-shadow: none !important;
+        margin: 0;
+    }
+    #menu-bar-container {
+        background: white;
+        align-items: flex-start;
+        flex-wrap: wrap;
+    }
+    #max-beer-price-element,
+    #max-beer-price-row,
+    #max-beer-price-slider {
+        flex: 1 0 auto;
+    }
+    #max-beer-price-slider {
+        min-width: 100px;
+    }
 }

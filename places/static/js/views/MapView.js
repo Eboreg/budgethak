@@ -33,7 +33,7 @@ define([
 	
 		initialize : function(options) {
 			_.bindAll(this, 'render', 'addPlace', 'onLoad', 'cron30min', 'gotoMyPositionClicked', 'filterClosedPlacesClicked',
-							'filterMaxBeerPriceChanged');
+							'filterMaxBeerPriceChanged', 'mobileMenuButtonClicked');
 			this.listenTo(this.collection, 'add', this.addPlace);
 		},
 		render : function() {
@@ -62,6 +62,7 @@ define([
 			var menuBarElement = this.menuBar.getContainer();
 			L.DomEvent.disableClickPropagation(menuBarElement);
 			L.DomEvent.disableScrollPropagation(menuBarElement);
+			$("#mobile-menu-button").click(this.mobileMenuButtonClicked);
 			$("#my-location-icon").click(this.gotoMyPositionClicked);
 			$("#filter-closed-places-icon").click(this.filterClosedPlacesClicked);
 			$("#filter-closed-places-checkbox").change(this.filterClosedPlacesClicked);
@@ -75,6 +76,17 @@ define([
 				},
 				change : this.filterMaxBeerPriceChanged,
 			});
+		},
+		mobileMenuButtonClicked : function() {
+			
+			if ($(".menu-bar-row").first().css('display') == 'none') {
+				$(".menu-bar-row").show('fast').css('display', 'flex');
+				//$(".menu-bar-row").css('display', 'flex').animate({ display : 'flex' }, 'fast');
+			} else {
+				$(".menu-bar-row").hide('fast');
+			}
+			
+			//$(".menu-bar-row").toggle('fast');
 		},
 		filterMaxBeerPriceChanged : function(event, ui) {
 			this.filter({ maxBeerPrice : ui.value });

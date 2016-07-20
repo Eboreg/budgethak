@@ -23,21 +23,26 @@
             <div id="message-console"></div>
         </section>
         <script id="menuBar" type="text/template">
-            <table id="menu-bar">
-                <tr>
-                    <td class="w3-container w3-card-4 menu-bar-element">
+            <div id="menu-bar-container" class="w3-card-4">
+                <div class="w3-container w3-left menu-bar-element w3-hide-medium w3-hide-large">
+                    <i class="fa fa-bars menu-bar-icon link" id="mobile-menu-button"></i>
+                </div>
+                <div class="w3-row menu-bar-row">
+                    <div class="w3-container w3-card-4 w3-left menu-bar-element">
                         <i class="fa fa-location-arrow menu-bar-icon link" id="my-location-icon" title="Gå till min position"></i>
-                    </td>
-                    <td class="w3-container w3-card-4 menu-bar-element">
+                    </div>
+                    <div class="w3-container w3-card-4 w3-left menu-bar-element">
                         <i class="fa fa-clock-o menu-bar-icon link" id="filter-closed-places-icon" title="Dölj stängda platser"></i>
-                    </td>
-                    <td class="w3-container w3-card-4 menu-bar-element">
+                    </div>
+                </div>
+                <div class="w3-row menu-bar-row" id="max-beer-price-row">
+                    <div class="w3-container w3-card-4 w3-left menu-bar-element" id="max-beer-price-element">
                         <i class="fa fa-money menu-bar-icon w3-left" title="Max ölpris"></i>
                         <div id="max-beer-price-slider" class="w3-left w3-large"></div>
                         <p class="w3-left w3-large"><span id="max-beer-price"><%= max_beer_price %></span> kr</p>
-                    </td>
-                </tr>
-            </table>
+                    </div>
+                </div>
+            </div>
         </script>
         <script id="placePopupText" type="text/template">
             <div class="place-popup">
