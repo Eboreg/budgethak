@@ -1,1 +1,4 @@
-.git/
+.git/**
+media/place_images
+db.sqlite3
+static/**

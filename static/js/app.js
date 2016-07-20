@@ -1,5 +1,3 @@
-var urlroot = '/';
-
 require.config({
 	waitSeconds : 120,
 	paths : {
@@ -7,8 +5,11 @@ require.config({
 		'underscore' : '//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min',
 		'backbone' : '//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.3.3/backbone-min',
 		'jquery' : '//code.jquery.com/jquery-3.1.0.min',
-		'leaflet' : '//cdnjs.cloudflare.com/ajax/libs/leaflet/0.7.7/leaflet',
-		'leaflet-markerclusterer' : '//cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/0.5.0/leaflet.markercluster',
+		'leaflet' : '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0-rc.1/leaflet',
+		'leaflet-markercluster' : '//cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.0-rc.1.0/leaflet.markercluster',
+		'leaflet-usermarker' : '../lib/leaflet-usermarker/leaflet.usermarker',
+		'router' : '../places/js/router',
+		'utils' : '../places/js/utils',
 	},
 	shim : {
 		'underscore' : {
@@ -21,13 +22,16 @@ require.config({
 		'leaflet' : {
 			exports : 'L',
 		},
-		'leaflet-markerclusterer' : {
+		'leaflet-markercluster' : {
+			deps : ['leaflet'],
+		},
+		'leaflet-usermarker' : {
 			deps : ['leaflet'],
 		},
 	},
 });
 
-require(['router', 'backbone'], function(Router, Backbone) {
+require(['router', 'backbone', 'utils'], function(Router, Backbone, utils) {
 	new Router();
 	//Backbone.history.start();
 
@@ -35,7 +39,7 @@ require(['router', 'backbone'], function(Router, Backbone) {
 	// root folder to '/' by default.  Change in app.js.
 	Backbone.history.start({
 		pushState : true,
-		root : urlroot
+		root : utils.urlroot
 	});
 
 	// All navigation that is relative should be passed through the navigate
@@ -48,7 +52,7 @@ require(['router', 'backbone'], function(Router, Backbone) {
 			attr : $(this).attr("href")
 		};
 		// Get the absolute root.
-		var root = location.protocol + "//" + location.host + urlroot;
+		var root = location.protocol + "//" + location.host + utils.urlroot;
 
 		// Ensure the root is part of the anchor href, meaning it's relative.
 		if (href.prop.slice(0, root.length) === root) {
@@ -60,6 +64,10 @@ require(['router', 'backbone'], function(Router, Backbone) {
 			// trigger the correct events. The Router's internal `navigate` method
 			// calls this anyways.  The fragment is sliced from the root.
 			Backbone.history.navigate(href.attr, true);
+		} else {
+			// Om extern länk: öppna alltid i nytt fönster
+			evt.preventDefault();
+			window.open(href.prop);
 		}
 	});
 });

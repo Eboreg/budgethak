@@ -12,8 +12,8 @@ function loadOSM() {
 	geocoder.addTo(map);
 	geocoder.on('select', function(e) {
 		console.log(e);
-		$("#id_lat").val(e.latlng.lat);
-		$("#id_lng").val(e.latlng.lng);
+		$("#id_lat").val(e.latlng.lat.toPrecision(9));
+		$("#id_lng").val(e.latlng.lng.toPrecision(9));
 		$("#id_street_address").val(e.feature.properties.name);
 		if (typeof e.feature.properties.neighbourhood != 'undefined')
 			$("#id_neighbourhood").val(e.feature.properties.neighbourhood);
@@ -49,8 +49,8 @@ django.jQuery(function($) {
 	    	if (-1 === place_data.types.indexOf('street_address')) {
 	    		$("#id_name").val(place_data.name);
 	    	}
-	    	$("#id_lat").val(place_data.geometry.location.lat());
-	    	$("#id_lng").val(place_data.geometry.location.lng());
+	    	$("#id_lat").val(place_data.geometry.location.lat().toPrecision(9));
+	    	$("#id_lng").val(place_data.geometry.location.lng().toPrecision(9));
 	    	if (place_data.opening_hours && place_data.opening_hours.periods) {
 	    		var opening_hours = new Array();
 	    		var period;
