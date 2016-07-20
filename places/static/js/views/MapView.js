@@ -42,7 +42,7 @@ define([
 				zoomControl : false,
 			});
 			this.bindMapEvents();
-			this.map.setView([59.3219, 18.0720], 13);
+			this.map.setView(utils.defaultStartPos, 13);
 			L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 				attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
 			}).addTo(this.map);
