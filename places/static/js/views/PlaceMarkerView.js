@@ -42,8 +42,12 @@ define([
 		hideMarker : function() {
 			this.mapview.markercluster.removeLayer(this.marker);
 		},
-		filter : function(maxBeerPrice, openNow) {
-			if ((openNow && this.model.get('open_now') === false) || this.model.get('beer_price') > maxBeerPrice) {
+		// options.maxBeerPrice == maxpris på öl
+		// options.openNow == true om sådant filter ska tillämpas
+		filter : function(options) {
+			if (options.openNow && this.model.get('open_now') === false) {
+				this.hideMarker();
+			} else if (options.maxBeerPrice && this.model.get('beer_price') > options.maxBeerPrice) {
 				this.hideMarker();
 			} else {
 				this.showMarker();

@@ -11,7 +11,7 @@
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.0-rc.1.0/MarkerCluster.css" />
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.0-rc.1.0/MarkerCluster.Default.css" />
         <link rel="stylesheet" href="{{ STATIC_URL }}lib/leaflet-usermarker/leaflet.usermarker.css" />
-        <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
+        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" />
     </head>
     <body>
         <section id="app">
@@ -21,11 +21,16 @@
             <div id="message-console"></div>
         </section>
         <script id="menuBar" type="text/template">
-            <div id="menu-bar">
-                <div class="w3-card-4 menu-bar-element">
-                    <i class="material-icons menu-bar-icon" id="my-location-icon">my_location</i>
-                </div>
-            </div>
+            <table id="menu-bar">
+                <tr>
+                    <td class="w3-container w3-card-4 menu-bar-element">
+                        <i class="fa fa-location-arrow menu-bar-icon" id="my-location-icon" title="Gå till min position"></i>
+                    </td>
+                    <td class="w3-container w3-card-4 w3-large menu-bar-element">
+                        <i class="fa fa-clock-o menu-bar-icon" id="filter-closed-places-icon" title="Dölj stängda platser"></i>
+                    </td>
+                </tr>
+            </table>
         </script>
         <script id="placePopupText" type="text/template">
             <div class="place-popup">

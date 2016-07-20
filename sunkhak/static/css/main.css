@@ -16,8 +16,14 @@ body {
 .leaflet-popup {
     width: auto;
 }
+.w3-check {
+    top: 0 !important;
+}
+
 #menu-bar {
     margin: 0;
+    border-spacing: 10px 0;
+    border-collapse: separate;
 }
 .menu-bar-element {
     background-color: white;
@@ -27,6 +33,10 @@ body {
 }
 .menu-bar-icon {
     cursor: pointer;
+    font-size: 24px !important;
+}
+.menu-bar-element .active {
+    color: gold;
 }
 #my-location-icon:hover {
     color: gold;

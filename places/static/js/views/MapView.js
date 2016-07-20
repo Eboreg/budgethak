@@ -27,9 +27,10 @@ define([
 		mapEvents : {
 			'load' : 'onLoad'
 		},
+		filterClosedPlaces : false,
 	
 		initialize : function(options) {
-			_.bindAll(this, 'render', 'addPlace', 'onLoad', 'cron30min', 'gotoMyPositionClicked');
+			_.bindAll(this, 'render', 'addPlace', 'onLoad', 'cron30min', 'gotoMyPositionClicked', 'filterClosedPlacesClicked');
 			this.listenTo(this.collection, 'add', this.addPlace);
 		},
 		render : function() {
@@ -42,6 +43,11 @@ define([
 			L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 				attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
 			}).addTo(this.map);
+			this.addMenuBar();
+			window.setInterval(this.cron30min, 60000);
+			return this;
+		},
+		addMenuBar : function() {
 			this.menuBar = L.control({
 				position : 'topleft',
 			});
@@ -51,8 +57,22 @@ define([
 			};
 			this.menuBar.addTo(this.map);
 			$("#my-location-icon").click(this.gotoMyPositionClicked);
-			window.setInterval(this.cron30min, 60000);
-			return this;
+			$("#filter-closed-places-icon").click(this.filterClosedPlacesClicked);
+			$("#filter-closed-places-checkbox").change(this.filterClosedPlacesClicked);
+		},
+		filterClosedPlacesClicked : function() {
+			this.filterClosedPlaces = !this.filterClosedPlaces;
+			this.filter({ openNow : this.filterClosedPlaces });
+			// Om stängda platser döljs:
+			if (this.filterClosedPlaces) {
+				$("#filter-closed-places-icon").addClass("active");
+				$("#filter-closed-places-icon").attr("title", "Visa stängda platser");
+			}
+			else {
+				$("#filter-closed-places-icon").removeClass("active");
+				$("#filter-closed-places-icon").attr("title", "Dölj stängda platser");
+			}
+//			this.filter({ openNow : $("#filter-closed-places-checkbox").prop("checked") });
 		},
 		gotoMyPositionClicked: function() {
 			this.trigger("goto-my-position-clicked");
@@ -78,11 +98,10 @@ define([
 			});
 			placemarkerview.render();
 		},
-		// openNow == true om sådant filter ska tillämpas
-		filter : function(maxBeerPrice, openNow) {
-			maxBeerPrice = maxBeerPrice || 40;
-			openNow = openNow || false;
-			this.trigger('filter', maxBeerPrice, openNow);
+		// options.maxBeerPrice == maxpris på öl
+		// options.openNow == true om sådant filter ska tillämpas
+		filter : function(options) {
+			this.trigger('filter', options);
 		},
 		cron30min : function() {
 			var d = new Date();
@@ -90,7 +109,7 @@ define([
 				this.collection.fetch();
 			}
 		},
-		/**		/**
+		/**
 		 * Delegerar alla Leaflet-events till View-events med namn 'map:<leaflet-eventnamn>'.
 		 * Binder även explicit angivna lyssnare till Leaflet-events via this.mapEvents.
 		 */
