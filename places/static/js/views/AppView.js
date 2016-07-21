@@ -17,6 +17,10 @@ define([
 				this.mapview.render();
 			}
 		},
+		showPlace : function(slug) {
+			this.showMap();
+			console.log(slug);
+		},
 	});
 	sunkhak.appview = new AppView();
 	return sunkhak.appview;

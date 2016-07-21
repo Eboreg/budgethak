@@ -50,6 +50,17 @@ define([
 			window.setInterval(this.cron30min, 60000);
 			return this;
 		},
+		// Triggas av load-event från map 
+		onLoad : function() {
+			this.markercluster = L.markerClusterGroup({
+				maxClusterRadius : utils.maxClusterRadius,
+			});
+			this.map.addLayer(this.markercluster);
+			this.collection.fetch();
+			new UserPlaceView({
+				mapview : this,
+			});
+		},
 		addMenuBar : function() {
 			this.menuBar = L.control({
 				position : 'topleft',
@@ -121,16 +132,6 @@ define([
 		},
 		gotoMyPositionClicked: function() {
 			this.trigger("goto-my-position-clicked");
-		},
-		onLoad : function() {
-			this.markercluster = L.markerClusterGroup({
-				maxClusterRadius : utils.maxClusterRadius,
-			});
-			this.map.addLayer(this.markercluster);
-			this.collection.fetch();
-			new UserPlaceView({
-				mapview : this,
-			});
 		},
 		panTo : function(latlng) {
 			this.map.panTo(latlng);

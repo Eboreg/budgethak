@@ -2,7 +2,7 @@ define([
 	'backbone',
 ], function(Backbone) {
 	var Place = Backbone.Model.extend({
-		idAttribute : 'pk',
+		idAttribute : 'slug',
 		visible : true,
 
 		// options.maxBeerPrice == maxpris på öl

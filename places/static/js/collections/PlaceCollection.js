@@ -9,7 +9,7 @@ define([
 ], function(Backbone, _, Place) {
 	var PlaceCollection = Backbone.Collection.extend({
 		model : Place,
-		url : 'api/places',
+		url : 'api/places/',
 		
 		initialize : function() {
 			_.bindAll(this, 'autocomplete');
@@ -27,6 +27,7 @@ define([
 					city : place.get('city')
 				});
 			});
+			console.log(matches);
 			response(matches);
 		},
 	});

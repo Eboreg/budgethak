@@ -13,6 +13,7 @@ define([
 		},
 		showPlace : function(slug) {
 			Backbone.trigger('router:showplace');
+			App.showPlace(slug);
 		},
 		showMap : function() {
 			Backbone.trigger('router:showmap');
