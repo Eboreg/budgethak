@@ -6,14 +6,14 @@
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Sunkhak</title>
-        <link rel="stylesheet" href="//www.w3schools.com/lib/w3.css">
-        <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css">
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0-rc.1/leaflet.css" />
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.0-rc.1.0/MarkerCluster.css" />
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.0-rc.1.0/MarkerCluster.Default.css" />
         <link rel="stylesheet" href="{{ STATIC_URL }}lib/leaflet-usermarker/leaflet.usermarker.css" />
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" />
         <link rel="stylesheet" href="{{ STATIC_URL }}lib/jquery-ui-1.12.0.custom/jquery-ui.min.css" />
+        <link rel="stylesheet" href="//www.w3schools.com/lib/w3.css">
+        <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css">
     </head>
     <body>
         <section id="app">
@@ -22,24 +22,46 @@
             </div>
             <div id="message-console"></div>
         </section>
+        <script id="autocompleteItem" type="text/template">
+            <li>
+                <div>
+                    <p class="autocomplete-name"><%- name %></p>
+                    <p class="autocomplete-address"><%- street_address %>, <%- city %></p>
+                </div>
+            </li>
+        </script>
         <script id="menuBar" type="text/template">
             <div id="menu-bar-container" class="w3-card-4">
-                <div class="w3-container w3-left menu-bar-element w3-hide-medium w3-hide-large">
+                <div class="w3-container menu-bar-element w3-hide-medium w3-hide-large">
                     <i class="fa fa-bars menu-bar-icon link" id="mobile-menu-button"></i>
                 </div>
                 <div class="w3-row menu-bar-row">
-                    <div class="w3-container w3-card-4 w3-left menu-bar-element">
-                        <i class="fa fa-location-arrow menu-bar-icon link" id="my-location-icon" title="Gå till min position"></i>
+                    <div class="w3-container w3-card-4 menu-bar-element">
+                        <div class="menu-bar-element-section link" id="my-location-icon" title="Gå till min position">
+                            <i class="fa fa-location-arrow menu-bar-icon"></i>
+                        </div>
                     </div>
-                    <div class="w3-container w3-card-4 w3-left menu-bar-element">
-                        <i class="fa fa-clock-o menu-bar-icon link" id="filter-closed-places-icon" title="Dölj stängda platser"></i>
+                    <div class="w3-container w3-card-4 menu-bar-element">
+                        <div class="menu-bar-element-section link" id="filter-closed-places-icon" title="Dölj stängda platser">
+                            <i class="fa fa-clock-o menu-bar-icon"></i>
+                        </div>
+                    </div>
+                    <div class="w3-container w3-card-4 menu-bar-element">
+                        <div class="menu-bar-element-section link" id="search-icon" title="Sök platser">
+                            <i class="fa fa-search menu-bar-icon"></i>
+                        </div>
+                        <div class="menu-bar-element-section w3-right" id="search-field-container">
+                            <input type="text" id="search-field" placeholder="Sök ..." />
+                        </div>
                     </div>
                 </div>
                 <div class="w3-row menu-bar-row" id="max-beer-price-row">
-                    <div class="w3-container w3-card-4 w3-left menu-bar-element" id="max-beer-price-element">
-                        <i class="fa fa-money menu-bar-icon w3-left" title="Max ölpris"></i>
-                        <div id="max-beer-price-slider" class="w3-left w3-large"></div>
-                        <p class="w3-left w3-large"><span id="max-beer-price"><%= max_beer_price %></span> kr</p>
+                    <div class="w3-container w3-card-4 w3-left menu-bar-element">
+                        <div class="menu-bar-element-section" id="max-beer-price-element">
+                            <i class="fa fa-money menu-bar-icon w3-left" title="Max ölpris"></i>
+                            <div id="max-beer-price-slider" class="w3-left w3-large"></div>
+                            <p class="w3-left w3-large"><span id="max-beer-price"><%= max_beer_price %></span> kr</p>
+                        </div>
                     </div>
                 </div>
             </div>

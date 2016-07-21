@@ -18,11 +18,11 @@ define([
 	'leaflet',
 	'leaflet-markercluster',
 	'utils',
-	'views/PlaceMarkerView',
+	'views/PlaceView',
 	'views/UserPlaceView',
 	'jquery',
 	'jquery-ui'
-], function(Backbone, _, L, markercluster, utils, PlaceMarkerView, UserPlaceView, $) {
+], function(Backbone, _, L, markercluster, utils, PlaceView, UserPlaceView, $) {
 	var MapView = Backbone.View.extend({
 		el : '#map-element',
 		// Vi kan inte använda events-hashen eftersom den behandlas före initialize(), varför ej map:* kommer att funka
@@ -33,7 +33,7 @@ define([
 	
 		initialize : function(options) {
 			_.bindAll(this, 'render', 'addPlace', 'onLoad', 'cron30min', 'gotoMyPositionClicked', 'filterClosedPlacesClicked',
-							'filterMaxBeerPriceChanged', 'mobileMenuButtonClicked');
+							'filterMaxBeerPriceChanged', 'mobileMenuButtonClicked', 'searchIconClicked', 'setupAutocomplete');
 			this.listenTo(this.collection, 'add', this.addPlace);
 		},
 		render : function() {
@@ -66,6 +66,7 @@ define([
 			$("#my-location-icon").click(this.gotoMyPositionClicked);
 			$("#filter-closed-places-icon").click(this.filterClosedPlacesClicked);
 			$("#filter-closed-places-checkbox").change(this.filterClosedPlacesClicked);
+			$("#search-icon").click(this.searchIconClicked);
 			$("#max-beer-price-slider").slider({
 				value : 40,
 				min : 20,
@@ -77,16 +78,30 @@ define([
 				change : this.filterMaxBeerPriceChanged,
 			});
 		},
+		searchIconClicked : function() {
+			$("#search-field-container").toggle('fast', this.setupAutocomplete);
+			$("#search-field").focus();
+		},
+		setupAutocomplete : function() {
+			if ($("#search-field").css("display") != "none") {
+				var template = _.template($("#autocompleteItem").html());
+				$("#search-field").autocomplete({
+					source : this.collection.autocomplete,
+					minLength : 1,
+					select : function(event, ui) {
+						console.log(event, ui);
+					},
+				}).autocomplete("instance")._renderItem = function(ul, item) {
+					return $(template(item)).appendTo(ul); 
+				};
+			}
+		},
 		mobileMenuButtonClicked : function() {
-			
 			if ($(".menu-bar-row").first().css('display') == 'none') {
 				$(".menu-bar-row").show('fast').css('display', 'flex');
-				//$(".menu-bar-row").css('display', 'flex').animate({ display : 'flex' }, 'fast');
 			} else {
 				$(".menu-bar-row").hide('fast');
 			}
-			
-			//$(".menu-bar-row").toggle('fast');
 		},
 		filterMaxBeerPriceChanged : function(event, ui) {
 			this.filter({ maxBeerPrice : ui.value });
@@ -103,7 +118,6 @@ define([
 				$("#filter-closed-places-icon").removeClass("active");
 				$("#filter-closed-places-icon").attr("title", "Dölj stängda platser");
 			}
-//			this.filter({ openNow : $("#filter-closed-places-checkbox").prop("checked") });
 		},
 		gotoMyPositionClicked: function() {
 			this.trigger("goto-my-position-clicked");
@@ -121,13 +135,13 @@ define([
 		panTo : function(latlng) {
 			this.map.panTo(latlng);
 		},
-		// Skapande av markör och tillägg av denna i this.markercluster sker i PlaceMarkerView::render()
+		// Skapande av markör och tillägg av denna i this.markercluster sker i PlaceView::render()
 		addPlace : function(model) {
-			var placemarkerview = new PlaceMarkerView({
+			var placeview = new PlaceView({
 				model : model,
 				mapview : this,
 			});
-			placemarkerview.render();
+			placeview.render();
 		},
 		// options.maxBeerPrice == maxpris på öl
 		// options.openNow == true om sådant filter ska tillämpas
@@ -138,6 +152,7 @@ define([
 			var d = new Date();
 			if (d.getMinutes() % 30 === 0) {
 				this.collection.fetch();
+				this.filter({ openNow : this.filterClosedPlaces });
 			}
 		},
 		/**

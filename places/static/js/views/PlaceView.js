@@ -12,7 +12,7 @@ define([
 	'models/Place',
 	'views/MapView',
 ], function(Backbone, _, L, utils, $) {
-	var PlaceMarkerView = Backbone.View.extend({
+	var PlaceView = Backbone.View.extend({
 		events : {
 		},
 		markerEvents : {
@@ -29,6 +29,7 @@ define([
 		// Innan denna körs måste this.mapview ha satts, annars baj
 		render : function() {
 			this.listenTo(this.mapview, 'filter', this.filter);
+//			this.listenTo(this.model, 'visible', this.visibilityChanged);
 			this.marker = new L.marker([this.model.get('lat'), this.model.get('lng')], {
 				icon : utils.placeIcon,
 			});
@@ -36,11 +37,17 @@ define([
 			this.showMarker();
 			return this;
 		},
+		visibilityChanged : function(visible) {
+			if (visible) this.showMarker();
+			else this.hideMarker();
+		},
 		showMarker : function() {
 			this.mapview.markercluster.addLayer(this.marker);
+			this.model.visible = true;
 		},
 		hideMarker : function() {
 			this.mapview.markercluster.removeLayer(this.marker);
+			this.model.visible = false;
 		},
 		// options.maxBeerPrice == maxpris på öl
 		// options.openNow == true om sådant filter ska tillämpas
@@ -160,5 +167,5 @@ define([
 			}, this);
 		},
 	});
-	return PlaceMarkerView;
+	return PlaceView;
 });
