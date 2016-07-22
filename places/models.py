@@ -7,11 +7,16 @@ from django.utils.dates import WEEKDAYS
 from ajaximage.fields import AjaxImageField
 from autoslug import AutoSlugField
 from datetime import datetime
-from django.core.exceptions import ValidationError
 
 def concat_name_city(place):
     return "-".join((place.name, place.city))
 
+
+class PlaceManager(models.Manager):
+    def only_visible(self):
+        custom_list = [p.id for p in super(PlaceManager, self).get_queryset() if not p.is_temporarily_closed() and p.visible]
+        #queryset = [p for p in queryset if not p.is_temporarily_closed() and p.visible]
+        return super(PlaceManager, self).filter(id__in=custom_list)
 
 
 class Place(models.Model):
@@ -32,6 +37,7 @@ class Place(models.Model):
     image = AjaxImageField(upload_to="place_images", max_width=1024, null=True, blank=True) 
     visible = models.BooleanField(default=True)
     slug = AutoSlugField(unique=True, populate_from=concat_name_city)
+    objects = PlaceManager()
     
     def is_temporarily_closed(self):
         current_date = datetime.now().date() 
