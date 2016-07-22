@@ -29,12 +29,14 @@ define([
 		// Innan denna körs måste this.mapview ha satts, annars baj
 		render : function() {
 			this.listenTo(this.mapview, 'filter', this.filter);
+			this.listenTo(this.mapview, 'showplace:'+this.model.id, this.openPopup);
 //			this.listenTo(this.model, 'visible', this.visibilityChanged);
 			this.marker = new L.marker([this.model.get('lat'), this.model.get('lng')], {
 				icon : utils.placeIcon,
 			});
 			this.bindMarkerEvents();
 			this.showMarker();
+			this.trigger("render", this.model.id);
 			return this;
 		},
 		visibilityChanged : function(visible) {
@@ -72,7 +74,8 @@ define([
 	   				maxWidth : utils.popupImageWidth + 40,
 	   				autoClose : true,
 	   				autoPan : true,
-	   				autoPanPaddingTopLeft : [10, $("#menu-bar-container").outerHeight(true) + 5],
+//	   				autoPanPaddingTopLeft : [10, $("#menu-bar-container").outerHeight(true) + 5],
+	   				autoPanPaddingTopLeft : [10, utils.popupTop],
 	   				autoPanPaddingBottomRight : [10, 10],
 	   			}).setContent('Hämtar data ...');
 	    		this.bindPopupEvents();
@@ -89,12 +92,12 @@ define([
 			if (this.model.get('image') != '') {
 				this.$popupImage = $content.find(".place-popup-image");
 				this.$popupImage.on('load', { that : this }, function(e) {
-					e.data.that.setPopupImageWidth();
+					e.data.that.setPopupImageSize();
 					e.data.that.refreshPopup();
 		    		e.data.that.marker.openPopup();
 				});
 				$(window).resize({ that : this }, function(e) {
-					e.data.that.setPopupImageWidth();
+					e.data.that.setPopupImageSize();
 					e.data.that.refreshPopup();
 				});
 			} else {
@@ -107,10 +110,19 @@ define([
 				this.popup.update();
 			}
 		},
-		setPopupImageWidth : function() {
+		setPopupImageSize : function() {
 			if (this.$popupImage) {
+				var ratio = this.$popupImage[0].width / this.$popupImage[0].height;
+				var maxwidth = $(window).width() * 0.75;
+				var maxheight = $(window).height() * 0.4;
 				this.$popupImage.width(utils.popupImageWidth);
-				this.$popupImage.css("max-width", $(window).width() * 0.75);
+				if (maxwidth > maxheight * ratio) {
+					this.$popupImage.css("max-height", $(window).height() * 0.4);
+					this.$popupImage.width("auto");
+				} else {
+					this.$popupImage.css("max-width", $(window).width() * 0.75);
+					this.$popupImage.height("auto");
+				}
 			}
 		},
 		removePopup : function() {
@@ -138,7 +150,6 @@ define([
 				handler = _.isString(handler) ? this[handler] : handler;
 				if (_.isFunction(handler)) {
 					handler = _.bind(handler, this);
-					//this.marker.off(event);
 					this.marker.on(event, handler);
 				}
 			}, this);
@@ -152,7 +163,6 @@ define([
 			var popupEventNames = ['add', 'remove', 'popupopen', 'popupclose'];
 			_.each(popupEventNames, function(popupEventName) {
 				var handler = function() {
-					console.log('popup:'+popupEventName);
 					this.trigger('popup:'+popupEventName);
 				};
 				handler = _.bind(handler, this);

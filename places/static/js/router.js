@@ -1,11 +1,9 @@
-/**
- * Events som andra lyssnar på:
- * 		Backbone.'router:showMap' : AppView visar kartan 
- */
+var sunkhak = sunkhak || {};
 define([
 	'backbone',
-	'views/AppView'
-], function(Backbone, App) {
+	'views/MapView',
+	'collections/PlaceCollection'
+], function(Backbone, MapView, PlaceCollection) {
 	var Router = Backbone.Router.extend({
 		routes : {
 			'place/:slug' : 'showPlace',
@@ -13,11 +11,13 @@ define([
 		},
 		showPlace : function(slug) {
 			Backbone.trigger('router:showplace');
-			App.showPlace(slug);
+			sunkhak.mapview = new MapView({ collection : new PlaceCollection() });
+			sunkhak.mapview.showPlace(slug);
 		},
 		showMap : function() {
 			Backbone.trigger('router:showmap');
-			App.showMap();
+			sunkhak.mapview = new MapView({ collection : new PlaceCollection() });
+			sunkhak.mapview.render();
 		},
 	});
 	return Router;

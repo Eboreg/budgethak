@@ -7,7 +7,7 @@
  * model : sunkhak.Map (används ännu bara för att ange defaultvärden; kan ej hämta eller lagra några data någonstans)
  * map : 
  * mapEvents : lyssnar efter events på 'map'
- * collection : PlaceCollection (sätts av AppView)
+ * collection : PlaceCollection (sätts av router.js)
  * 
  * Events:
  * 	Backbone.'mapview:map:idle' : UserPlaceView ritar ut användarmarkör (om position finns)
@@ -21,28 +21,37 @@ define([
 	'views/PlaceView',
 	'views/UserPlaceView',
 	'jquery',
-	'jquery-ui'
+	'jquery-ui',
+	'collections/PlaceCollection'
 ], function(Backbone, _, L, markercluster, utils, PlaceView, UserPlaceView, $) {
 	var MapView = Backbone.View.extend({
 		el : '#map-element',
 		// Vi kan inte använda events-hashen eftersom den behandlas före initialize(), varför ej map:* kommer att funka
 		mapEvents : {
-			'load' : 'onLoad'
+			'load' : 'mapReady'
 		},
 		filterClosedPlaces : false,
+		placeviews : {},
 	
 		initialize : function(options) {
-			_.bindAll(this, 'render', 'addPlace', 'onLoad', 'cron30min', 'gotoMyPositionClicked', 'filterClosedPlacesClicked',
+			_.bindAll(this, 'addPlace', 'cron30min', 'gotoMyPositionClicked', 'filterClosedPlacesClicked',
 							'filterMaxBeerPriceChanged', 'mobileMenuButtonClicked', 'searchIconClicked', 'setupAutocomplete');
 			this.listenTo(this.collection, 'add', this.addPlace);
+			this.listenTo(this.collection, 'reset', this.addAllPlaces);
+			// Kommer PlaceCollection alltid att vara färdig-bootstrappad när vi är här?
+			this.addAllPlaces();
 		},
-		render : function() {
+		/* options.startpos : [startlng, startlat] */
+		render : function(options) {
+			options = options || {};
+			options.startpos = options.startpos || utils.defaultStartPos;
+			options.zoom = options.zoom || utils.zoom;
 			this.map = L.map(this.el, {
 				maxZoom : utils.maxZoom,
 				zoomControl : false,
 			});
 			this.bindMapEvents();
-			this.map.setView(utils.defaultStartPos, 13);
+			this.map.setView(options.startpos, options.zoom);
 			L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
 				attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
 			}).addTo(this.map);
@@ -50,17 +59,37 @@ define([
 			window.setInterval(this.cron30min, 60000);
 			return this;
 		},
+		// Körs av routern när plats angivits i URL:en
+		showPlace : function(slug) {
+			var model = this.collection.get(slug);
+			if (typeof model != "undefined") {
+				// placeview:render:(slug) triggas av this.mapReady och händer alltså alltid efter render()
+				this.once('placeview:render:'+slug, function() {
+					this.trigger('showplace:'+slug);
+				});
+				this.render({ startpos : [model.get('lat'), model.get('lng')], zoom : 17 });
+			} else {
+				this.render();
+			} 
+		},
 		// Triggas av load-event från map 
-		onLoad : function() {
+		// Körs alltså alltid efter this.render()
+		mapReady : function() {
 			this.markercluster = L.markerClusterGroup({
 				maxClusterRadius : utils.maxClusterRadius,
 			});
 			this.map.addLayer(this.markercluster);
-			this.collection.fetch();
 			new UserPlaceView({
 				mapview : this,
 			});
+			_.each(this.placeviews, function(placeview) {
+				this.listenToOnce(placeview, 'render', function(id) {
+					this.trigger('placeview:render:'+id);
+				});
+				placeview.render();
+			}, this);
 		},
+		// Kallas av this.render()
 		addMenuBar : function() {
 			this.menuBar = L.control({
 				position : 'topleft',
@@ -71,6 +100,7 @@ define([
 			};
 			this.menuBar.addTo(this.map);
 			var menuBarElement = this.menuBar.getContainer();
+			utils.popupTop = menuBarElement.offsetTop + menuBarElement.offsetHeight + 5;
 			L.DomEvent.disableClickPropagation(menuBarElement);
 			L.DomEvent.disableScrollPropagation(menuBarElement);
 			$("#mobile-menu-button").click(this.mobileMenuButtonClicked);
@@ -89,6 +119,36 @@ define([
 				change : this.filterMaxBeerPriceChanged,
 			});
 		},
+
+		// Om vi bootstrappar in alla modeller via collection.reset(), triggas aldrig "add"
+		addAllPlaces : function() {
+			this.collection.forEach(this.addPlace);
+		},
+		// Skapande av markör och tillägg av denna i this.markercluster sker i PlaceView::render()
+		addPlace : function(model) {
+			var placeview = new PlaceView({
+				model : model,
+				mapview : this,
+			});
+//			placeview.render();
+			this.placeviews[model.id] = placeview;
+		},
+		// options.maxBeerPrice == maxpris på öl
+		// options.openNow == true om sådant filter ska tillämpas
+		filter : function(options) {
+			this.trigger('filter', options);
+		},
+		cron30min : function() {
+			var d = new Date();
+			if (d.getMinutes() % 30 === 0) {
+				this.collection.fetch();
+				this.filter({ openNow : this.filterClosedPlaces });
+			}
+		},
+
+		/*
+		 * ANVÄNDARINTERAKTIONER
+		 */
 		searchIconClicked : function() {
 			$("#search-field-container").toggle('fast', this.setupAutocomplete);
 			$("#search-field").focus();
@@ -133,29 +193,7 @@ define([
 		gotoMyPositionClicked: function() {
 			this.trigger("goto-my-position-clicked");
 		},
-		panTo : function(latlng) {
-			this.map.panTo(latlng);
-		},
-		// Skapande av markör och tillägg av denna i this.markercluster sker i PlaceView::render()
-		addPlace : function(model) {
-			var placeview = new PlaceView({
-				model : model,
-				mapview : this,
-			});
-			placeview.render();
-		},
-		// options.maxBeerPrice == maxpris på öl
-		// options.openNow == true om sådant filter ska tillämpas
-		filter : function(options) {
-			this.trigger('filter', options);
-		},
-		cron30min : function() {
-			var d = new Date();
-			if (d.getMinutes() % 30 === 0) {
-				this.collection.fetch();
-				this.filter({ openNow : this.filterClosedPlaces });
-			}
-		},
+
 		/**
 		 * Delegerar alla Leaflet-events till View-events med namn 'map:<leaflet-eventnamn>'.
 		 * Binder även explicit angivna lyssnare till Leaflet-events via this.mapEvents.
