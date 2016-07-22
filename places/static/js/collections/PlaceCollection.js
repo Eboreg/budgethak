@@ -1,6 +1,5 @@
 /**
  * Används av MapView
- * Hämtning av platser initieras i MapView::initialize() (vid 'map:idle') 
  */
 define([
 	'backbone',
@@ -13,6 +12,8 @@ define([
 		
 		initialize : function() {
 			_.bindAll(this, 'autocomplete');
+			// Modeller i JSON-format, bootstrappade via Djangos IndexView
+			this.reset(sunkhak.bootstrap);
 		},
 		autocomplete : function(request, response) {
 			var matches = [];

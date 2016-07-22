@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 <html lang="sv">
     <head>
-<!--        <base href="http://127.0.0.1:8000/">-->
         <base href="{% url 'index' %}">
         <meta charset="UTF-8">
         <meta name="viewport" content="width=device-width, initial-scale=1">
         <title>Sunkhak</title>
+        <!--<script src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js"></script>-->
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0-rc.1/leaflet.css" />
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.0-rc.1.0/MarkerCluster.css" />
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.0-rc.1.0/MarkerCluster.Default.css" />
@@ -82,6 +82,17 @@
             </div>
         </script>
 
+        <script>
+            sunkhak = {};
+            {% autoescape off %}
+            sunkhak.bootstrap = {{ places }};
+            {% endautoescape %}
+/*
+            require(['{{ STATIC_URL }}js/app.js'], function() {
+                
+            });
+*/
+        </script>
         <script data-main="{{ STATIC_URL }}js/app" src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js"></script>
     </body>
 </html>
