@@ -60,17 +60,31 @@ define([
 			return this;
 		},
 		// Körs av routern när plats angivits i URL:en
-		showPlace : function(slug) {
-			var model = this.collection.get(slug);
+		renderWithPlace : function(id) {
+			var model = this.collection.get(id);
 			if (typeof model != "undefined") {
-				// placeview:render:(slug) triggas av this.mapReady och händer alltså alltid efter render()
-				this.once('placeview:render:'+slug, function() {
-					this.trigger('showplace:'+slug);
+				// placeview:render:(id) triggas av this.mapReady och händer alltså alltid efter render()
+				// Event 'showplace' lyssnas av PlaceView som öppnar popup el. dyl.
+				this.once('placeview:render:'+id, function() {
+					this.trigger('showplace:'+id);
 				});
 				this.render({ startpos : [model.get('lat'), model.get('lng')], zoom : 17 });
 			} else {
 				this.render();
 			} 
+		},
+		// Gå till specifik plats som följd av användarinteraktion, d.v.s. ej direkt vid load.
+		gotoPlace : function(id) {
+			var model = this.collection.get(id);
+			if (typeof model != "undefined") {
+				var afterZoomFunc = function() {
+					this.trigger('showplace:'+id);
+				};
+				afterZoomFunc = _.bind(afterZoomFunc, this);
+				this.once('map:zoomend', afterZoomFunc);
+				this.map.flyTo([model.get('lat'), model.get('lng')], 17);
+				//this.trigger('showplace:'+id);
+			}
 		},
 		// Triggas av load-event från map 
 		// Körs alltså alltid efter this.render()
@@ -156,12 +170,14 @@ define([
 		setupAutocomplete : function() {
 			if ($("#search-field").css("display") != "none") {
 				var template = _.template($("#autocompleteItem").html());
+				var selectFunc = function(event, ui) {
+					this.gotoPlace(ui.item.id);
+				};
+				selectFunc = _.bind(selectFunc, this);
 				$("#search-field").autocomplete({
 					source : this.collection.autocomplete,
 					minLength : 1,
-					select : function(event, ui) {
-						console.log(event, ui);
-					},
+					select : selectFunc,
 				}).autocomplete("instance")._renderItem = function(ul, item) {
 					return $(template(item)).appendTo(ul); 
 				};

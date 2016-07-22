@@ -1,7 +1,7 @@
-Platsbilds höjd bör ej vara över 50% av viewports höjd
-
-
-Ny URL ska sättas vid klick på plats
-
-
 Kanske lägga position och zoom i url? (Kolla google maps eller OSM) 
+
+
+Kanske istället för popups ha ett element till höger i skärmen, som täcker hela skärmens höjd, med all info om stället. 
+Samma element används då för olika ställen, och stängs med kryss eller genom att man klickar i kartan.
+Man kan se vilket ställe som är aktivt genom att ikonen blir större eller något.
+På mobil kanske elementet ska täcka hela skärmen? Får fundera.

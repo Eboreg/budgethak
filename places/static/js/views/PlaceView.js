@@ -70,11 +70,9 @@ define([
 			if (!this.popup) {
 				this.popupTemplate = _.template($("#placePopupText").html());
 	   			this.popup = new L.popup({
-	   				//maxWidth : "auto",
 	   				maxWidth : utils.popupImageWidth + 40,
 	   				autoClose : true,
 	   				autoPan : true,
-//	   				autoPanPaddingTopLeft : [10, $("#menu-bar-container").outerHeight(true) + 5],
 	   				autoPanPaddingTopLeft : [10, utils.popupTop],
 	   				autoPanPaddingBottomRight : [10, 10],
 	   			}).setContent('Hämtar data ...');
@@ -83,6 +81,7 @@ define([
 	    		this.model.fetch();
 		    	this.marker.bindPopup(this.popup);
 			}
+			sunkhak.router.navigate('place/'+this.model.id);
 			this.popupIsOpen = true;
 	    },
 	    updatePopup : function() {
@@ -126,6 +125,7 @@ define([
 			}
 		},
 		removePopup : function() {
+			sunkhak.router.navigate('/');
 			delete this.$popupImage;
 			this.popupIsOpen = false;
 		},

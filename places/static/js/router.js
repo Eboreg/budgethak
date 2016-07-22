@@ -9,13 +9,11 @@ define([
 			'place/:slug' : 'showPlace',
 			'*default' : 'showMap',
 		},
-		showPlace : function(slug) {
-			Backbone.trigger('router:showplace');
+		showPlace : function(id) {
 			sunkhak.mapview = new MapView({ collection : new PlaceCollection() });
-			sunkhak.mapview.showPlace(slug);
+			sunkhak.mapview.renderWithPlace(id);
 		},
 		showMap : function() {
-			Backbone.trigger('router:showmap');
 			sunkhak.mapview = new MapView({ collection : new PlaceCollection() });
 			sunkhak.mapview.render();
 		},

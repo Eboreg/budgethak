@@ -28,7 +28,6 @@ define([
 					city : place.get('city')
 				});
 			});
-			console.log(matches);
 			response(matches);
 		},
 	});
