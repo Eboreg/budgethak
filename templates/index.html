@@ -7,47 +7,62 @@
         <title>Sunkhak</title>
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0-rc.1/leaflet.css" />
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.0-rc.1.0/MarkerCluster.css" />
-        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.0-rc.1.0/MarkerCluster.Default.css" />
+<!--        <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.0-rc.1.0/MarkerCluster.Default.css" />-->
+        <link rel="stylesheet" href="{{ STATIC_URL }}css/markercluster.css" />
         <link rel="stylesheet" href="{{ STATIC_URL }}lib/leaflet-usermarker/leaflet.usermarker.css" />
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" />
         <link rel="stylesheet" href="{{ STATIC_URL }}lib/jquery-ui-1.12.0.custom/jquery-ui.min.css" />
-        <link rel="stylesheet" href="//www.w3schools.com/lib/w3.css">
-        <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css">
+        <link rel="stylesheet" href="//www.w3schools.com/lib/w3.css" />
+        <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css" />
+        <link rel="stylesheet" href="{{ STATIC_URL }}css/mapview.css" />
+        <link rel="stylesheet" href="{{ STATIC_URL }}css/sidebarview.css" />
     </head>
     <body>
         <section id="app">
             <div id="main-wrapper">
-                <div id="map-element"></div>
+                <div id="map-wrapper">
+                    <div id="map-element"></div>                    
+                </div>
+                <div id="sidebar-container" class="w3-card-8">
+                    <div id="sidebar-element" class="w3-container"></div>
+                </div>
             </div>
-            <div id="message-console"></div>
+            <div id="message-console" class="w3-container"></div>
         </section>
         <script id="autocompleteItem" type="text/template">
             <li>
-                <div>
-                    <p class="autocomplete-name"><%- name %></p>
-                    <p class="autocomplete-address"><%- street_address %>, <%- city %></p>
+                <div class="w3-container">
+                    <p class="autocomplete-name w3-medium"><%- name %></p>
+                    <p class="autocomplete-address w3-small"><%- street_address %>, <%- city %></p>
                 </div>
             </li>
         </script>
         <script id="menuBar" type="text/template">
             <div id="menu-bar-container" class="w3-card-4">
                 <div class="w3-container menu-bar-element w3-hide-medium w3-hide-large">
-                    <i class="fa fa-bars menu-bar-icon link" id="mobile-menu-button"></i>
+                    <div class="menu-bar-element-section link" id="mobile-menu-button">
+                        <i class="fa fa-bars menu-bar-icon icon clickable"></i>
+                    </div>
                 </div>
                 <div class="w3-row menu-bar-row">
                     <div class="w3-container w3-card-4 menu-bar-element">
                         <div class="menu-bar-element-section link" id="my-location-icon" title="Gå till min position">
-                            <i class="fa fa-location-arrow menu-bar-icon"></i>
+                            <i class="fa fa-location-arrow menu-bar-icon icon clickable"></i>
                         </div>
                     </div>
                     <div class="w3-container w3-card-4 menu-bar-element">
                         <div class="menu-bar-element-section link" id="filter-closed-places-icon" title="Dölj stängda platser">
-                            <i class="fa fa-clock-o menu-bar-icon"></i>
+                            <i class="fa fa-clock-o menu-bar-icon icon clickable"></i>
+                        </div>
+                    </div>
+                    <div class="w3-container w3-card-4 menu-bar-element">
+                        <div class="menu-bar-element-section link" id="info-icon" title="Information">
+                            <i class="fa fa-info-circle menu-bar-icon icon clickable"></i>
                         </div>
                     </div>
                     <div class="w3-container w3-card-4 menu-bar-element">
                         <div class="menu-bar-element-section link" id="search-icon" title="Sök platser">
-                            <i class="fa fa-search menu-bar-icon"></i>
+                            <i class="fa fa-search menu-bar-icon icon clickable"></i>
                         </div>
                         <div class="menu-bar-element-section w3-right" id="search-field-container">
                             <input type="text" id="search-field" placeholder="Sök ..." />
@@ -57,7 +72,7 @@
                 <div class="w3-row menu-bar-row" id="max-beer-price-row">
                     <div class="w3-container w3-card-4 w3-left menu-bar-element">
                         <div class="menu-bar-element-section" id="max-beer-price-element">
-                            <i class="fa fa-money menu-bar-icon w3-left" title="Max ölpris"></i>
+                            <i class="fa fa-money menu-bar-icon icon w3-left" title="Max ölpris"></i>
                             <div id="max-beer-price-slider" class="w3-left w3-large"></div>
                             <p class="w3-left w3-large"><span id="max-beer-price"><%= max_beer_price %></span> kr</p>
                         </div>
@@ -65,24 +80,105 @@
                 </div>
             </div>
         </script>
-        <script id="placePopupText" type="text/template">
-            <div class="place-popup">
-                <p><strong><%- name %></strong></p>
-                <p><%- street_address %>, <%- city %></p>
-                <p>
-                    Ölpris: <% print (beer_price ? beer_price+" kr" : "Okänt"); %>
-                    <% print (beer_price_until ? " (t.o.m. "+beer_price_until+")" : ""); %>
-                </p>
-                <% if (image != '') { %>
-                    <p>
-                        <img src="{{ MEDIA_URL }}<%= image %>" class="place-popup-image" />
-                    </p>
-                <% } %>
+        <script id="placeText" type="text/template">
+            <div class="w3-container w3-padding-0">
+                <h3 class="w3-left"><%- name %></h3>
+                <h3 class="w3-right"><i class="fa fa-close icon clickable" id="close-sidebar-button" /></h3>
             </div>
+            <% if (image != '') { %>
+                <p>
+                    <img src="{{ MEDIA_URL }}<%= image %>" class="place-image w3-round w3-card-4" />
+                </p>
+            <% } %>
+            <div class="w3-container w3-padding-0">
+                <div class="w3-left">
+                    <p><%- street_address %>, <%- city %></p>
+                    <p>
+                        Ölpris: <% print (beer_price ? beer_price+" kr" : "Okänt"); %>
+                        <% print (beer_price_until ? " (t.o.m. "+beer_price_until+")" : ""); %>
+                    </p>
+                </div>
+                <div class="w3-container w3-card-4 menu-bar-element w3-right w3-round">
+                    <div class="menu-bar-element-section link" id="place-map-marker" title="Visa plats på kartan">
+                        <i class="fa fa-map-marker menu-bar-icon icon" />
+                    </div>
+                </div>
+            </div>
+            <% if (opening_hours.length > 0) { %>
+                <h5>Öppettider</h5>
+                <table class="opening-hours-table">
+                <% _.each(opening_hours, function(elem) { %>
+                    <tr>
+                        <td>
+                            <%- sunkhak.weekdays[elem.start_weekday] %>
+                            <% if (elem.end_weekday != elem.start_weekday) { %>
+                                - <%- sunkhak.weekdays[elem.end_weekday].toLowerCase() %>
+                            <% } %>
+                        </td>
+                        <td>
+                            <% if (elem.closed_entire_day) { %>
+                                Stängt
+                            <% } else { %>
+                                <% print(elem.opening_time || '00:00'); %>
+                            <% } %>
+                        </td>
+                        <td>
+                            <% if (!elem.closed_entire_day) { %>
+                                - <% print(elem.closing_time || '00:00'); %>
+                            <% } %>
+                        </td>
+                    </tr>
+                <% }); %>
+                </table>
+                <% if (open_now === true) { %>
+                    <p class="w3-text-green"><strong>Öppet just nu!</strong></p>
+                <% } else if (open_now === false) { %>
+                    <p class="w3-text-red"><strong>Stängt just nu :-(</strong></p>
+                <% } %>
+            <% } %> <!-- opening_hours -->
+            <% if (comment != '') { %>
+                <h5>Övrigt</h5>
+                <p><%- comment %></p>
+            <% } %>
+         </script>
+        <script id="infoText" type="text/template">
+            <div class="w3-container w3-padding-0">
+                <h3 class="w3-left">Vad?</h3>
+                <h3 class="w3-right"><i class="fa fa-close icon clickable" id="close-sidebar-button" /></h3>
+            </div>
+            <p>
+                Detta är en tjänst för att enkelt hitta billig öl. Kriteriet är <strong>minst 40 för max 40</strong>, d.v.s.
+                man ska, någon gång under dygnet, kunna få minst 40 cl starköl för max 40 kr.
+            </p>
+            <h3>Vem?</h3>
+            <p>
+                Jag som byggt detta heter <a href="http://robert.huseli.us/">Robert Huselius</a>.
+            </p>
+            <h3>Hur?</h3>
+            <p>
+                Denna sajt använder <a href="https://www.djangoproject.com/">Django</a>, 
+                <a href="http://www.django-rest-framework.org/">Django REST framework</a>, 
+                <a href="http://backbonejs.org/">Backbone.js</a>, 
+                <a href="http://underscorejs.org/">Underscore.js</a>, 
+                <a href="http://www.requirejs.org/">Requirejs</a>, 
+                <a href="http://www.w3schools.com/w3css/default.asp">W3.CSS</a>, 
+                <a href="http://leafletjs.com/">Leaflet</a>, 
+                <a href="http://www.openstreetmap.org/">Openstreetmap</a>,
+                <a href="http://jquery.com/">Jquery</a> 
+                och lite till.
+            </p>
+            <h3>Varför?</h3>
+            <p>
+                För att jag älskar billig öl och programmering.
+            </p>
+            <h3>
+                <img style="width:50%;" class="w3-round w3-card-4" src="{{ MEDIA_URL }}Robert.jpg" />
+            </h3>
         </script>
 
         <script>
             sunkhak = {};
+            sunkhak.weekdays = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
             {% autoescape off %}
             sunkhak.bootstrap = {{ places }};
             {% endautoescape %}

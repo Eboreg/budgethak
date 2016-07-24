@@ -1,10 +1,12 @@
 require.config({
 	waitSeconds : 120,
+	//baseUrl : '/static', 
 	paths : {
 		'async' : '//cdnjs.cloudflare.com/ajax/libs/requirejs-async/0.1.1/async',
 		'underscore' : '//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min',
 		'backbone' : '//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.3.3/backbone-min',
 		'jquery' : '//code.jquery.com/jquery-3.1.0.min',
+		'jquery-ui' : '../lib/jquery-ui-1.12.0.custom/jquery-ui',
 		'leaflet' : '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0-rc.1/leaflet',
 		'leaflet-markercluster' : '//cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.0-rc.1.0/leaflet.markercluster',
 		'leaflet-usermarker' : '../lib/leaflet-usermarker/leaflet.usermarker',
@@ -19,6 +21,9 @@ require.config({
 			deps : ['underscore', 'jquery'],
 			exports : 'Backbone',
 		},
+		'jquery-ui' : {
+			deps : ['jquery'],
+		},
 		'leaflet' : {
 			exports : 'L',
 		},
@@ -31,9 +36,9 @@ require.config({
 	},
 });
 
+var sunkhak = sunkhak || {};
 require(['router', 'backbone', 'utils'], function(Router, Backbone, utils) {
-	new Router();
-	//Backbone.history.start();
+	sunkhak.router = new Router();
 
 	// Trigger the initial route and enable HTML5 History API support, set the
 	// root folder to '/' by default.  Change in app.js.

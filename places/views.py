@@ -9,7 +9,6 @@ from .models import Place
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateView
 
-
 """
 REST-API.
 Åtkomst via /api/places/.
@@ -20,8 +19,6 @@ class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
     queryset = Place.objects.only_visible()
     
     def list(self, request, *args, **kwargs):
-        # Filtrera bort platser som är tillfälligt stängda just nu eller har visible == False:
-        #queryset = [p for p in self.queryset if not p.is_temporarily_closed() and p.visible]
         serializer = PlaceListSerializer(self.queryset, many=True)
         return Response(serializer.data)
         
@@ -30,7 +27,7 @@ class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
         serializer = PlaceSerializer(place)
         return Response(serializer.data)
     
-    
+
 """
 Langar upp templates/index.html med lämplig context.
 """

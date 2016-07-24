@@ -1,7 +1,23 @@
 Kanske lägga position och zoom i url? (Kolla google maps eller OSM) 
 
+Klura på hur sidebar och annat ska renderas på padda och mobil.
 
-Kanske istället för popups ha ett element till höger i skärmen, som täcker hela skärmens höjd, med all info om stället. 
-Samma element används då för olika ställen, och stängs med kryss eller genom att man klickar i kartan.
-Man kan se vilket ställe som är aktivt genom att ikonen blir större eller något.
-På mobil kanske elementet ska täcka hela skärmen? Får fundera.
+Fixa tillbaka AppView så att inte map-element och sidebar-container behöver couplas. Gör den till brygga mellan karta och sidebar
+så att den fångar upp deras events och triggar rätt funktioner. Namespace:a eventen också.
+TILLÄGG: Sköter nu detta i Router. Kanske funkar.
+Kanske försöka decoupla PlaceView och MapView också? Så att AppView/Router är den enda som har koll på flera views.
+
+Visa på något sätt med markören vilket ställe som är "aktivt".
+
+Skriva fler tester.
+
+Kolla hur skriva tester för Backbone.
+
+Går det att sortera autocomplete-träffar så att de som matchar på namn ligger först? (antagligen inte)
+
+Fixa färgerna på markörer och markerclusters -- fixat för alla utom markercluster:large (vet ej när den används)
+
+Fult att varje PlaceView ska lyssna efter ett Backbone-event för att ev. ändra ikon. Får kanske ordna den där AppView:n,
+som ska ha koll på MapView, SidebarView OCH varje PlaceView.
+
+Fixa bulk-tillägg av markörer i cluster vid load. https://github.com/Leaflet/Leaflet.markercluster

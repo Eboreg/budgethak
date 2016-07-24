@@ -22,6 +22,7 @@ router.register(r'^api/places', PlaceViewSet)
 
 urlpatterns = [
     url(r'^place/(?P<id>.*)', IndexView.as_view(), name="place"),
+    url(r'^info$', IndexView.as_view(), name="info"),
     url(r'^$', IndexView.as_view(), name="index"),
 ]
 urlpatterns += router.urls

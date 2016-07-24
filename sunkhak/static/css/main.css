@@ -4,132 +4,31 @@
     vertical-align: top;
 }
 
-html, body, #app, #main-wrapper, #map-element {
+html, body, #app, #main-wrapper, #map-element, #sidebar-container, #map-wrapper {
     height: 100%;
 }
-/*
-body {
-    font-family: "Helvetica", "Arial", "Verdana", sans-serif;
-    font-size: 81.25%;
+#main-wrapper {
+    width: 100%;
 }
-*/
-.leaflet-popup {
-    width: auto;
+#map-wrapper {
+    z-index: 1;
 }
-.w3-check {
-    top: 0 !important;
-}
-
-
-/* AUTOCOMPLETE */
-/* Vi måste override:a lite smuts-CSS från JqueryUI */
-.ui-autocomplete {
-    z-index: 1000;
-    background: white;
-    font: inherit;
-}
-.ui-state-active {
-    border: 1px solid gold !important;
-    color: goldenrod !important;
-    font: inherit !important;
-    background: white !important;
-}
-.autocomplete-name {
-    font-weight: bold;
-}
-.autocomplete-address {
-    font-size: smaller;
-}
-
-/** MENU BAR **/
-#menu-bar-container {
-    white-space: nowrap;
-    margin: 10px 10px 0 10px;
-    display: flex;
-}
-.menu-bar-row {
-    display: flex;
-}
-.menu-bar-element {
-    background-color: white;
-    padding: 0;
-    margin: 0;
-    cursor: default;
+.icon {
     color: goldenrod;
 }
-.menu-bar-element-section {
-    padding: 10px 20px;
-    display: inline-block;
-}
-.menu-bar-element-section.link {
-    cursor: pointer;
-}
-.menu-bar-icon {
-    font-size: 24px !important;
-}
-.menu-bar-element-section.active,
-.menu-bar-element-section.link .menu-bar-icon:active {
+.icon.clickable:active {
     color: gold;
 }
-#search-field-container {
-    display: none;
-    padding-left: 0;
-}
-#search-field {
-    vertical-align: text-top;
-    border: 1px solid #ccc;
-    background: #fbfbfb;
-}
-#search-field:focus {
-    background: white;
-}
-#max-beer-price-element {
-    display: flex;
-}
-#max-beer-price-slider {
-    margin: 6px 20px 0 10px;
-}
+
 
 /* DATORER/PADDOR */
 @media (min-width: 602px) {
-    #menu-bar-container {
-        margin-left: 0;
-        box-shadow: none !important;
+    #main-wrapper {
+        display: flex;
+        flex-direction: row;
     }
-    .menu-bar-element {
-        margin-left: 10px;
-    }
-    #max-beer-price-slider {
-        width: 200px;
+    #map-wrapper {
+        flex: 1 0 auto;
     }
 }
 
-/* MOBILER */
-@media (max-width: 601px) {
-    /*.leaflet-top {
-        width: 100%;
-        display: flex;
-        flex-direction: column;
-    }*/
-    .menu-bar-row {
-        display: none;
-        flex: 0 1 auto;
-    }
-    .menu-bar-element {
-        box-shadow: none !important;
-        margin: 0;
-    }
-    #menu-bar-container {
-        background: white;
-        align-items: flex-start;
-        flex-wrap: wrap;
-    }
-    #max-beer-price-element,
-    #max-beer-price-row,
-    #max-beer-price-slider {
-        flex: 1 0 auto;
-    }
-    #max-beer-price-slider {
-        min-width: 100px;
-    }
-}

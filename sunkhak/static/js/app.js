@@ -2,13 +2,27 @@ require.config({
 	waitSeconds : 120,
 	//baseUrl : '/static', 
 	paths : {
-		'async' : '//cdnjs.cloudflare.com/ajax/libs/requirejs-async/0.1.1/async',
-		'underscore' : '//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min',
-		'backbone' : '//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.3.3/backbone-min',
-		'jquery' : '//code.jquery.com/jquery-3.1.0.min',
+		'underscore' : [
+			'//cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min',
+			'../lib/underscore-min',
+		],
+		'backbone' : [
+			'//cdnjs.cloudflare.com/ajax/libs/backbone.js/1.3.3/backbone-min',
+			'../lib/backbone-min',
+		],
+		'jquery' : [
+			'//code.jquery.com/jquery-3.1.0.min',
+			'../lib/jquery-3.1.0.min',
+		],
 		'jquery-ui' : '../lib/jquery-ui-1.12.0.custom/jquery-ui',
-		'leaflet' : '//cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0-rc.1/leaflet',
-		'leaflet-markercluster' : '//cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.0-rc.1.0/leaflet.markercluster',
+		'leaflet' : [
+			'//cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0-rc.1/leaflet',
+			'../lib/leaflet/leaflet',
+		],
+		'leaflet-markercluster' : [
+			'//cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.0-rc.1.0/leaflet.markercluster',
+			'../lib/leaflet.markercluster',
+		],
 		'leaflet-usermarker' : '../lib/leaflet-usermarker/leaflet.usermarker',
 		'router' : '../places/js/router',
 		'utils' : '../places/js/utils',

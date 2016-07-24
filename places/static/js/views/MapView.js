@@ -22,73 +22,76 @@ define([
 	'views/UserPlaceView',
 	'jquery',
 	'jquery-ui',
-	'collections/PlaceCollection'
+	'collections/PlaceCollection',
+	'views/SidebarView', // Ska fixa tillbaka AppView och anropa den där istället
 ], function(Backbone, _, L, markercluster, utils, PlaceView, UserPlaceView, $) {
 	var MapView = Backbone.View.extend({
 		el : '#map-element',
 		// Vi kan inte använda events-hashen eftersom den behandlas före initialize(), varför ej map:* kommer att funka
 		mapEvents : {
-			'load' : 'mapReady'
+			'load' : 'mapReady',
+			'click' : 'mapClicked',
 		},
 		filterClosedPlaces : false,
+		mapRendered : false,
 		placeviews : {},
 	
 		initialize : function(options) {
-			_.bindAll(this, 'addPlace', 'cron30min', 'gotoMyPositionClicked', 'filterClosedPlacesClicked',
+			_.bindAll(this, 'addPlace', 'cron30min', 'gotoMyPositionClicked', 'filterClosedPlacesClicked', 'infoIconClicked',
 							'filterMaxBeerPriceChanged', 'mobileMenuButtonClicked', 'searchIconClicked', 'setupAutocomplete');
 			this.listenTo(this.collection, 'add', this.addPlace);
 			this.listenTo(this.collection, 'reset', this.addAllPlaces);
 			// Kommer PlaceCollection alltid att vara färdig-bootstrappad när vi är här?
 			this.addAllPlaces();
+			this.map = L.map(this.el, {
+				maxZoom : utils.maxZoom,
+				zoomControl : false,
+				attributionControl : false,
+			});
+			this.bindMapEvents();
+			this.addMenuBar();
+			window.setInterval(this.cron30min, 60000);
+			$("#search-field-container").focusout(this.hideSearchField);
 		},
 		/* options.startpos : [startlng, startlat] */
 		render : function(options) {
 			options = options || {};
 			options.startpos = options.startpos || utils.defaultStartPos;
 			options.zoom = options.zoom || utils.zoom;
-			this.map = L.map(this.el, {
-				maxZoom : utils.maxZoom,
-				zoomControl : false,
-			});
-			this.bindMapEvents();
+			L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(this.map);
+			L.control.attribution({
+				position : 'bottomleft',
+			}).addAttribution('Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>')
+				.addTo(this.map);
+			// Triggar map:load som kör this.mapReady():
 			this.map.setView(options.startpos, options.zoom);
-			L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png', {
-				attribution: 'Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>',
-			}).addTo(this.map);
-			this.addMenuBar();
-			window.setInterval(this.cron30min, 60000);
 			return this;
 		},
-		// Körs av routern när plats angivits i URL:en
-		renderWithPlace : function(id) {
-			var model = this.collection.get(id);
-			if (typeof model != "undefined") {
-				// placeview:render:(id) triggas av this.mapReady och händer alltså alltid efter render()
-				// Event 'showplace' lyssnas av PlaceView som öppnar popup el. dyl.
-				this.once('placeview:render:'+id, function() {
-					this.trigger('showplace:'+id);
-				});
-				this.render({ startpos : [model.get('lat'), model.get('lng')], zoom : 17 });
-			} else {
-				this.render();
-			} 
+		reloadMapSize : function() {
+			this.map.invalidateSize({ pan : false });
 		},
-		// Gå till specifik plats som följd av användarinteraktion, d.v.s. ej direkt vid load.
-		gotoPlace : function(id) {
-			var model = this.collection.get(id);
-			if (typeof model != "undefined") {
-				var afterZoomFunc = function() {
-					this.trigger('showplace:'+id);
-				};
-				afterZoomFunc = _.bind(afterZoomFunc, this);
-				this.once('map:zoomend', afterZoomFunc);
-				this.map.flyTo([model.get('lat'), model.get('lng')], 17);
-				//this.trigger('showplace:'+id);
+		// fullZoom = bool
+		panTo : function(latlng, fullZoom) {
+			fullZoom = fullZoom || false;
+			if (!fullZoom)
+				this.map.flyTo(latlng);
+			else
+				this.map.flyTo(latlng, 17);
+		},
+		panToIfOutOfBounds : function(latlng) {
+			var bounds = this.map.getBounds();
+			if (!bounds.contains(latlng)) {
+				this.map.flyTo(latlng);
 			}
 		},
+		zoomInFull : function() {
+			this.map.setZoom(17);
+		},
+
 		// Triggas av load-event från map 
 		// Körs alltså alltid efter this.render()
 		mapReady : function() {
+			this.mapRendered = true;
 			this.markercluster = L.markerClusterGroup({
 				maxClusterRadius : utils.maxClusterRadius,
 			});
@@ -97,9 +100,6 @@ define([
 				mapview : this,
 			});
 			_.each(this.placeviews, function(placeview) {
-				this.listenToOnce(placeview, 'render', function(id) {
-					this.trigger('placeview:render:'+id);
-				});
 				placeview.render();
 			}, this);
 		},
@@ -122,6 +122,7 @@ define([
 			$("#filter-closed-places-icon").click(this.filterClosedPlacesClicked);
 			$("#filter-closed-places-checkbox").change(this.filterClosedPlacesClicked);
 			$("#search-icon").click(this.searchIconClicked);
+			$("#info-icon").click(this.infoIconClicked);
 			$("#max-beer-price-slider").slider({
 				value : 40,
 				min : 20,
@@ -134,7 +135,7 @@ define([
 			});
 		},
 
-		// Om vi bootstrappar in alla modeller via collection.reset(), triggas aldrig "add"
+		// Om vi bootstrappar in alla modeller via collection.reset(), triggas aldrig "add" utan bara "reset"
 		addAllPlaces : function() {
 			this.collection.forEach(this.addPlace);
 		},
@@ -144,7 +145,6 @@ define([
 				model : model,
 				mapview : this,
 			});
-//			placeview.render();
 			this.placeviews[model.id] = placeview;
 		},
 		// options.maxBeerPrice == maxpris på öl
@@ -163,24 +163,58 @@ define([
 		/*
 		 * ANVÄNDARINTERAKTIONER
 		 */
+		// Klickat någonstans på kartan men ej på en marker
+		mapClicked : function() {
+			this.trigger('map:click');
+		},
+		infoIconClicked : function() {
+			this.trigger('info-icon-clicked');
+		},
+		// Triggas av SidebarView:info-opened via Router
+		activateInfoIcon : function() {
+			$("#info-icon").addClass("active");
+		},
+		// Triggas av SidebarView:close från Router
+		deactivateInfoIcon : function() {
+			$("#info-icon").removeClass("active");
+		},
 		searchIconClicked : function() {
-			$("#search-field-container").toggle('fast', this.setupAutocomplete);
-			$("#search-field").focus();
+			if ($("#search-field-container").css('display') == 'none') {
+				$("#search-field-container").show('fast', this.setupAutocomplete);
+				$("#search-field").focus();
+			} else {
+				$("#search-field-container").hide('fast', this.setupAutocomplete);
+			}
+		},
+		hideSearchField : function() {
+			$("#search-field-container").hide('fast');
+			$("#search-field").val("");
 		},
 		setupAutocomplete : function() {
 			if ($("#search-field").css("display") != "none") {
 				var template = _.template($("#autocompleteItem").html());
 				var selectFunc = function(event, ui) {
-					this.gotoPlace(ui.item.id);
+					this.hideSearchField();
+					this.trigger('autocomplete-select', ui.item.id);
 				};
 				selectFunc = _.bind(selectFunc, this);
+				$.widget('ui.autocomplete', $.ui.autocomplete, {
+					_renderMenu : function(ul, items) {
+						var that = this;
+						$.each(items, function(index, item) {
+							if (index < 10)
+								that._renderItemData(ul, item);
+						});
+					},
+					_renderItem : function(ul, item) {
+						return $(template(item)).appendTo(ul);
+					},
+				});
 				$("#search-field").autocomplete({
 					source : this.collection.autocomplete,
 					minLength : 1,
 					select : selectFunc,
-				}).autocomplete("instance")._renderItem = function(ul, item) {
-					return $(template(item)).appendTo(ul); 
-				};
+				});
 			}
 		},
 		mobileMenuButtonClicked : function() {

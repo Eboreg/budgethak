@@ -61,20 +61,25 @@ class Place(models.Model):
         else:
             weekday_yesterday = current_weekday - 1
         current_time = now.time()
-        # Loopa igenom platsens OpeningHours:
+        ''' Loopa igenom platsens OpeningHours: '''
         for day in self.opening_hours.all():
-            # Loopa igenom veckodagarna inom aktuell öppettid-post:
+            ''' Loopa igenom veckodagarna inom aktuell öppettid-post: '''
             for weekday in range(day.start_weekday, day.end_weekday + 1):
-                # Om det t.ex. är lördag kl. 01:00 och stängningstid för fredag är 02:00 -> öppet nu:
-                if weekday == weekday_yesterday and day.closing_time < day.opening_time and current_time < day.closing_time:
-                    return True
-                elif weekday == current_weekday:
-                    if day.closing_time < day.opening_time and current_time >= day.opening_time:
+                ''' Om det t.ex. är lördag kl. 01:00 och stängningstid för fredag är 02:00 -> öppet nu: '''
+                try:
+                    if weekday == weekday_yesterday and day.closing_time < day.opening_time and current_time < day.closing_time:
                         return True
-                    elif day.opening_time <= current_time < day.closing_time:
-                        return True
-                    else:
-                        return False 
+                except TypeError:
+                    pass
+                if weekday == current_weekday:
+                    try:
+                        if day.closing_time < day.opening_time and current_time >= day.opening_time:
+                            return True
+                        elif day.opening_time <= current_time < day.closing_time:
+                            return True
+                    except TypeError:
+                        pass
+                    return False 
         return None
     
     

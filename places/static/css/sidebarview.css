@@ -1,0 +1,42 @@
+#sidebar-container {
+    /*display: none;*/
+    z-index: 2;
+    overflow: hidden;
+}
+.place-image {
+    width: 100%;
+    margin-bottom: 10px;
+}
+#place-map-marker,
+#close-sidebar-button {
+    cursor: pointer;
+}
+#close-sidebar-button {
+    vertical-align: baseline;
+}
+.opening-hours-table {
+    width: auto;
+    margin-bottom: 10px;
+}
+.opening-hours-table tr {
+}
+.opening-hours-table td {
+    padding: 6px 0.3em 0 0;
+}
+
+
+/* DATORER */
+@media (min-width: 992px) {
+    #sidebar-container {
+        width: 0;
+        max-width: 425px;
+    }
+    #sidebar-container.transition {
+        transition: width 0.2s;
+    }
+    #sidebar-container.open,
+    #sidebar-element {
+        width: 425px;
+    }
+}
+

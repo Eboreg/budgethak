@@ -9,6 +9,13 @@ define(['leaflet'], function(L) {
 		maxBeerPrice : 40,
 		popupTop: 62, // hur långt popup ska ligga från fönsterkanten; uppdateras då #menu-bar-container renderas eller ändras
 		placeIcon : L.icon({
+			iconUrl : '/media/beermug-dark.png',
+			iconSize : [30, 28.234],
+			shadowUrl : '/media/beermug-shadow.png',
+			shadowSize : [45, 28.234],
+			shadowAnchor : [15, 15],
+		}),
+		placeIconActive : L.icon({
 			iconUrl : '/media/beermug.png',
 			iconSize : [30, 28.234],
 			shadowUrl : '/media/beermug-shadow.png',
