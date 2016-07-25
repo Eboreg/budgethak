@@ -7,11 +7,11 @@ define([
 	'backbone',
 	'underscore',
 	'leaflet',
-	'utils',
+	'settings',
 	'jquery',
 	'models/Place',
 	'views/MapView',
-], function(Backbone, _, L, utils, $) {
+], function(Backbone, _, L, settings, $) {
 	var PlaceView = Backbone.View.extend({
 		events : {
 		},
@@ -23,7 +23,7 @@ define([
 			_.bindAll(this, 'setActiveIcon', 'setRegularIcon');
 			this.mapview = options.mapview || {};
 			this.marker = new L.marker([this.model.get('lat'), this.model.get('lng')], {
-				icon : utils.placeIcon,
+				icon : settings.placeIcon,
 			});
 			this.bindMarkerEvents();
 			this.listenTo(this.mapview, 'filter', this.filter);
@@ -42,12 +42,12 @@ define([
 		},
 		setActiveIcon : function(model) {
 			if (this.model == model) {
-				this.marker.setIcon(utils.placeIconActive);
+				this.marker.setIcon(settings.placeIconActive);
 			}
 		},
 		setRegularIcon : function(model) {
 			if (this.model == model) {
-				this.marker.setIcon(utils.placeIcon);
+				this.marker.setIcon(settings.placeIcon);
 			}
 		},
 		showMarker : function() {

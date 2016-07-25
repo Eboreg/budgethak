@@ -45,6 +45,8 @@ class Place(models.Model):
             return False
         elif self.temporarily_closed_from == None and self.temporarily_closed_until >= current_date:
             return True
+        elif self.temporarily_closed_from == None and self.temporarily_closed_until < current_date:
+            return False
         elif self.temporarily_closed_from <= current_date and self.temporarily_closed_until == None:
             return True
         elif self.temporarily_closed_from <= current_date and self.temporarily_closed_until >= current_date:

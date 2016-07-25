@@ -17,10 +17,10 @@ define(['leaflet'], function(L) {
 		}),
 		placeIconActive : L.icon({
 			iconUrl : '/media/beermug.png',
-			iconSize : [30, 28.234],
+			iconSize : [40, 37.645],
 			shadowUrl : '/media/beermug-shadow.png',
-			shadowSize : [45, 28.234],
-			shadowAnchor : [15, 15],
+			shadowSize : [47.814, 37.645],
+			shadowAnchor : [15, 20],
 		}),
 	};
 });

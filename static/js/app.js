@@ -11,7 +11,7 @@ require.config({
 		'leaflet-markercluster' : '//cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.0-rc.1.0/leaflet.markercluster',
 		'leaflet-usermarker' : '../lib/leaflet-usermarker/leaflet.usermarker',
 		'router' : '../places/js/router',
-		'utils' : '../places/js/utils',
+		'settings' : '../places/js/settings',
 	},
 	shim : {
 		'underscore' : {
@@ -37,14 +37,14 @@ require.config({
 });
 
 var sunkhak = sunkhak || {};
-require(['router', 'backbone', 'utils'], function(Router, Backbone, utils) {
+require(['router', 'backbone', 'settings'], function(Router, Backbone, settings) {
 	sunkhak.router = new Router();
 
 	// Trigger the initial route and enable HTML5 History API support, set the
 	// root folder to '/' by default.  Change in app.js.
 	Backbone.history.start({
 		pushState : true,
-		root : utils.urlroot
+		root : settings.urlroot
 	});
 
 	// All navigation that is relative should be passed through the navigate
@@ -57,7 +57,7 @@ require(['router', 'backbone', 'utils'], function(Router, Backbone, utils) {
 			attr : $(this).attr("href")
 		};
 		// Get the absolute root.
-		var root = location.protocol + "//" + location.host + utils.urlroot;
+		var root = location.protocol + "//" + location.host + settings.urlroot;
 
 		// Ensure the root is part of the anchor href, meaning it's relative.
 		if (href.prop.slice(0, root.length) === root) {

@@ -17,14 +17,14 @@ define([
 	'underscore',
 	'leaflet',
 	'leaflet-markercluster',
-	'utils',
+	'settings',
 	'views/PlaceView',
 	'views/UserPlaceView',
 	'jquery',
 	'jquery-ui',
 	'collections/PlaceCollection',
 	'views/SidebarView', // Ska fixa tillbaka AppView och anropa den där istället
-], function(Backbone, _, L, markercluster, utils, PlaceView, UserPlaceView, $) {
+], function(Backbone, _, L, markercluster, settings, PlaceView, UserPlaceView, $) {
 	var MapView = Backbone.View.extend({
 		el : '#map-element',
 		// Vi kan inte använda events-hashen eftersom den behandlas före initialize(), varför ej map:* kommer att funka
@@ -44,7 +44,7 @@ define([
 			// Kommer PlaceCollection alltid att vara färdig-bootstrappad när vi är här?
 			this.addAllPlaces();
 			this.map = L.map(this.el, {
-				maxZoom : utils.maxZoom,
+				maxZoom : settings.maxZoom,
 				zoomControl : false,
 				attributionControl : false,
 			});
@@ -56,8 +56,8 @@ define([
 		/* options.startpos : [startlng, startlat] */
 		render : function(options) {
 			options = options || {};
-			options.startpos = options.startpos || utils.defaultStartPos;
-			options.zoom = options.zoom || utils.zoom;
+			options.startpos = options.startpos || settings.defaultStartPos;
+			options.zoom = options.zoom || settings.zoom;
 			L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(this.map);
 			L.control.attribution({
 				position : 'bottomleft',
@@ -93,7 +93,7 @@ define([
 		mapReady : function() {
 			this.mapRendered = true;
 			this.markercluster = L.markerClusterGroup({
-				maxClusterRadius : utils.maxClusterRadius,
+				maxClusterRadius : settings.maxClusterRadius,
 			});
 			this.map.addLayer(this.markercluster);
 			new UserPlaceView({
@@ -110,11 +110,11 @@ define([
 			});
 			this.menuBar.onAdd = function(map) {
 				var template = _.template($("#menuBar").html());
-				return $(template({ 'max_beer_price' : utils.maxBeerPrice }))[0];
+				return $(template({ 'max_beer_price' : settings.maxBeerPrice }))[0];
 			};
 			this.menuBar.addTo(this.map);
 			var menuBarElement = this.menuBar.getContainer();
-			utils.popupTop = menuBarElement.offsetTop + menuBarElement.offsetHeight + 5;
+			settings.popupTop = menuBarElement.offsetTop + menuBarElement.offsetHeight + 5;
 			L.DomEvent.disableClickPropagation(menuBarElement);
 			L.DomEvent.disableScrollPropagation(menuBarElement);
 			$("#mobile-menu-button").click(this.mobileMenuButtonClicked);
@@ -126,7 +126,7 @@ define([
 			$("#max-beer-price-slider").slider({
 				value : 40,
 				min : 20,
-				max : utils.maxBeerPrice,
+				max : settings.maxBeerPrice,
 				step : 5,
 				slide : function(event, ui) {
 					$("#max-beer-price").text(ui.value);
