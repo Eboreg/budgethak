@@ -14,6 +14,7 @@ define([
 
 		initialize : function() {
 			Url.removeHash(false);
+			console.log(Url.parseQuery());
 		},
 		renderPlace : function(id) {
 			sunkhak.appview.renderPlace(id);

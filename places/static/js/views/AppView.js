@@ -4,13 +4,14 @@
 var sunkhak = sunkhak || {};
 define([
 	'backbone',
+	'urljs',
 	'models/App',
 	'views/MapView',
 	'views/SidebarView',
 	'views/MenuBarView',
 	'views/PlaceView',
 	'collections/PlaceCollection',
-], function(Backbone, App, MapView, SidebarView, MenuBarView, PlaceView, PlaceCollection) {
+], function(Backbone, Url, App, MapView, SidebarView, MenuBarView, PlaceView, PlaceCollection) {
 	var AppView = Backbone.View.extend({
 		el: '#app',
 		model : new App(),
@@ -41,6 +42,7 @@ define([
 			this.listenTo(sunkhak.sidebarview, 'info-open', this.onInfoOpen);
 			this.listenTo(sunkhak.sidebarview, 'info-close', this.onInfoClose);
 			this.listenTo(sunkhak.sidebarview, 'map-marker-click', this.onSidebarMapMarkerClick);
+			window.setInterval(this.cron30min, 60000);
 			// Kommer PlaceCollection alltid att vara färdig-bootstrappad när vi är här?
 			this.onPlaceReset();
 		},
@@ -51,7 +53,6 @@ define([
 		},
 		renderPlace : function(id) {
 			var model = this.collection.get(id);
-			this.model.set('updateHash', false);
 			sunkhak.sidebarview.model.set('transition', false);
 			sunkhak.sidebarview.open();
 			sunkhak.mapview.reloadMapSize();
@@ -74,8 +75,8 @@ define([
 		cron30min : function() {
 			var d = new Date();
 			if (d.getMinutes() % 30 === 0) {
+				this.listenToOnce(this.collection, 'sync', this.filterPlaces);
 				this.collection.fetch();
-				this.filter({ openNow : this.filterClosedPlaces });
 			}
 		},
 		filterPlaces : function() {
@@ -85,15 +86,13 @@ define([
 			this.collection.each(filterFunc);
 		},
 		setHash : function() {
-			if (this.model.get('updateHash')) {
-				var location = sunkhak.mapview.model.get('location');
-				var hash = '#'+
-					sunkhak.mapview.model.get('zoom')+'/'+
-					location.lat.toPrecision(6)+'/'+
-					location.lng.toPrecision(6);
-				if (history.replaceState)
-					history.replaceState(null, null, window.location.pathname+hash);
-			}
+			var location = sunkhak.mapview.model.get('location');
+			var hash = '#'+
+				sunkhak.mapview.model.get('zoom')+'/'+
+				location.lat.toPrecision(6)+'/'+
+				location.lng.toPrecision(6);
+			if (history.replaceState)
+				history.replaceState(null, null, window.location.pathname+hash);
 		},
 		hashToMapModel : function(hash) {
 			var arr = hash.split("/");
@@ -182,11 +181,9 @@ define([
 		/* Brygga SidebarView -> Router */
 		onPlaceOpen : function(model) {
 			sunkhak.router.navigate('place/'+model.id);
-			this.model.set('updateHash', false);
 		},
 		onPlaceClose : function(model) {
 			model.set('opened', false);
-			this.model.set('updateHash', true);
 		},
 		/* Brygga SidebarView() -> Router och MenuBarView() */
 		onInfoOpen : function() {
