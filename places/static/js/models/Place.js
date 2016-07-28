@@ -3,21 +3,21 @@ define([
 ], function(Backbone) {
 	var Place = Backbone.Model.extend({
 		idAttribute : 'slug',
-		visible : true,
+		defaults : {
+			visible : true,
+			opened : false,
+		},
 
 		// options.maxBeerPrice == maxpris på öl
 		// options.openNow == true om sådant filter ska tillämpas
 		filter : function(options) {
-			var oldVisible = this.visible;
 			if (options.openNow && this.get('open_now') === false) {
-				this.visible = false;
+				this.set("visible", false);
 			} else if (options.maxBeerPrice && this.get('beer_price') > options.maxBeerPrice) {
-				this.visible = false;
+				this.set("visible", false);
 			} else {
-				this.visible = true;
+				this.set("visible", true);
 			}
-			if (oldVisible !== this.visible)
-				this.trigger('visible', this.visible);
 		},
 	});
 	return Place;

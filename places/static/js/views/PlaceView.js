@@ -10,67 +10,34 @@ define([
 	'settings',
 	'jquery',
 	'models/Place',
-	'views/MapView',
 ], function(Backbone, _, L, settings, $) {
 	var PlaceView = Backbone.View.extend({
-		events : {
-		},
 		markerEvents : {
-			'click' : 'markerClicked', 
+			'click' : 'onMarkerClick', 
 		},
 
-		initialize : function(options) {
-			_.bindAll(this, 'setActiveIcon', 'setRegularIcon');
-			this.mapview = options.mapview || {};
+		initialize : function() {
 			this.marker = new L.marker([this.model.get('lat'), this.model.get('lng')], {
 				icon : settings.placeIcon,
 			});
 			this.bindMarkerEvents();
-			this.listenTo(this.mapview, 'filter', this.filter);
-//			this.listenTo(this.model, 'visible', this.visibilityChanged);
-			this.listenTo(Backbone, 'place-opened', this.setActiveIcon);
-			this.listenTo(Backbone, 'place-closed', this.setRegularIcon);
+//			this.listenTo(this.mapview, 'filter', _.bind(this.model.filter, this.model));
+			this.listenTo(this.model, 'change:opened', this.onOpenedChange);
 		},
-		// Innan denna körs måste this.mapview ha satts, annars baj
-		render : function() {
-			this.showMarker();
-			return this;
-		},
-		visibilityChanged : function(visible) {
-			if (visible) this.showMarker();
-			else this.hideMarker();
-		},
-		setActiveIcon : function(model) {
-			if (this.model == model) {
+
+		/* MODELL-EVENTS */
+		onOpenedChange : function(model, value) {
+			if (value) {
 				this.marker.setIcon(settings.placeIconActive);
-			}
-		},
-		setRegularIcon : function(model) {
-			if (this.model == model) {
+			} else {
 				this.marker.setIcon(settings.placeIcon);
 			}
 		},
-		showMarker : function() {
-			this.mapview.markercluster.addLayer(this.marker);
-			this.model.visible = true;
-		},
-		hideMarker : function() {
-			this.mapview.markercluster.removeLayer(this.marker);
-			this.model.visible = false;
-		},
-		// options.maxBeerPrice == maxpris på öl
-		// options.openNow == true om sådant filter ska tillämpas
-		filter : function(options) {
-			if (options.openNow && this.model.get('open_now') === false) {
-				this.hideMarker();
-			} else if (options.maxBeerPrice && this.model.get('beer_price') > options.maxBeerPrice) {
-				this.hideMarker();
-			} else {
-				this.showMarker();
-			}
-		},
-		markerClicked : function() {
-			Backbone.trigger('placeview:place-marker-clicked', this.model);
+
+		/* DOM-EVENTS */
+		onMarkerClick : function() {
+			this.model.set('opened', !this.model.get('opened'));
+			this.trigger('marker-click', this.model);
 		},
 
 	    /**

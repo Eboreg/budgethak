@@ -20,7 +20,7 @@ define([
 			var matcher = new RegExp($.ui.autocomplete.escapeRegex(request.term), "i");
 			this.filter(function(place) {
 				var value = [place.get('name'), place.get('street_address'), place.get('city')].join(' ');
-				return place.visible && matcher.test(value);
+				return place.get('visible') && matcher.test(value);
 			}).forEach(function(place) {
 				matches.push({ id : place.id, 
 					name : place.get('name'), 

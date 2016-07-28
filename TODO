@@ -2,22 +2,21 @@ Kanske lägga position och zoom i url? (Kolla google maps eller OSM)
 
 Klura på hur sidebar och annat ska renderas på padda och mobil.
 
-Fixa tillbaka AppView så att inte map-element och sidebar-container behöver couplas. Gör den till brygga mellan karta och sidebar
-så att den fångar upp deras events och triggar rätt funktioner. Namespace:a eventen också.
-TILLÄGG: Sköter nu detta i Router. Kanske funkar.
-Kanske försöka decoupla PlaceView och MapView också? Så att AppView/Router är den enda som har koll på flera views.
-
 Skriva fler tester.
 
-Kolla hur skriva tester för Backbone.
+Kolla hur skriva tester för Backbone.  -- Jasmine
 
 Går det att sortera autocomplete-träffar så att de som matchar på namn ligger först? (antagligen inte)
 
 Fixa färgerna på markörer och markerclusters -- fixat för alla utom markercluster:large (vet ej när den används)
 
-Fult att varje PlaceView ska lyssna efter ett Backbone-event för att ev. ändra ikon. Får kanske ordna den där AppView:n,
-som ska ha koll på MapView, SidebarView OCH varje PlaceView.
-
-Fixa bulk-tillägg av markörer i cluster vid load. https://github.com/Leaflet/Leaflet.markercluster
-
 Kanske bryta ut en markör ur cluster när den är aktiv? (Via markercluster.removeLayer())
+
+DESIGNMÅL:
+1. Alla variabla data om en viss vy ("position", "visible", "active" m.m.) ska ej lagras i vyn utan i korresponderande modell.
+2. Vyer ska endast uppdatera DOM på signal från modell. Modellens state styr vyn. (Undantag: panorering m.m. i kartan)
+3. Vyer går alltså inte direkt från användarinteraktion till DOM-uppdatering, utan alltid via uppdatering av modellen.
+4. Vyer bör i idealfallet inte känna till någon annan modul än sin modell. Undantag AppView som knyter ihop allesammans.
+5. Modeller ska vara helt vy-agnostiska och inte känna till dem alls.
+6. Vyer är i första hand ansvariga för att hålla sina modeller uppdaterade som följd av egna DOM-händelser,
+   och trigga events EFTER att så har skett.
