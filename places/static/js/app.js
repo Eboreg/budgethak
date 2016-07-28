@@ -23,6 +23,10 @@ require.config({
 			'//cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.0-rc.1.0/leaflet.markercluster',
 			'../lib/leaflet.markercluster',
 		],
+		'urljs' : [
+			'//cdnjs.cloudflare.com/ajax/libs/urljs/2.3.1/url.min',
+			'../lib/url.min',
+		],
 		'leaflet-usermarker' : '../lib/leaflet-usermarker/leaflet.usermarker',
 		'router' : '../places/js/router',
 		'settings' : '../places/js/settings',
@@ -46,6 +50,9 @@ require.config({
 		},
 		'leaflet-usermarker' : {
 			deps : ['leaflet'],
+		},
+		'urljs' : {
+			exports : 'Url',
 		},
 	},
 });

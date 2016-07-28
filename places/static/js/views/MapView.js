@@ -18,8 +18,9 @@ define([
 	'leaflet-markercluster',
 	'settings',
 	'models/Map',
+	'urljs',
 	'leaflet-usermarker',
-], function(Backbone, _, L, markercluster, settings, Map) {
+], function(Backbone, _, L, markercluster, settings, Map, Url) {
 	var MapView = Backbone.View.extend({
 		el : '#map-element',
 		model : new Map(),
@@ -33,6 +34,8 @@ define([
 		},
 	
 		initialize : function(options) {
+			this.listenTo(this.model, 'change:userLocation', this.onUserLocationChange);
+			this.listenTo(this.model, 'change:zoom change:location', this.onMapViewportChange);
 			this.markercluster = L.markerClusterGroup({
 				maxClusterRadius : settings.maxClusterRadius,
 			});
@@ -41,7 +44,6 @@ define([
 				zoomControl : false,
 				attributionControl : false,
 			});
-			this.listenTo(this.model, 'change:userLocation', this.onUserLocationChange);
 			this.bindMapEvents();
 		},
 		render : function() {
@@ -60,7 +62,7 @@ define([
 			this.map.invalidateSize({ pan : false });
 		},
 		// fullZoom = bool
-		panTo : function(latlng, fullZoom) {
+		flyTo : function(latlng, fullZoom) {
 			fullZoom = fullZoom || false;
 			if (!fullZoom)
 				this.map.flyTo(latlng);
@@ -68,10 +70,12 @@ define([
 				this.map.flyTo(latlng, 17);
 		},
 		panToIfOutOfBounds : function(latlng) {
-			var bounds = this.map.getBounds();
-			if (!bounds.contains(latlng)) {
-				this.map.flyTo(latlng);
-			}
+			try {
+				var bounds = this.map.getBounds();
+				if (!bounds.contains(latlng)) {
+					this.map.panTo(latlng);
+				}
+			} catch(e) {}
 		},
 		zoomInFull : function() {
 			this.map.setZoom(settings.maxZoom);
@@ -126,6 +130,9 @@ define([
 			}
 			this.userMarker.setLatLng(value.latlng);
 			this.userMarker.setAccuracy(value.accuracy);
+		},
+		onMapViewportChange : function() {
+			this.trigger('map-viewport-change');
 		},
 
 		/**

@@ -27,46 +27,49 @@ define([
 			this.listenTo(this.collection, 'reset', this.onPlaceReset);
 			this.listenTo(this.model, 'change:filterClosedPlaces change:maxBeerPrice', this.filterPlaces);
 			this.listenTo(sunkhak.mapview, 'map-click', this.onMapClick);
-			this.listenTo(sunkhak.mapview, 'map-location-found', this.onMapLocationFound);
+			this.listenTo(sunkhak.mapview, 'map-viewport-change', this.setHash);
 			this.listenTo(sunkhak.menubarview, 'my-location-click', this.onMyLocationClick);
 			this.listenTo(sunkhak.menubarview, 'info-icon-click', this.onInfoIconClick);
 			this.listenTo(sunkhak.menubarview, 'filter-closed-places-click', this.onFilterClosedPlacesClick);
 			this.listenTo(sunkhak.menubarview, 'max-beer-price-change', this.onMaxBeerPriceChange);
 			this.listenTo(sunkhak.menubarview, 'autocomplete-select', this.onAutocompleteSelect);
 			this.listenTo(sunkhak.sidebarview, 'transitionend', this.onSidebarTransitionEnd);
+			this.listenTo(sunkhak.sidebarview, 'place-fully-open', this.onPlaceFullyOpen);
 			this.listenTo(sunkhak.sidebarview, 'place-open', this.onPlaceOpen);
 			this.listenTo(sunkhak.sidebarview, 'place-close', this.onPlaceClose);
 			this.listenTo(sunkhak.sidebarview, 'close', this.onSidebarClose);
 			this.listenTo(sunkhak.sidebarview, 'info-open', this.onInfoOpen);
 			this.listenTo(sunkhak.sidebarview, 'info-close', this.onInfoClose);
+			this.listenTo(sunkhak.sidebarview, 'map-marker-click', this.onSidebarMapMarkerClick);
 			// Kommer PlaceCollection alltid att vara färdig-bootstrappad när vi är här?
 			this.onPlaceReset();
 		},
-		showMap : function() {
+		renderMap : function(hash) {
+			sunkhak.sidebarview.model.close();
+			this.hashToMapModel(hash);
 			sunkhak.mapview.render();
+		},
+		renderPlace : function(id) {
+			var model = this.collection.get(id);
+			this.model.set('updateHash', false);
+			sunkhak.sidebarview.model.set('transition', false);
+			sunkhak.sidebarview.open();
+			sunkhak.mapview.reloadMapSize();
+			sunkhak.mapview.model.set('location', { lat : parseFloat(model.get('lat')), lng : parseFloat(model.get('lng'))});
+			sunkhak.mapview.model.set('zoom', 17);
+			sunkhak.mapview.render();
+			this.showPlace(id);
 		},
 		showPlace : function(id) {
 			var model = this.collection.get(id);
-			if (!sunkhak.mapview.model.get('rendered')) {
-				sunkhak.sidebarview.model.set('transition', false);
-				sunkhak.sidebarview.open();
-				sunkhak.mapview.reloadMapSize();
-				sunkhak.mapview.model.set('location', [parseFloat(model.get('lat')), parseFloat(model.get('lng'))]);
-				sunkhak.mapview.model.set('zoom', 17);
-				sunkhak.mapview.render();
-			}
 			sunkhak.sidebarview.model.set('place', model);
 			this.placeviews[id].model.set('opened', true);
 		},
-		showInfo : function() {
+		renderInfo : function(hash) {
 			sunkhak.sidebarview.model.set('infoOpen', true);
 			sunkhak.menubarview.model.set('infoActive', true);
+			this.hashToMapModel(hash);
 			sunkhak.mapview.render();
-		},
-		closeAllPlaces : function() {
-			this.collection.each(function(model) {
-				model.set('opened', false);
-			});
 		},
 		cron30min : function() {
 			var d = new Date();
@@ -80,6 +83,27 @@ define([
 				place.filter({ maxBeerPrice : this.model.get('maxBeerPrice'), openNow : this.model.get('filterClosedPlaces') });
 			}, this);
 			this.collection.each(filterFunc);
+		},
+		setHash : function() {
+			if (this.model.get('updateHash')) {
+				var location = sunkhak.mapview.model.get('location');
+				var hash = '#'+
+					sunkhak.mapview.model.get('zoom')+'/'+
+					location.lat.toPrecision(6)+'/'+
+					location.lng.toPrecision(6);
+				if (history.replaceState)
+					history.replaceState(null, null, window.location.pathname+hash);
+			}
+		},
+		hashToMapModel : function(hash) {
+			var arr = hash.split("/");
+			if (arr.length < 3)
+				return false;
+			else {
+				sunkhak.mapview.model.set('location', { lat : parseFloat(arr[1]), lng : parseFloat(arr[2]) });
+				sunkhak.mapview.model.set('zoom', parseInt(arr[0]));
+				return true;
+			}
 		},
 		
 		/* MODELL-/COLLECTION-EVENTS */
@@ -139,7 +163,7 @@ define([
 		onAutocompleteSelect : function(id) {
 			var zoomFunc = _.bind(function() {
 				var place = this.collection.get(sunkhak.sidebarview.model.get('place'));
-				sunkhak.mapview.panTo([parseFloat(place.get('lat')), parseFloat(place.get('lng'))], true);
+				sunkhak.mapview.flyTo([parseFloat(place.get('lat')), parseFloat(place.get('lng'))], true);
 			}, this);
 			this.showPlace(id);
 			if (sunkhak.sidebarview.model.get('fullyOpen'))
@@ -151,16 +175,23 @@ define([
 		onSidebarTransitionEnd : function() {
 			sunkhak.mapview.reloadMapSize();
 		},
+		/* Brygga SidebarView -> MapView */
+		onPlaceFullyOpen : function(model) {
+			sunkhak.mapview.panToIfOutOfBounds([ parseFloat(model.get('lat')), parseFloat(model.get('lng')) ]);
+		},
 		/* Brygga SidebarView -> Router */
 		onPlaceOpen : function(model) {
 			sunkhak.router.navigate('place/'+model.id);
+			this.model.set('updateHash', false);
 		},
 		onPlaceClose : function(model) {
 			model.set('opened', false);
+			this.model.set('updateHash', true);
 		},
 		/* Brygga SidebarView() -> Router och MenuBarView() */
 		onInfoOpen : function() {
 			sunkhak.router.navigate('info');
+			this.setHash();
 			sunkhak.menubarview.model.set('infoActive', true);
 		},
 		/* Brygga SidebarView -> MenuBarView */
@@ -170,7 +201,12 @@ define([
 		/* Brygga SidebarView -> Router */
 		onSidebarClose : function() {
 			sunkhak.router.navigate('');
-		}
+		},
+		/* Brygga SidebarView -> this.collection och MapView */
+		onSidebarMapMarkerClick : function(model) {
+			sunkhak.mapview.flyTo([parseFloat(model.get('lat')), parseFloat(model.get('lng'))], true);
+			this.showPlace(model.id);
+		},
 	});
 	return AppView;
 });

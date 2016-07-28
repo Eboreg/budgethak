@@ -5,6 +5,7 @@ define([
 		defaults : {
 			filterClosedPlaces : false,
 			maxBeerPrice : 40,
+			updateHash : true,
 		},
 	});
 	return App;

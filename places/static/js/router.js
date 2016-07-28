@@ -1,23 +1,28 @@
 var sunkhak = sunkhak || {};
 define([
 	'backbone',
+	'urljs',
 	'views/AppView',
-], function(Backbone) {
+], function(Backbone, Url) {
 	var Router = Backbone.Router.extend({
 		routes : {
-			'place/:id' : 'showPlace',
-			'info' : 'showInfo',
-			'*default' : 'showMap',
+			'place/:id' : 'renderPlace',
+			'info' : 'renderInfo',
+			'*default' : 'renderMap',
 		},
+		hash : Url.hash(),
 
-		showPlace : function(id) {
-			sunkhak.appview.showPlace(id);
+		initialize : function() {
+			Url.removeHash(false);
 		},
-		showInfo : function() {
-			sunkhak.appview.showInfo();
+		renderPlace : function(id) {
+			sunkhak.appview.renderPlace(id);
 		},
-		showMap : function() {
-			sunkhak.appview.showMap();
+		renderInfo : function() {
+			sunkhak.appview.renderInfo(this.hash);
+		},
+		renderMap : function() {
+			sunkhak.appview.renderMap(this.hash);
 		},
 	});
 	return Router;

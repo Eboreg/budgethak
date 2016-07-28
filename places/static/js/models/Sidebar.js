@@ -11,7 +11,6 @@ define([
 		},
 		initialize : function() {
 			this.on({
-//				'change:infoOpen change:place' : this.onInfoOpenOrPlaceChange,
 				'change:infoOpen' : this.onInfoOpenChange,
 				'change:place' : this.onPlaceChange,
 			}, this);

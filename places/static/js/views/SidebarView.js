@@ -34,6 +34,9 @@ define([
 				this.$el.addClass('transition');
 			} else {
 				this.model.set('fullyOpen', true);
+				this.trigger('fully-open');
+				if (null !== this.model.get('place'))
+					this.trigger('place-fully-open', this.model.get('place'));
 			}
 			this.$el.addClass('open');
 			this.model.set('transition', true);
@@ -72,12 +75,15 @@ define([
 		/* DOM-EVENTS */
 		onTransitionEnd : function() {
 			this.model.set('fullyOpen', this.model.get('open'));
-			if (this.model.get('fullyOpen'))
-				this.trigger('fully-open');
 			this.trigger('transitionend');
+			if (this.model.get('fullyOpen')) {
+				this.trigger('fully-open');
+				if (null !== this.model.get('place'))
+					this.trigger('place-fully-open', this.model.get('place'));
+			}
 		},
 		onCloseButtonClick : function() {
-			this.model.set('open', false);
+			this.model.close();
 		},
 		onMapMarkerClick : function() {
 			this.trigger('map-marker-click', this.place);
