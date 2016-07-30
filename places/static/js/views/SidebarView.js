@@ -14,6 +14,8 @@ define([
 		model : new Sidebar(),
 		events : {
 			'transitionend' : 'onTransitionEnd',
+			'click #place-map-marker' : 'onMapMarkerClick',
+			'click #close-sidebar-button' : 'onCloseButtonClick',
 		},
 		infoTemplate : _.template($("#infoText").html()),
 		placeTemplate : _.template($("#placeText").html()),
@@ -21,8 +23,6 @@ define([
 		
 		initialize : function() {
 			_.bindAll(this, 'onMapMarkerClick', 'onCloseButtonClick');
-			this.$el.on('click', '#place-map-marker', this.onMapMarkerClick);
-			this.$el.on('click', '#close-sidebar-button', this.onCloseButtonClick);
 			this.listenTo(this.model, 'change:open', this.onOpenChange);
 			this.listenTo(this.model, 'change:infoOpen', this.onInfoOpenChange);
 			this.listenTo(this.model, 'change:place', this.onPlaceChange);

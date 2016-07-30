@@ -21,8 +21,8 @@ define([
 				icon : settings.placeIcon,
 			});
 			this.bindMarkerEvents();
-//			this.listenTo(this.mapview, 'filter', _.bind(this.model.filter, this.model));
 			this.listenTo(this.model, 'change:opened', this.onOpenedChange);
+			this.listenTo(this.model, 'change:zIndex', this.onZIndexChange);
 		},
 
 		/* MODELL-EVENTS */
@@ -32,6 +32,9 @@ define([
 			} else {
 				this.marker.setIcon(settings.placeIcon);
 			}
+		},
+		onZIndexChange : function(model, value) {
+			this.marker.setZIndexOffset(value);
 		},
 
 		/* DOM-EVENTS */

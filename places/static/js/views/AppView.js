@@ -124,6 +124,16 @@ define([
 						else
 							sunkhak.mapview.markercluster.removeLayer(placeview.marker);
 					});
+					this.listenTo(model, 'change:opened', function(model, value) {
+						// När platsen är öppnad, ska markören "brytas ut" ur klustret
+						if (value) {
+							sunkhak.mapview.markercluster.removeLayer(placeview.marker);
+							sunkhak.mapview.map.addLayer(placeview.marker);
+						} else {
+							sunkhak.mapview.map.removeLayer(placeview.marker);
+							sunkhak.mapview.markercluster.addLayer(placeview.marker);
+						}
+					});
 					this.listenTo(placeview, 'marker-click', this.onPlaceMarkerClick);
 				}
 			}, this);
@@ -178,7 +188,7 @@ define([
 		onPlaceFullyOpen : function(model) {
 			sunkhak.mapview.panToIfOutOfBounds([ parseFloat(model.get('lat')), parseFloat(model.get('lng')) ]);
 		},
-		/* Brygga SidebarView -> Router */
+		/* Brygga SidebarView -> Router och MapView */
 		onPlaceOpen : function(model) {
 			sunkhak.router.navigate('place/'+model.id);
 		},

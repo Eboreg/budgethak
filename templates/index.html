@@ -97,6 +97,11 @@
                         Ölpris: <% print (beer_price ? beer_price+" kr" : "Okänt"); %>
                         <% print (beer_price_until ? " (t.o.m. "+beer_price_until+")" : ""); %>
                     </p>
+                    <% if (true == uteservering) { %>
+                        <p>Uteservering: <strong class="w3-text-green">JA</strong></p>
+                    <% } else if (false == uteservering) { %>
+                        <p>Uteservering: <strong class="w3-text-red">NEJ</strong></p>
+                    <% } %>
                 </div>
                 <div class="w3-container w3-card-4 menu-bar-element w3-right w3-round">
                     <div class="menu-bar-element-section link" id="place-map-marker" title="Visa plats på kartan">
@@ -115,18 +120,16 @@
                                 - <%- sunkhak.weekdays[elem.end_weekday].toLowerCase() %>
                             <% } %>
                         </td>
-                        <td>
-                            <% if (elem.closed_entire_day) { %>
-                                Stängt
-                            <% } else { %>
+                        <% if (elem.closed_entire_day) { %>
+                            <td colspan="2">Stängt</td>
+                        <% } else { %>
+                            <td>
                                 <% print(elem.opening_time || '00:00'); %>
-                            <% } %>
-                        </td>
-                        <td>
-                            <% if (!elem.closed_entire_day) { %>
+                            </td>
+                            <td>
                                 - <% print(elem.closing_time || '00:00'); %>
-                            <% } %>
-                        </td>
+                            </td>
+                        <% } %>
                     </tr>
                 <% }); %>
                 </table>

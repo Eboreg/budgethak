@@ -6,6 +6,16 @@ define([
 		defaults : {
 			visible : true,
 			opened : false,
+			zIndex : 0,
+		},
+		
+		initialize : function() {
+			this.on('change:opened', function(model, value) {
+				if (value)
+					this.set('zIndex', 1000);
+				else
+					this.set('zIndex', 0);
+			});
 		},
 
 		// options.maxBeerPrice == maxpris på öl

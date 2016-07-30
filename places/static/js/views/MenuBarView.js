@@ -16,9 +16,7 @@ define([
 		initialize : function() {
 			_.bindAll(this, 'onMobileMenuButtonClick', 'onMyLocationClick', 'onFilterClosedPlacesClick', 'onSearchIconClick',
 				'onInfoIconClick', 'closeSearchField', 'setupAutocomplete', 'onMaxBeerPriceSliderChange');
-			this.menuBar = L.control({
-				position : 'topleft',
-			});
+			this.menuBar = L.control({ position : 'topleft' });
 			this.menuBar.onAdd = _.bind(function() {
 				var template = _.template($("#menuBar").html());
 				return $(template({ 'max_beer_price' : this.model.get('maxBeerPrice') }))[0];
