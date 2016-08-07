@@ -11,6 +11,10 @@
 #close-sidebar-button {
     cursor: pointer;
 }
+#place-map-marker {
+    vertical-align: baseline;
+    margin-right: 10px;
+}
 #close-sidebar-button {
     vertical-align: baseline;
 }

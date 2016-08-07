@@ -26,5 +26,7 @@ urlpatterns += [
     url(r'^ajaximage/', include('ajaximage.urls')),
     url(r'', include('places.urls')),
 ]
+'''
 if settings.DEBUG:
     urlpatterns += patterns('django.contrib.staticfiles.views', url(r'^(?P<path>.*)$', 'serve'))
+'''

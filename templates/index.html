@@ -18,17 +18,6 @@
         <link rel="stylesheet" href="{{ STATIC_URL }}css/sidebarview.css" />
     </head>
     <body>
-        <section id="app">
-            <div id="main-wrapper">
-                <div id="map-wrapper">
-                    <div id="map-element"></div>                    
-                </div>
-                <div id="sidebar-container" class="w3-card-8">
-                    <div id="sidebar-element" class="w3-container"></div>
-                </div>
-            </div>
-            <div id="message-console" class="w3-container"></div>
-        </section>
         <script id="autocompleteItem" type="text/template">
             <li>
                 <div class="w3-container">
@@ -83,7 +72,10 @@
         <script id="placeText" type="text/template">
             <div class="w3-container w3-padding-0">
                 <h3 class="w3-left"><%- name %></h3>
-                <h3 class="w3-right"><i class="fa fa-close icon clickable" id="close-sidebar-button" /></h3>
+                <h3 class="w3-right">
+                    <i class="fa fa-map-marker icon clickable" id="place-map-marker" title="Visa plats på kartan" />
+                    <i class="fa fa-close icon clickable" id="close-sidebar-button" title="Stäng" />
+                </h3>
             </div>
             <% if (image != '') { %>
                 <p>
@@ -91,23 +83,16 @@
                 </p>
             <% } %>
             <div class="w3-container w3-padding-0">
-                <div class="w3-left">
-                    <p><%- street_address %>, <%- city %></p>
-                    <p>
-                        Ölpris: <% print (beer_price ? beer_price+" kr" : "Okänt"); %>
-                        <% print (beer_price_until ? " (t.o.m. "+beer_price_until+")" : ""); %>
-                    </p>
-                    <% if (true == uteservering) { %>
-                        <p>Uteservering: <strong class="w3-text-green">JA</strong></p>
-                    <% } else if (false == uteservering) { %>
-                        <p>Uteservering: <strong class="w3-text-red">NEJ</strong></p>
-                    <% } %>
-                </div>
-                <div class="w3-container w3-card-4 menu-bar-element w3-right w3-round">
-                    <div class="menu-bar-element-section link" id="place-map-marker" title="Visa plats på kartan">
-                        <i class="fa fa-map-marker menu-bar-icon icon" />
-                    </div>
-                </div>
+                <p><%- street_address %>, <%- city %></p>
+                <p>
+                    Ölpris: <% print (beer_price ? beer_price+" kr" : "Okänt"); %>
+                    <% print (beer_price_until ? " (t.o.m. "+beer_price_until+")" : ""); %>
+                </p>
+                <% if (true == uteservering) { %>
+                    <p>Uteservering: <strong class="w3-text-green">JA</strong></p>
+                <% } else if (false == uteservering) { %>
+                    <p>Uteservering: <strong class="w3-text-red">NEJ</strong></p>
+                <% } %>
             </div>
             <% if (opening_hours.length > 0) { %>
                 <h5>Öppettider</h5>

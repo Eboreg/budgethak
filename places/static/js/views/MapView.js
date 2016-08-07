@@ -22,7 +22,7 @@ define([
 	'leaflet-usermarker',
 ], function(Backbone, _, L, markercluster, settings, Map, Url) {
 	var MapView = Backbone.View.extend({
-		el : '#map-element',
+		id : 'map-element',
 		model : new Map(),
 		// Vi kan inte använda events-hashen eftersom den behandlas före initialize(), varför ej map:* kommer att funka
 		mapEvents : {
@@ -33,21 +33,21 @@ define([
 			'locationfound' : 'onMapLocationFound',
 		},
 	
-		initialize : function(options) {
+		initialize : function() {
 			this.listenTo(this.model, 'change:userLocation', this.onUserLocationChange);
 			this.listenTo(this.model, 'change:zoom change:location', this.onMapViewportChange);
 			this.markercluster = L.markerClusterGroup({
 				maxClusterRadius : settings.maxClusterRadius,
 			});
-			this.map = L.map(this.el, {
-				maxZoom : settings.maxZoom,
-				zoomControl : false,
-				attributionControl : false,
-			});
-			this.bindMapEvents();
 		},
 		render : function() {
 			if (!this.model.get('rendered')) {
+				this.map = L.map(this.el, {
+					maxZoom : settings.maxZoom,
+					zoomControl : false,
+					attributionControl : false,
+				});
+				this.bindMapEvents();
 				L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(this.map);
 				L.control.attribution({
 					position : 'bottomleft',
@@ -59,7 +59,16 @@ define([
 			return this;
 		},
 		reloadMapSize : function() {
-			this.map.invalidateSize({ pan : false });
+			var reloadFunc = _.bind(function() {
+				this.map.invalidateSize({ pan : false });
+			}, this);
+			if (!this.model.get('rendered')) {
+				this.listenToOnce(this.model, 'change:rendered', function() {
+					reloadFunc();
+				});
+			} else {
+				reloadFunc();
+			}
 		},
 		// fullZoom = bool
 		flyTo : function(latlng, fullZoom) {
@@ -92,6 +101,26 @@ define([
 				});
 			} else {
 				this.map.flyTo(this.model.get('userLocation').latlng, 17);
+			}
+		},
+		addMarker : function(marker) {
+			var func = _.bind(function() {
+				this.map.addLayer(marker);
+			}, this);
+			if (this.model.get('rendered')) {
+				func();
+			} else {
+				this.listenTo(this.model, 'change:rendered', func);
+			}
+		},
+		removeMarker : function(marker) {
+			var func = _.bind(function() {
+				this.map.removeLayer(marker);
+			}, this);
+			if (this.model.get('rendered')) {
+				func();
+			} else {
+				this.listenTo(this.model, 'change:rendered', func);
 			}
 		},
 

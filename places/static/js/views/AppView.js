@@ -13,18 +13,20 @@ define([
 	'collections/PlaceCollection',
 ], function(Backbone, Url, App, MapView, SidebarView, MenuBarView, PlaceView, PlaceCollection) {
 	var AppView = Backbone.View.extend({
-		el: '#app',
+		//el: '#app',
+		tagName : 'section',
+		id : 'app',
 		model : new App(),
 		collection : new PlaceCollection(),
 		placeviews : {},
 		
 		initialize : function() {
 			_.bindAll(this, 'cron30min');
-			sunkhak.mapview = new MapView();
+			this.$el.html('<div id="main-wrapper"><div id="map-wrapper"><div id="map-element"></div></div></div>');
+			sunkhak.mapview = new MapView({ el : this.$("#map-element")[0] });
 			sunkhak.sidebarview = new SidebarView();
 			// MenuBarView behöver ha koll på collection pga autocomplete
 			sunkhak.menubarview = new MenuBarView({ collection : this.collection });
-			sunkhak.menubarview.render(sunkhak.mapview.map);
 			this.listenTo(this.collection, 'reset', this.onPlaceReset);
 			this.listenTo(this.model, 'change:filterClosedPlaces change:maxBeerPrice', this.filterPlaces);
 			this.listenTo(sunkhak.mapview, 'map-click', this.onMapClick);
@@ -35,7 +37,6 @@ define([
 			this.listenTo(sunkhak.menubarview, 'max-beer-price-change', this.onMaxBeerPriceChange);
 			this.listenTo(sunkhak.menubarview, 'autocomplete-select', this.onAutocompleteSelect);
 			this.listenTo(sunkhak.sidebarview, 'transitionend', this.onSidebarTransitionEnd);
-			this.listenTo(sunkhak.sidebarview, 'place-fully-open', this.onPlaceFullyOpen);
 			this.listenTo(sunkhak.sidebarview, 'place-open', this.onPlaceOpen);
 			this.listenTo(sunkhak.sidebarview, 'place-close', this.onPlaceClose);
 			this.listenTo(sunkhak.sidebarview, 'close', this.onSidebarClose);
@@ -46,10 +47,20 @@ define([
 			// Kommer PlaceCollection alltid att vara färdig-bootstrappad när vi är här?
 			this.onPlaceReset();
 		},
+		render : function() {
+			this.$("#main-wrapper").append(sunkhak.sidebarview.render().el);
+			// Vi måste vänta tills DOM är klart för att rita ut karta
+			$(_.bind(function() {
+				sunkhak.mapview.render();
+				sunkhak.menubarview.render(sunkhak.mapview.map);
+			}), this);
+			return this;
+		},
 		renderMap : function(hash) {
 			sunkhak.sidebarview.model.close();
 			this.hashToMapModel(hash);
-			sunkhak.mapview.render();
+			this.render();
+			//sunkhak.mapview.render();
 		},
 		renderPlace : function(id) {
 			var model = this.collection.get(id);
@@ -58,8 +69,8 @@ define([
 			sunkhak.mapview.reloadMapSize();
 			sunkhak.mapview.model.set('location', { lat : parseFloat(model.get('lat')), lng : parseFloat(model.get('lng'))});
 			sunkhak.mapview.model.set('zoom', 17);
-			sunkhak.mapview.render();
 			this.showPlace(id);
+			this.render();
 		},
 		showPlace : function(id) {
 			var model = this.collection.get(id);
@@ -70,7 +81,9 @@ define([
 			sunkhak.sidebarview.model.set('infoOpen', true);
 			sunkhak.menubarview.model.set('infoActive', true);
 			this.hashToMapModel(hash);
-			sunkhak.mapview.render();
+//			sunkhak.mapview.render();
+//			this.$el.append(sunkhak.mapview.render().el);
+			this.render();
 		},
 		cron30min : function() {
 			var d = new Date();
@@ -128,9 +141,9 @@ define([
 						// När platsen är öppnad, ska markören "brytas ut" ur klustret
 						if (value) {
 							sunkhak.mapview.markercluster.removeLayer(placeview.marker);
-							sunkhak.mapview.map.addLayer(placeview.marker);
+							sunkhak.mapview.addMarker(placeview.marker);
 						} else {
-							sunkhak.mapview.map.removeLayer(placeview.marker);
+							sunkhak.mapview.removeMarker(placeview.marker);
 							sunkhak.mapview.markercluster.addLayer(placeview.marker);
 						}
 					});
@@ -143,6 +156,9 @@ define([
 		onPlaceMarkerClick : function(model) {
 			if (model.get('opened')) {
 				sunkhak.sidebarview.model.set('place', model);
+				this.listenToOnce(sunkhak.sidebarview, 'fully-open', function() {
+					sunkhak.mapview.panToIfOutOfBounds([ parseFloat(model.get('lat')), parseFloat(model.get('lng')) ]);
+				});
 			} else {
 				sunkhak.sidebarview.model.set('place', null);
 			}
@@ -183,10 +199,6 @@ define([
 		/* Brygga SidebarView -> MapView */
 		onSidebarTransitionEnd : function() {
 			sunkhak.mapview.reloadMapSize();
-		},
-		/* Brygga SidebarView -> MapView */
-		onPlaceFullyOpen : function(model) {
-			sunkhak.mapview.panToIfOutOfBounds([ parseFloat(model.get('lat')), parseFloat(model.get('lng')) ]);
 		},
 		/* Brygga SidebarView -> Router och MapView */
 		onPlaceOpen : function(model) {

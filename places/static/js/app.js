@@ -61,6 +61,8 @@ var sunkhak = sunkhak || {};
 require(['router', 'views/AppView', 'backbone', 'settings'], function(Router, AppView, Backbone, settings) {
 	sunkhak.router = new Router();
 	sunkhak.appview = new AppView();
+	//$(document.body).append(sunkhak.appview.render().el);
+	$(document.body).append(sunkhak.appview.el);
 
 	// Trigger the initial route and enable HTML5 History API support, set the
 	// root folder to '/' by default.  Change in app.js.

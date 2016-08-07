@@ -1,3 +1,5 @@
+// Får skriva dit kod som lägger till nödvändiga template-block i DOM.
+
 require.config({
 	waitSeconds : 120,
 	baseUrl : '/__src__/places/static/js', 
@@ -55,6 +57,13 @@ require.config({
 			exports : 'Url',
 		},
 	},
+});
+
+require(['jquery'], function($) {
+	$(document.body).append('<script id="infoText" type="text/template"></script>');
+	$(document.body).append('<script id="placeText" type="text/template"></script>');
+	$(document.body).append('<script id="menuBar" type="text/template"></script>');
+	$(document.body).append('<script id="autocompleteItem" type="text/template"></script>');
 });
 
 var sunkhak = sunkhak || {};

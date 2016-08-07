@@ -10,7 +10,9 @@ define([
 	'models/Place',
 ], function(Backbone, _, $, Sidebar) {
 	var SidebarView = Backbone.View.extend({
-		el : '#sidebar-container',
+		//el : '#sidebar-container',
+		id : 'sidebar-container',
+		className : 'w3-card-8',
 		model : new Sidebar(),
 		events : {
 			'transitionend' : 'onTransitionEnd',
@@ -22,12 +24,13 @@ define([
 		place : null,
 		
 		initialize : function() {
+			this.$el.append('<div id="sidebar-element" class="w3-container"></div>');
 			_.bindAll(this, 'onMapMarkerClick', 'onCloseButtonClick');
 			this.listenTo(this.model, 'change:open', this.onOpenChange);
 			this.listenTo(this.model, 'change:infoOpen', this.onInfoOpenChange);
 			this.listenTo(this.model, 'change:place', this.onPlaceChange);
 		},
-
+		
 		open : function() {
 			// Elementet har från början ej klass "transition" eftersom den då blir felcentrerad om url = place/:id
 			if (this.model.get('transition')) {
