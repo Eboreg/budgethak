@@ -18,3 +18,6 @@ DESIGNMÅL:
 5. Modeller ska vara helt vy-agnostiska och inte känna till dem alls.
 6. Vyer är i första hand ansvariga för att hålla sina modeller uppdaterade som följd av egna DOM-händelser,
    och trigga events EFTER att så har skett.
+   
+BUGGAR:
+- När man öppnar med url: /place/något och sedan stänger platsen, försvinner dess markör helt.

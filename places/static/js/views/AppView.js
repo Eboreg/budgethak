@@ -27,7 +27,6 @@ define([
 			sunkhak.sidebarview = new SidebarView();
 			// MenuBarView behöver ha koll på collection pga autocomplete
 			sunkhak.menubarview = new MenuBarView({ collection : this.collection });
-			this.listenTo(this.collection, 'reset', this.onPlaceReset);
 			this.listenTo(this.model, 'change:filterClosedPlaces change:maxBeerPrice', this.filterPlaces);
 			this.listenTo(sunkhak.mapview, 'map-click', this.onMapClick);
 			this.listenTo(sunkhak.mapview, 'map-viewport-change', this.setHash);
@@ -45,10 +44,12 @@ define([
 			this.listenTo(sunkhak.sidebarview, 'map-marker-click', this.onSidebarMapMarkerClick);
 			window.setInterval(this.cron30min, 60000);
 			// Kommer PlaceCollection alltid att vara färdig-bootstrappad när vi är här?
+			//this.listenTo(this.collection, 'reset', this.onPlaceReset);
 			this.onPlaceReset();
 		},
 		render : function() {
-			this.$("#main-wrapper").append(sunkhak.sidebarview.render().el);
+			sunkhak.sidebarview.render();
+			this.$("#main-wrapper").append(sunkhak.sidebarview.el);
 			// Vi måste vänta tills DOM är klart för att rita ut karta
 			$(_.bind(function() {
 				sunkhak.mapview.render();
@@ -69,8 +70,8 @@ define([
 			sunkhak.mapview.reloadMapSize();
 			sunkhak.mapview.model.set('location', { lat : parseFloat(model.get('lat')), lng : parseFloat(model.get('lng'))});
 			sunkhak.mapview.model.set('zoom', 17);
-			this.showPlace(id);
 			this.render();
+			this.showPlace(id);
 		},
 		showPlace : function(id) {
 			var model = this.collection.get(id);
@@ -129,28 +130,33 @@ define([
 					var placeview = new PlaceView({
 						model : model,
 					});
-					if (model.get('visible'))
-						this.placeviews[model.id] = placeview;
-					this.listenTo(model, 'change:visible', function(model, value) {
-						if (value)
-							sunkhak.mapview.markercluster.addLayer(placeview.marker);
-						else
-							sunkhak.mapview.markercluster.removeLayer(placeview.marker);
-					});
-					this.listenTo(model, 'change:opened', function(model, value) {
-						// När platsen är öppnad, ska markören "brytas ut" ur klustret
-						if (value) {
-							sunkhak.mapview.markercluster.removeLayer(placeview.marker);
-							sunkhak.mapview.addMarker(placeview.marker);
-						} else {
-							sunkhak.mapview.removeMarker(placeview.marker);
-							sunkhak.mapview.markercluster.addLayer(placeview.marker);
-						}
-					});
-					this.listenTo(placeview, 'marker-click', this.onPlaceMarkerClick);
+					//if (model.get('visible'))
+					this.placeviews[model.id] = placeview;
 				}
 			}, this);
-			sunkhak.mapview.markercluster.addLayers(_.map(this.placeviews, function(placeview) { return placeview.marker; }));
+			sunkhak.mapview.markercluster.addLayers(_.map(this.placeviews, function(placeview) { 
+				return placeview.marker; 
+			}));
+			// Ny loop eftersom mapview.markercluster måste vara färdigpopulerad innan dessa callbacks körs:
+			_.each(this.placeviews, function(placeview) {
+				this.listenTo(placeview.model, 'change:visible', function(model, value) {
+					if (value)
+						sunkhak.mapview.markercluster.addLayer(placeview.marker);
+					else
+						sunkhak.mapview.markercluster.removeLayer(placeview.marker);
+				});
+				this.listenTo(placeview.model, 'change:opened', function(model, value) {
+					// När platsen är öppnad, ska markören "brytas ut" ur klustret
+					if (value) {
+						sunkhak.mapview.markercluster.removeLayer(placeview.marker);
+						sunkhak.mapview.addMarker(placeview.marker);
+					} else {
+						sunkhak.mapview.removeMarker(placeview.marker);
+						sunkhak.mapview.markercluster.addLayer(placeview.marker);
+					}
+				});
+				this.listenTo(placeview, 'marker-click', this.onPlaceMarkerClick);
+			}, this);
 		},
 		/* Brygga PlaceView -> SidebarView */
 		onPlaceMarkerClick : function(model) {

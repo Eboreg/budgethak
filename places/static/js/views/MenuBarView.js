@@ -19,7 +19,8 @@ define([
 			this.menuBar = L.control({ position : 'topleft' });
 			this.menuBar.onAdd = _.bind(function() {
 				var template = _.template($("#menuBar").html());
-				return $(template({ 'max_beer_price' : this.model.get('maxBeerPrice') }))[0];
+				var $ret = $(template({ 'max_beer_price' : this.model.get('maxBeerPrice') }));
+				return $ret[0];
 			}, this);
 			this.listenTo(this.model, 'change:filterClosedPlaces', this.onFilterClosedPlacesChange);
 			this.listenTo(this.model, 'change:infoActive', this.onInfoActiveChange);

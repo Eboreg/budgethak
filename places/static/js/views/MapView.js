@@ -128,9 +128,8 @@ define([
 		// Triggas av load-event från map 
 		// Körs alltså alltid efter this.render()
 		onMapReady : function() {
-			this.model.set('rendered', true);
-			this.trigger('rendered');
 			this.map.addLayer(this.markercluster);
+			this.model.set('rendered', true);
 		},
 		onMapMoveEnd : function() {
 			this.model.set('location', this.map.getCenter());

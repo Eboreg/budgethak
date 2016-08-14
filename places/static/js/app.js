@@ -20,7 +20,8 @@ require.config({
 			'../lib/leaflet/leaflet',
 		],
 		'leaflet-markercluster' : [
-			'//cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.0-rc.1.0/leaflet.markercluster',
+//			'//cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.0-rc.1.0/leaflet.markercluster',
+			'//cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.0-rc.1.0/leaflet.markercluster-src',
 			'../lib/leaflet.markercluster',
 		],
 		'urljs' : [

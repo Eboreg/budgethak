@@ -27,6 +27,7 @@ src_files:
 #   - stylesheets/*.css
 #
 stylesheets:
+  - static/css/*.css
 
 # helpers
 #
