@@ -8,6 +8,7 @@ define([
 			zoom : 13,
 			location : { lat : 59.3219, lng : 18.0720 },
 			userLocation : null,
+			userMarkerSet : false,
 		},
 	});
 	return Map;

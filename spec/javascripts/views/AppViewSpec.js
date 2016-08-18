@@ -1,6 +1,19 @@
+var sunkhak = sunkhak || {};
 describe('Views :: AppView', function() {
+	var mockData = {
+		"slug":"foo-bar",
+		"name":"Foo Bar",
+		"street_address":"Lillgatan 12",
+		"city":"Stockholm",
+		"lat":"59.3150478",
+		"lng":"18.0756079",
+		"beer_price":35,
+		"open_now":true
+	};
+	
 	beforeEach(function(done) {
 		var that = this;
+		sunkhak.bootstrap = [ mockData ];
 		require(['views/AppView', 'views/MapView', 'views/SidebarView', 'views/MenuBarView'], function(AppView, MapView, SidebarView, MenuBarView) {
 //			spyOn(MapView.prototype, 'initialize').and.callFake(function() {});
 			spyOn(MapView.prototype, 'initialize').and.callThrough();
@@ -9,6 +22,14 @@ describe('Views :: AppView', function() {
 			that.appview = new AppView();
 			done();
 		});
+	});
+	
+	afterEach(function(done) {
+		sunkhak.mapview.remove();
+		sunkhak.sidebarview.remove();
+		sunkhak.menubarview.remove();
+		this.appview.remove();
+		$(done);
 	});
 	
 	it("should create one MapView, one SidebarView and one MenuBarView", function(done) {
@@ -33,6 +54,16 @@ describe('Views :: AppView', function() {
 				expect(MenuBarView.prototype.render).toHaveBeenCalledTimes(1);
 				done();
 			}));
+		});
+	});
+	
+	it("should open correct sidebar when place marker clicked", function(done) {
+		var that = this;
+		$(function() {
+			that.appview.placeviews['foo-bar'].trigger('marker:click');
+			expect(sunkhak.sidebarview.model.get('place')).toEqual(that.appview.collection.get('foo-bar'));
+			expect(sunkhak.sidebarview.model.get('open')).toEqual(true);
+			done();
 		});
 	});
 });

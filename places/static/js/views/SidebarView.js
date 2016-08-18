@@ -13,7 +13,6 @@ define([
 		//el : '#sidebar-container',
 		id : 'sidebar-container',
 		className : 'w3-card-8',
-		model : new Sidebar(),
 		events : {
 			'transitionend' : 'onTransitionEnd',
 			'click #place-map-marker' : 'onMapMarkerClick',
@@ -24,6 +23,7 @@ define([
 		place : null,
 		
 		initialize : function() {
+			this.model = new Sidebar();
 			this.$el.append('<div id="sidebar-element" class="w3-container"></div>');
 			_.bindAll(this, 'onMapMarkerClick', 'onCloseButtonClick');
 			this.listenTo(this.model, 'change:open', this.onOpenChange);

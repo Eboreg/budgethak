@@ -9,6 +9,10 @@ describe('Views :: SidebarView', function() {
 		});
 	});
 	
+	afterEach(function() {
+		this.view.remove();
+	});
+	
 	it("should be invisible at first", function() {
 		expect(this.view.$el.is('.open')).toEqual(false);
 	});

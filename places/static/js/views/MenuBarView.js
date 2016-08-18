@@ -11,9 +11,8 @@ define([
 	'jquery-ui',
 ], function(Backbone, _, MenuBar, L, $) {
 	var MenuBarView = Backbone.View.extend({
-		model : new MenuBar(),
-
 		initialize : function() {
+			this.model = new MenuBar();
 			_.bindAll(this, 'onMobileMenuButtonClick', 'onMyLocationClick', 'onFilterClosedPlacesClick', 'onSearchIconClick',
 				'onInfoIconClick', 'closeSearchField', 'setupAutocomplete', 'onMaxBeerPriceSliderChange');
 			this.menuBar = L.control({ position : 'topleft' });

@@ -23,7 +23,6 @@ define([
 ], function(Backbone, _, L, markercluster, settings, Map, Url) {
 	var MapView = Backbone.View.extend({
 		id : 'map-element',
-		model : new Map(),
 		// Vi kan inte använda events-hashen eftersom den behandlas före initialize(), varför ej map:* kommer att funka
 		mapEvents : {
 			'load' : 'onMapReady',
@@ -34,6 +33,7 @@ define([
 		},
 	
 		initialize : function() {
+			this.model = new Map();
 			this.listenTo(this.model, 'change:userLocation', this.onUserLocationChange);
 			this.listenTo(this.model, 'change:zoom change:location', this.onMapViewportChange);
 			this.markercluster = L.markerClusterGroup({
@@ -91,6 +91,8 @@ define([
 		},
 		// Triggas av ikonklick i MenuBarView
 		gotoUserLocation : function() {
+			// Vi söker efter användarens plats först när denne aktivt ber om det.
+			// När den hittas, triggar kartan "locationfound"-event.
 			if (null === this.model.get('userLocation')) {
 				this.map.locate({
 					watch : true,
@@ -155,6 +157,7 @@ define([
 					smallIcon : true,
 				}).addTo(this.map);
 				this.map.flyTo(value.latlng, 17);
+				this.model.set("userMarkerSet", true);
 			}
 			this.userMarker.setLatLng(value.latlng);
 			this.userMarker.setAccuracy(value.accuracy);

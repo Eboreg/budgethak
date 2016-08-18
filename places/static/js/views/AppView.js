@@ -16,11 +16,11 @@ define([
 		//el: '#app',
 		tagName : 'section',
 		id : 'app',
-		model : new App(),
 		collection : new PlaceCollection(),
 		placeviews : {},
 		
 		initialize : function() {
+			this.model = new App();
 			_.bindAll(this, 'cron30min');
 			this.$el.html('<div id="main-wrapper"><div id="map-wrapper"><div id="map-element"></div></div></div>');
 			sunkhak.mapview = new MapView({ el : this.$("#map-element")[0] });
