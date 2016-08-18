@@ -1,16 +1,3 @@
-/**
- * Vyn har direkt kännedom om modellen då det ej finns anledning att ha någon Collection (vi använder bara en karta).
- * Förändringar i geolocation räknas som en användarinteraktion och tas omhand här.
- * 
- * Properties
- * el : kartelementet
- * model : sunkhak.Map (används ännu bara för att ange defaultvärden; kan ej hämta eller lagra några data någonstans)
- * map : 
- * mapEvents : lyssnar efter events på 'map'
- * 
- * Events:
- * 	Backbone.'mapview:map:idle' : UserPlaceView ritar ut användarmarkör (om position finns)
- */
 define([
 	'backbone',
 	'underscore',
