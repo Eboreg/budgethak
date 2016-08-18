@@ -1,4 +1,5 @@
 var sunkhak = sunkhak || {};
+sunkhak.router = { navigate : function() {} };
 describe('Views :: AppView', function() {
 	var mockData = {
 		"slug":"foo-bar",
@@ -17,7 +18,8 @@ describe('Views :: AppView', function() {
 		require(['views/AppView', 'views/MapView', 'views/SidebarView', 'views/MenuBarView'], function(AppView, MapView, SidebarView, MenuBarView) {
 //			spyOn(MapView.prototype, 'initialize').and.callFake(function() {});
 			spyOn(MapView.prototype, 'initialize').and.callThrough();
-			spyOn(SidebarView.prototype, 'initialize').and.callFake(function() {});
+			//spyOn(SidebarView.prototype, 'initialize').and.callFake(function() {});
+			spyOn(SidebarView.prototype, 'initialize').and.callThrough();
 			spyOn(MenuBarView.prototype, 'initialize').and.callThrough();
 			that.appview = new AppView();
 			done();
@@ -25,9 +27,9 @@ describe('Views :: AppView', function() {
 	});
 	
 	afterEach(function(done) {
-		sunkhak.mapview.remove();
-		sunkhak.sidebarview.remove();
-		sunkhak.menubarview.remove();
+		this.appview.mapview.remove();
+		this.appview.sidebarview.remove();
+		this.appview.menubarview.remove();
 		this.appview.remove();
 		$(done);
 	});
@@ -60,9 +62,9 @@ describe('Views :: AppView', function() {
 	it("should open correct sidebar when place marker clicked", function(done) {
 		var that = this;
 		$(function() {
-			that.appview.placeviews['foo-bar'].trigger('marker:click');
-			expect(sunkhak.sidebarview.model.get('place')).toEqual(that.appview.collection.get('foo-bar'));
-			expect(sunkhak.sidebarview.model.get('open')).toEqual(true);
+			that.appview.placeviews['foo-bar'].marker.fire('click');
+			expect(that.appview.sidebarview.model.get('place')).toEqual(that.appview.collection.get('foo-bar'));
+			expect(that.appview.sidebarview.model.get('open')).toEqual(true);
 			done();
 		});
 	});
