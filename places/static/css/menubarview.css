@@ -50,10 +50,6 @@
 .menu-bar-element-section.active .menu-bar-icon {
     color: gold;
 }
-#search-field-container {
-    display: none;
-    padding-left: 0;
-}
 #search-field {
     vertical-align: text-top;
     border: 1px solid #ccc;
@@ -86,6 +82,10 @@
     #max-beer-price-slider {
         width: 200px;
     }
+    #search-field-container {
+        display: none;
+        padding-left: 0;
+    }
 }
 
 
@@ -110,5 +110,11 @@
     }
     #max-beer-price-slider {
         min-width: 100px;
+    }
+    #search-row, #search-element, #search-field-container, #search-field, #max-beer-price-container {
+        width: 100%;
+    }
+    #search-icon {
+        display: none;
     }
 }
