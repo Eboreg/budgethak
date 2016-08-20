@@ -58,7 +58,10 @@ define([
 			this.$el.find("#filter-closed-places-icon").click(this.onFilterClosedPlacesClick);
 			this.$el.find("#search-icon").click(this.onSearchIconClick);
 			this.$el.find("#info-icon").click(this.onInfoIconClick);
-			this.$el.find("#search-field").focusout(this.closeSearchField);
+			// På mobiler ska sökfältet alltid synas när menyn är öppen
+			if ($(window).width() > 600) {
+				this.$el.find("#search-field").focusout(this.closeSearchField);
+			}
 		},
 		openSearchField : function() {
 			this.$el.find("#search-field-container").show('fast', this.setupAutocomplete);
@@ -135,6 +138,12 @@ define([
 				this.$el.find("#info-icon").addClass("active");
 			else 
 				this.$el.find("#info-icon").removeClass("active");
+		},
+		onMobileMenuOpenChange : function(model, value) {
+			if (value)
+				this.$el.find(".menu-bar-row").css("display", "flex");
+			else
+				this.$el.find(".menu-bar-row").hide();
 		},
 	});
 	return MenuBarView;

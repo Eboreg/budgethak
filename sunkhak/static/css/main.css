@@ -4,7 +4,7 @@
     vertical-align: top;
 }
 
-html, body, #app, #main-wrapper, #map-element, #sidebar-container, #map-wrapper {
+html, body, #app, #main-wrapper, #map-element, #map-wrapper {
     height: 100%;
 }
 #main-wrapper {
@@ -29,6 +29,9 @@ html, body, #app, #main-wrapper, #map-element, #sidebar-container, #map-wrapper 
     }
     #map-wrapper {
         flex: 1 0 auto;
+    }
+    #sidebar-container {
+        height: 100%;
     }
 }
 

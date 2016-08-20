@@ -1,14 +1,18 @@
-Klura på hur sidebar och annat ska renderas på padda och mobil.
+Klura på hur sidebar och annat ska renderas på padda.
+
+Implementera swipe-gesture för mobil och ev. padda. Swipe upp/ned ska stänga sidebar.
+Nu funkar swipe ned, men ser dumt ut att rutan stängs nedåt om man sveper uppåt. Kanske ska skita i detta.
+
+BUGG: På mobil uppdateras inte URL som den ska?! Med locationdata.
+BUGG: Långa namn visas knorkigt på mobil (se Aangan indisk restaurang)
+BUGG: När man scrollar sidebar på mobil, scrollas hela kartan
+BUGG: Känns som om swipe är för okänsligt. Man råkar swipea fast man vill scrolla
 
 Skriva fler tester.
-
-Kolla hur skriva tester för Backbone.  -- Jasmine
 
 Går det att sortera autocomplete-träffar så att de som matchar på namn ligger först? (antagligen inte)
 
 Fixa färgerna på markörer och markerclusters -- fixat för alla utom markercluster:large (vet ej när den används)
-
-Kanske bryta ut en markör ur cluster när den är aktiv? (Via markercluster.removeLayer())
 
 DESIGNMÅL:
 1. Alla variabla data om en viss vy ("position", "visible", "active" m.m.) ska ej lagras i vyn utan i korresponderande modell.
@@ -19,5 +23,3 @@ DESIGNMÅL:
 6. Vyer är i första hand ansvariga för att hålla sina modeller uppdaterade som följd av egna DOM-händelser,
    och trigga events EFTER att så har skett.
    
-BUGGAR:
-- När man öppnar med url: /place/något och sedan stänger platsen, försvinner dess markör helt.

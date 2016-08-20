@@ -1,7 +1,10 @@
 #sidebar-container {
     /*display: none;*/
-    z-index: 2;
+    z-index: 1000;
     overflow: hidden;
+}
+#sidebar-element {
+    padding-bottom: 16px;
 }
 .place-image {
     width: 100%;
@@ -44,3 +47,35 @@
     }
 }
 
+/* MOBILER */
+@media (max-width: 601px) {
+    #sidebar-container.transition {
+        transition: left 0.2s;
+    }
+    #sidebar-container {
+        left: 102%; /* Är det bara 100% så ser man skuggan */
+        top: -98%;
+        width: 96%;
+        max-height: 96%;
+        background-color: white;
+        overflow-y: scroll;
+        position: relative;
+    }
+    #sidebar-container.open {
+        left: 2%;
+    }
+}
+/* MOBILER, LIGGANDE */
+@media (max-width: 601px) and (orientation: landscape) {
+    #sidebar-block-1 {
+        width: 50%;
+        float: left;
+        margin-right: 16px;
+    }
+    #sidebar-block-2 {
+        float: left;
+    }
+    .opening-hours-headline {
+        margin-top: 0;
+    }
+} 

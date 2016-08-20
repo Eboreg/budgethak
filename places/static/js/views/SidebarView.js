@@ -8,6 +8,7 @@ define([
 	'jquery',
 	'models/Sidebar',
 	'models/Place',
+	'jquery-touchswipe',
 ], function(Backbone, _, $, Sidebar) {
 	var SidebarView = Backbone.View.extend({
 		//el : '#sidebar-container',
@@ -29,6 +30,13 @@ define([
 			this.listenTo(this.model, 'change:open', this.onOpenChange);
 			this.listenTo(this.model, 'change:infoOpen', this.onInfoOpenChange);
 			this.listenTo(this.model, 'change:place', this.onPlaceChange);
+			if ($(window).width() <= 600) {
+				this.$el.swipe({
+					swipeRight : _.bind(function() {
+						this.model.close();
+					}, this),
+				});
+			}
 		},
 		
 		open : function() {
@@ -90,6 +98,9 @@ define([
 		},
 		onMapMarkerClick : function() {
 			this.trigger('map-marker-click', this.place);
+		},
+		onSwipe : function() {
+			this.model.close();
 		},
 
 		/* MODELL-EVENTS */

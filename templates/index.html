@@ -71,63 +71,79 @@
         </script>
         <script id="placeText" type="text/template">
             <div class="w3-container w3-padding-0">
-                <h3 class="w3-left"><%- name %></h3>
-                <h3 class="w3-right">
-                    <i class="fa fa-map-marker icon clickable" id="place-map-marker" title="Visa plats på kartan" />
-                    <i class="fa fa-close icon clickable" id="close-sidebar-button" title="Stäng" />
-                </h3>
-            </div>
-            <% if (image != '') { %>
-                <p>
-                    <img src="{{ MEDIA_URL }}<%= image %>" class="place-image w3-round w3-card-4" />
-                </p>
-            <% } %>
-            <div class="w3-container w3-padding-0">
-                <p><%- street_address %>, <%- city %></p>
-                <p>
-                    Ölpris: <% print (beer_price ? beer_price+" kr" : "Okänt"); %>
-                    <% print (beer_price_until ? " (t.o.m. "+beer_price_until+")" : ""); %>
-                </p>
-                <% if (true == uteservering) { %>
-                    <p>Uteservering: <strong class="w3-text-green">JA</strong></p>
-                <% } else if (false == uteservering) { %>
-                    <p>Uteservering: <strong class="w3-text-red">NEJ</strong></p>
-                <% } %>
-            </div>
-            <% if (opening_hours.length > 0) { %>
-                <h5>Öppettider</h5>
-                <table class="opening-hours-table">
-                <% _.each(opening_hours, function(elem) { %>
+                <table>
                     <tr>
                         <td>
-                            <%- sunkhak.weekdays[elem.start_weekday] %>
-                            <% if (elem.end_weekday != elem.start_weekday) { %>
-                                - <%- sunkhak.weekdays[elem.end_weekday].toLowerCase() %>
-                            <% } %>
+                            <h3 class="w3-left"><%- name %></h3>
                         </td>
-                        <% if (elem.closed_entire_day) { %>
-                            <td colspan="2">Stängt</td>
-                        <% } else { %>
-                            <td>
-                                <% print(elem.opening_time || '00:00'); %>
-                            </td>
-                            <td>
-                                - <% print(elem.closing_time || '00:00'); %>
-                            </td>
-                        <% } %>
+                        <td class="w3-hide-small">
+                            <h3 class="w3-right">
+                                <i class="fa fa-map-marker icon clickable" id="place-map-marker" title="Visa plats på kartan" />
+                            </h3>
+                        </td>
+                        <td>
+                            <h3 class="w3-right">
+                                <i class="fa fa-close icon clickable" id="close-sidebar-button" title="Stäng" />
+                            </h3>
+                        </td>
                     </tr>
-                <% }); %>
                 </table>
-                <% if (open_now === true) { %>
-                    <p class="w3-text-green"><strong>Öppet just nu \o/</strong></p>
-                <% } else if (open_now === false) { %>
-                    <p class="w3-text-red"><strong>Stängt just nu :-(</strong></p>
+            </div>
+            <div id="sidebar-block-1">
+                <% if (image != '') { %>
+                    <p>
+                        <img src="{{ MEDIA_URL }}<%= image %>" class="place-image w3-round w3-card-4" />
+                    </p>
                 <% } %>
-            <% } %> <!-- opening_hours -->
-            <% if (comment != '') { %>
-                <h5>Övrigt</h5>
-                <p><%- comment %></p>
-            <% } %>
+                <div class="w3-container w3-padding-0">
+                    <p><%- street_address %>, <%- city %></p>
+                    <p>
+                        Ölpris: <% print (beer_price ? beer_price+" kr" : "Okänt"); %>
+                        <% print (beer_price_until ? " (t.o.m. "+beer_price_until+")" : ""); %>
+                    </p>
+                    <% if (true == uteservering) { %>
+                        <p>Uteservering: <strong class="w3-text-green">JA</strong></p>
+                    <% } else if (false == uteservering) { %>
+                        <p>Uteservering: <strong class="w3-text-red">NEJ</strong></p>
+                    <% } %>
+                </div>
+            </div>
+            <div id="sidebar-block-2">
+                <% if (opening_hours.length > 0) { %>
+                    <h5 class="opening-hours-headline">Öppettider</h5>
+                    <table class="opening-hours-table">
+                    <% _.each(opening_hours, function(elem) { %>
+                        <tr>
+                            <td>
+                                <%- sunkhak.weekdays[elem.start_weekday] %>
+                                <% if (elem.end_weekday != elem.start_weekday) { %>
+                                    - <%- sunkhak.weekdays[elem.end_weekday].toLowerCase() %>
+                                <% } %>
+                            </td>
+                            <% if (elem.closed_entire_day) { %>
+                                <td colspan="2">Stängt</td>
+                            <% } else { %>
+                                <td>
+                                    <% print(elem.opening_time || '00:00'); %>
+                                </td>
+                                <td>
+                                    - <% print(elem.closing_time || '00:00'); %>
+                                </td>
+                            <% } %>
+                        </tr>
+                    <% }); %>
+                    </table>
+                    <% if (open_now === true) { %>
+                        <p class="w3-text-green"><strong>Öppet just nu \o/</strong></p>
+                    <% } else if (open_now === false) { %>
+                        <p class="w3-text-red"><strong>Stängt just nu :-(</strong></p>
+                    <% } %>
+                <% } %> <!-- opening_hours -->
+                <% if (comment != '') { %>
+                    <h5>Övrigt</h5>
+                    <p><%- comment %></p>
+                <% } %>
+            </div>
          </script>
         <script id="infoText" type="text/template">
             <div class="w3-container w3-padding-0">
