@@ -17,6 +17,10 @@ require.config({
 			'/__src__/lib/jquery-3.1.0.min',
 		],
 		'jquery-ui' : '/__src__/lib/jquery-ui-1.12.0.custom/jquery-ui',
+		'jquery-touchswipe' : [
+			'//cdnjs.cloudflare.com/ajax/libs/jquery.touchswipe/1.6.18/jquery.touchSwipe.min',
+			'../lib/jquery.touchSwipe.min',
+		],
 		'leaflet' : [
 			'//cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0-rc.1/leaflet',
 			'/__src__/lib/leaflet/leaflet',
@@ -42,6 +46,9 @@ require.config({
 			exports : 'Backbone',
 		},
 		'jquery-ui' : {
+			deps : ['jquery'],
+		},
+		'jquery-touchswipe' : {
 			deps : ['jquery'],
 		},
 		'leaflet' : {

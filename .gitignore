@@ -1,4 +1,3 @@
 .git/**
-media/place_images
-db.sqlite3
+sdb.sqlite3
 static/**

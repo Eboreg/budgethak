@@ -94,6 +94,17 @@ define([
 				_renderItem : function(ul, item) {
 					return $(template(item)).appendTo(ul);
 				},
+				_resizeMenu : function() {
+					var maxHeight = $(document).height() - $("#search-field").offset().top - $("#search-field").height() - 10;
+/*
+					if (this.menu.element.height() > maxHeight) {
+						this.menu.element.css('overflow-y', 'scroll');
+					} else {
+						this.menu.element.css('overflow-y', 'hidden');
+					}
+*/
+					this.menu.element.css('max-height', maxHeight);
+				},
 			});
 			this.$el.find("#search-field").autocomplete({
 				source : this.collection.autocomplete,

@@ -16,9 +16,6 @@ html, body, #app, #main-wrapper, #map-element, #map-wrapper {
 .icon {
     color: goldenrod;
 }
-.icon.clickable:active {
-    color: gold;
-}
 
 
 /* DATORER/PADDOR */
@@ -32,6 +29,9 @@ html, body, #app, #main-wrapper, #map-element, #map-wrapper {
     }
     #sidebar-container {
         height: 100%;
+    }
+    .icon.clickable:active {
+        color: gold;
     }
 }
 

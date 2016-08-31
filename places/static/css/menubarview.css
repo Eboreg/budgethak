@@ -6,6 +6,8 @@
 .ui-autocomplete {
     z-index: 1000;
     background: white;
+    overflow-x: hidden;
+    overflow-y: auto;
 }
 .ui-state-active {
     border: 1px solid gold !important;
@@ -40,9 +42,6 @@
 .menu-bar-element-section {
     padding: 10px 20px;
     display: inline-block;
-}
-.menu-bar-element-section.link {
-    cursor: pointer;
 }
 .menu-bar-icon {
     font-size: 24px !important;
@@ -85,6 +84,9 @@
     #search-field-container {
         display: none;
         padding-left: 0;
+    }
+    .menu-bar-element-section.link {
+        cursor: pointer;
     }
 }
 
