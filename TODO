@@ -1,16 +1,14 @@
 Klura på hur sidebar och annat ska renderas på padda.
 
-BUGG: På mobil uppdateras inte URL som den ska?! Med locationdata. (Det är för att kartstorlek ej ändras vid öppnad sidebar)
-BUGG: Öppet ställe ska stängas om det filtreras bort.
-BUGG: Ful onödig scrollbar i autocomplete, händer när namn är för långt och blir uppdelat i två rader vid hover.
-
 Skriva fler tester.
 
-Går det att sortera autocomplete-träffar så att de som matchar på namn ligger först? (antagligen inte)
+Går det att sortera autocomplete-träffar så att de som matchar på namn ligger först? -- tror det funkar nu 161228
 
 Fixa färgerna på markörer och markerclusters -- fixat för alla utom markercluster:large (vet ej när den används)
 
 Fixa ":active"-motsvarighet för touchskärm.
+
+Rensa AppView från hänvisningar till placeviews.
 
 DESIGNMÅL:
 1. Alla variabla data om en viss vy ("position", "visible", "active" m.m.) ska ej lagras i vyn utan i korresponderande modell.

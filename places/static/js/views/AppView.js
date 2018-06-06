@@ -76,7 +76,7 @@ define([
 		showPlace : function(id) {
 			var model = this.collection.get(id);
 			this.sidebarview.model.set('place', model);
-			this.placeviews[id].model.set('opened', true);
+			model.set('opened', true);
 		},
 		renderInfo : function(hash) {
 			this.sidebarview.model.set('infoOpen', true);
@@ -93,9 +93,13 @@ define([
 				this.collection.fetch();
 			}
 		},
+		// Kör filter() på alla Place:s med aktuella maxBeerPrice och openNow som parametrar
 		filterPlaces : function() {
 			var filterFunc = _.bind(function(place) {
 				place.filter({ maxBeerPrice : this.model.get('maxBeerPrice'), openNow : this.model.get('filterClosedPlaces') });
+				if (place.get('opened') && !place.get('visible')) {
+					this.sidebarview.model.close();
+				}
 			}, this);
 			this.collection.each(filterFunc);
 		},
@@ -125,18 +129,26 @@ define([
 		 * Skapar alla PlaceView:s, lägger till dem i MapView:s markercluster samt lyssnar på deras modeller så att de
 		 * kan plockas bort från kartan vid behov och läggas till igen */
 		onPlaceReset : function() {
+			var markers = [];
 			this.collection.each(function(model) {
 				if (typeof this.placeviews[model.id] == "undefined") {
 					var placeview = new PlaceView({
 						model : model,
 					});
+					placeview.markercluster = this.mapview.markercluster;
+					placeview.mapview = this.mapview;
+					markers.push(placeview.marker);
 					//if (model.get('visible'))
-					this.placeviews[model.id] = placeview;
+					//this.placeviews[model.id] = placeview;
+					this.listenTo(placeview, 'marker-click', this.onPlaceMarkerClick);
 				}
 			}, this);
+			this.mapview.markercluster.addLayers(markers);
+/*
 			this.mapview.markercluster.addLayers(_.map(this.placeviews, function(placeview) { 
 				return placeview.marker; 
 			}));
+*/
 			// Ny loop eftersom mapview.markercluster måste vara färdigpopulerad innan dessa callbacks körs:
 			_.each(this.placeviews, function(placeview) {
 				this.listenTo(placeview.model, 'change:visible', function(model, value) {

@@ -18,19 +18,36 @@ define([
 
 		initialize : function() {
 			this.marker = new L.marker([this.model.get('lat'), this.model.get('lng')], {
-				icon : settings.placeIcon,
+				icon : (this.model.get('opened') ? settings.placeIconActive : settings.placeIcon),
 			});
 			this.bindMarkerEvents();
 			this.listenTo(this.model, 'change:opened', this.onOpenedChange);
 			this.listenTo(this.model, 'change:zIndex', this.onZIndexChange);
+			this.listenTo(this.model, 'change:visible', this.onVisibleChange);
 		},
 
 		/* MODELL-EVENTS */
+		onVisibleChange : function(model, value) {
+			if (value)
+				this.markercluster.addLayer(this.marker);
+			else {
+				this.markercluster.removeLayer(this.marker);
+				this.mapview.removeMarker(this.marker);
+			}
+		},
 		onOpenedChange : function(model, value) {
 			if (value) {
 				this.marker.setIcon(settings.placeIconActive);
+				if (this.markercluster.hasLayer(this.marker)) {
+					this.markercluster.removeLayer(this.marker);
+					this.mapview.addMarker(this.marker);
+				}
 			} else {
 				this.marker.setIcon(settings.placeIcon);
+				if (this.markercluster.hasLayer(this.marker)) {
+					this.mapview.removeMarker(this.marker);
+					this.markercluster.addLayer(this.marker);
+				}
 			}
 		},
 		onZIndexChange : function(model, value) {

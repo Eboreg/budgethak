@@ -6,8 +6,7 @@
 .ui-autocomplete {
     z-index: 1000;
     background: white;
-    overflow-x: hidden;
-    overflow-y: auto;
+    overflow: hidden;
 }
 .ui-state-active {
     border: 1px solid gold !important;

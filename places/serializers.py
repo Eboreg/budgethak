@@ -33,6 +33,7 @@ class PlaceSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Place
+        fields = '__all__'
         
     def get_open_now(self, obj):
         return obj.is_open_now()

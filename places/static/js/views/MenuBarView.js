@@ -29,11 +29,13 @@ define([
 			this.menuBar.addTo(map);
 			this.$el = $("#menu-bar-container"); // Måste göra så eftersom elementet ej finns i DOM förrän nu
 			var menuBarElement = this.menuBar.getContainer();
+			// När maxpris-slider slide:as, ska text bredvid den uppdateras:
 			var slideFunc = _.bind(function(event, ui) {
 				this.$el.find("#max-beer-price").text(ui.value);
 			}, this);
 			L.DomEvent.disableClickPropagation(menuBarElement);
 			L.DomEvent.disableScrollPropagation(menuBarElement);
+			// Lägg till maxpris-slider och bind till event:
 			this.$el.find("#max-beer-price-slider").slider({
 				value : this.model.get('maxBeerPrice'),
 				min : 20,
@@ -116,7 +118,7 @@ define([
 		/* UI-EVENTS */
 		onMaxBeerPriceSliderChange : function(event, ui) {
 			this.model.set('maxBeerPrice', ui.value);
-			this.trigger('max-beer-price-change', ui.value);
+			this.trigger('max-beer-price-change', ui.value);  // Fångas av AppViews
 		},
 		onMobileMenuButtonClick : function() {
 			this.model.set('mobileMenuOpen', !this.model.get('mobileMenuOpen'));
