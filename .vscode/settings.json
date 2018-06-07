@@ -1,3 +1,5 @@
 {
-    "python.pythonPath": "${workspaceFolder}/virtenv/bin/python"
+    "python.pythonPath": "C:\\Users\\robert\\envs\\django\\Scripts\\python.exe",
+    "python.linting.enabled": true,
+    "python.linting.pylintEnabled": true
 }
