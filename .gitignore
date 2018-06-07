@@ -1,3 +1,4 @@
 .git/**
 sdb.sqlite3
 static/**
+*.pyc
