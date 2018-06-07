@@ -1,0 +1,121 @@
+/** AUTOCOMPLETE **/
+/* Vi måste override:a lite smuts-CSS från JqueryUI */
+.ui-widget {
+    font: inherit !important;
+}
+.ui-autocomplete {
+    z-index: 1000;
+    background: white;
+    overflow: hidden;
+}
+.ui-state-active {
+    border: 1px solid gold !important;
+    color: goldenrod !important;
+    background: white !important;
+    font-weight: initial !important;
+}
+.autocomplete-name {
+    font-weight: bold;
+}
+.autocomplete-address {
+    font-size: smaller;
+}
+
+/** MENU BAR **/
+#menu-bar-container {
+    white-space: nowrap;
+    margin: 10px 10px 0 10px;
+    display: flex;
+    flex-wrap: wrap;
+    color: goldenrod;
+}
+.menu-bar-row {
+    display: flex;
+}
+.menu-bar-element {
+    background-color: white;
+    padding: 0;
+    margin: 0;
+    cursor: default;
+}
+.menu-bar-element-section {
+    padding: 10px 20px;
+    display: inline-block;
+}
+.menu-bar-icon {
+    font-size: 24px !important;
+}
+.menu-bar-element-section.active .menu-bar-icon {
+    color: gold;
+}
+#search-field {
+    vertical-align: text-top;
+    border: 1px solid #ccc;
+    background: #fbfbfb;
+    width: 130px;
+}
+#search-field:focus {
+    background: white;
+}
+#max-beer-price-element {
+    display: flex;
+}
+#max-beer-price-slider {
+    margin: 6px 20px 0 10px;
+}
+
+
+/* DATORER/PADDOR */
+@media (min-width: 602px) {
+    #menu-bar-container {
+        margin-left: 0;
+        box-shadow: none !important;
+    }
+    #menu-bar-row {
+        padding-bottom: 10px;
+    }
+    .menu-bar-element {
+        margin-left: 10px;
+    }
+    #max-beer-price-slider {
+        width: 200px;
+    }
+    #search-field-container {
+        display: none;
+        padding-left: 0;
+    }
+    .menu-bar-element-section.link {
+        cursor: pointer;
+    }
+}
+
+
+/* MOBILER */
+@media (max-width: 601px) {
+    .menu-bar-row {
+        display: none;
+        flex: 0 1 auto;
+    }
+    .menu-bar-element {
+        box-shadow: none !important;
+        margin: 0;
+    }
+    #menu-bar-container {
+        background: white;
+        align-items: flex-start;
+    }
+    #max-beer-price-element,
+    #max-beer-price-row,
+    #max-beer-price-slider {
+        flex: 1 0 auto;
+    }
+    #max-beer-price-slider {
+        min-width: 100px;
+    }
+    #search-row, #search-element, #search-field-container, #search-field, #max-beer-price-container {
+        width: 100%;
+    }
+    #search-icon {
+        display: none;
+    }
+}
