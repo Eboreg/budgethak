@@ -117,9 +117,9 @@
                     <% _.each(opening_hours, function(elem) { %>
                         <tr>
                             <td>
-                                <%- sunkhak.weekdays[elem.start_weekday] %>
+                                <%- budgethak.weekdays[elem.start_weekday] %>
                                 <% if (elem.end_weekday != elem.start_weekday) { %>
-                                    - <%- sunkhak.weekdays[elem.end_weekday].toLowerCase() %>
+                                    - <%- budgethak.weekdays[elem.end_weekday].toLowerCase() %>
                                 <% } %>
                             </td>
                             <% if (elem.closed_entire_day) { %>
@@ -183,10 +183,10 @@
         </script>
 
         <script>
-            sunkhak = {};
-            sunkhak.weekdays = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
+            budgethak = {};
+            budgethak.weekdays = ['Måndag', 'Tisdag', 'Onsdag', 'Torsdag', 'Fredag', 'Lördag', 'Söndag'];
             {% autoescape off %}
-            sunkhak.bootstrap = {{ places }};
+            budgethak.bootstrap = {{ places }};
             {% endautoescape %}
         </script>
         <script data-main="{{ STATIC_URL }}js/app" src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js"></script>

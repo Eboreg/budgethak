@@ -13,7 +13,7 @@ define([
 		initialize : function() {
 			_.bindAll(this, 'autocomplete');
 			// Modeller i JSON-format, bootstrappade via Djangos IndexView
-			this.reset(sunkhak.bootstrap);
+			this.reset(budgethak.bootstrap);
 		},
 		autocomplete : function(request, response) {
 			var matches = [];

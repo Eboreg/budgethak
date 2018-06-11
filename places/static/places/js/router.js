@@ -1,4 +1,4 @@
-var sunkhak = sunkhak || {};
+var budgethak = budgethak || {};
 define([
 	'backbone',
 	'urljs',
@@ -16,13 +16,13 @@ define([
 			Url.removeHash(false);
 		},
 		renderPlace : function(id) {
-			sunkhak.appview.renderPlace(id);
+			budgethak.appview.renderPlace(id);
 		},
 		renderInfo : function() {
-			sunkhak.appview.renderInfo(this.hash);
+			budgethak.appview.renderInfo(this.hash);
 		},
 		renderMap : function() {
-			sunkhak.appview.renderMap(this.hash);
+			budgethak.appview.renderMap(this.hash);
 		},
 	});
 	return Router;

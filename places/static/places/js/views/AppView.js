@@ -1,7 +1,7 @@
 /**
  * Övergripande View som sköter den nödvändiga kommunikationen mellan views.
  */
-var sunkhak = sunkhak || {};
+var budgethak = budgethak || {};
 define([
 	'backbone',
 	'urljs',
@@ -220,14 +220,14 @@ define([
 		},
 		/* Brygga SidebarView -> Router och MapView */
 		onPlaceOpen : function(model) {
-			sunkhak.router.navigate('place/'+model.id);
+			budgethak.router.navigate('place/'+model.id);
 		},
 		onPlaceClose : function(model) {
 			model.set('opened', false);
 		},
 		/* Brygga SidebarView() -> Router och MenuBarView() */
 		onInfoOpen : function() {
-			sunkhak.router.navigate('info');
+			budgethak.router.navigate('info');
 			this.setHash();
 			this.menubarview.model.set('infoActive', true);
 		},
@@ -237,7 +237,7 @@ define([
 		},
 		/* Brygga SidebarView -> Router */
 		onSidebarClose : function() {
-			sunkhak.router.navigate('');
+			budgethak.router.navigate('');
 		},
 		/* Brygga SidebarView -> this.collection och MapView */
 		onSidebarMapMarkerClick : function(model) {

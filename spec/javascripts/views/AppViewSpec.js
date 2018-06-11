@@ -1,5 +1,5 @@
-var sunkhak = sunkhak || {};
-sunkhak.router = { navigate : function() {} };
+var budgethak = budgethak || {};
+budgethak.router = { navigate : function() {} };
 describe('Views :: AppView', function() {
 	var mockData = {
 		"slug":"foo-bar",
@@ -14,7 +14,7 @@ describe('Views :: AppView', function() {
 	
 	beforeEach(function(done) {
 		var that = this;
-		sunkhak.bootstrap = [ mockData ];
+		budgethak.bootstrap = [ mockData ];
 		require(['views/AppView', 'views/MapView', 'views/SidebarView', 'views/MenuBarView'], function(AppView, MapView, SidebarView, MenuBarView) {
 //			spyOn(MapView.prototype, 'initialize').and.callFake(function() {});
 			spyOn(MapView.prototype, 'initialize').and.callThrough();
