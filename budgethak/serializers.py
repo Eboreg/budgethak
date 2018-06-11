@@ -44,7 +44,8 @@ class PlaceListSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Place
-        fields = ('slug', 'name', 'street_address', 'city', 'lat', 'lng', 'beer_price', 'open_now',)
+#        fields = ('slug', 'name', 'street_address', 'city', 'lat', 'lng', 'beer_price', 'open_now',)
+        fields = ('slug', 'lat', 'lng', 'beer_price', 'open_now',)
         
     def get_open_now(self, obj):
         return obj.is_open_now()
