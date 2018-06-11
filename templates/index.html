@@ -7,15 +7,15 @@
         <title>Budgethak</title>
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0-rc.1/leaflet.css" />
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.0-rc.1.0/MarkerCluster.css" />
-        <link rel="stylesheet" href="{{ STATIC_URL }}css/markercluster.css" />
+        <link rel="stylesheet" href="{{ STATIC_URL }}budgethak/css/markercluster.css" />
         <link rel="stylesheet" href="{{ STATIC_URL }}lib/leaflet-usermarker/leaflet.usermarker.css" />
         <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/font-awesome/4.6.3/css/font-awesome.min.css" />
         <link rel="stylesheet" href="{{ STATIC_URL }}lib/jquery-ui-1.12.0.custom/jquery-ui.min.css" />
         <link rel="stylesheet" href="//www.w3schools.com/lib/w3.css" />
-        <link rel="stylesheet" href="{{ STATIC_URL }}css/main.css" />
-        <link rel="stylesheet" href="{{ STATIC_URL }}css/mapview.css" />
-        <link rel="stylesheet" href="{{ STATIC_URL }}css/menubarview.css" />
-        <link rel="stylesheet" href="{{ STATIC_URL }}css/sidebarview.css" />
+        <link rel="stylesheet" href="{{ STATIC_URL }}budgethak/css/main.css" />
+        <link rel="stylesheet" href="{{ STATIC_URL }}budgethak/css/mapview.css" />
+        <link rel="stylesheet" href="{{ STATIC_URL }}budgethak/css/menubarview.css" />
+        <link rel="stylesheet" href="{{ STATIC_URL }}budgethak/css/sidebarview.css" />
     </head>
     <body>
         <script id="autocompleteItem" type="text/template">
@@ -189,6 +189,6 @@
             budgethak.bootstrap = {{ places }};
             {% endautoescape %}
         </script>
-        <script data-main="{{ STATIC_URL }}js/app" src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js"></script>
+        <script data-main="{{ STATIC_URL }}budgethak/js/app" src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js"></script>
     </body>
 </html>
