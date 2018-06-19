@@ -35,10 +35,14 @@ define([
 					attributionControl : false,
 				});
 				this.bindMapEvents();
-				L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(this.map);
+//				L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(this.map);
+				L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
+					id : 'mapbox.streets',
+					'accessToken': settings.mapboxAccessToken,
+				}).addTo(this.map);
 				L.control.attribution({
 					position : 'bottomleft',
-				}).addAttribution('Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>')
+				}).addAttribution('Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>')
 					.addTo(this.map);
 				// Triggar map:load som kör this.onMapReady():
 				this.map.setView(this.model.get('location'), this.model.get('zoom'));

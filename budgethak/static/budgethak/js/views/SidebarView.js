@@ -39,7 +39,10 @@ define([
 			}
 		},
 		
+		// Anropas av this.onOpenChange() efter signal från modell
+		// addClass() sätter igång CSS-transition, efter vilken 'transitionend' triggas 
 		open : function() {
+			this.$el.show();
 			// Elementet har från början ej klass "transition" eftersom den då blir felcentrerad om url = place/:id
 			if (this.model.get('transition')) {
 				this.$el.addClass('transition');
@@ -53,6 +56,7 @@ define([
 			this.model.set('transition', true);
 			this.trigger('open');
 		},
+		// Anropas av this.onOpenChange() efter signal från modell
 		// removeClass() sätter igång CSS-transition, efter vilken 'transitionend' triggas 
 		close : function() {
 			this.$el.removeClass('open');
@@ -91,6 +95,10 @@ define([
 				this.trigger('fully-open');
 				if (null !== this.model.get('place'))
 					this.trigger('place-fully-open', this.model.get('place'));
+			} else {
+				// Har förekommit på mobil att det går att skrolla till den stängda sidebaren 
+				// om den bara ligger utanför viewporten utan att vara dold
+				this.$el.hide();
 			}
 		},
 		onCloseButtonClick : function() {

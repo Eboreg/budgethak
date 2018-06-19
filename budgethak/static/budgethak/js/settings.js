@@ -18,5 +18,6 @@ define(['leaflet'], function(L) {
 			shadowSize : [47.814, 37.645],
 			shadowAnchor : [15, 20],
 		}),
+		mapboxAccessToken: "pk.eyJ1Ijoia2xhYXR1IiwiYSI6ImNqaWxrb3lqNTI3amYzcW43M21neDZ5cnoifQ.Rqpgr56qRWaByXSqWT0OrQ",
 	};
 });
