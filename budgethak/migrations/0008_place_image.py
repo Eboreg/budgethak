@@ -9,7 +9,7 @@ from django.db import migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('places', '0007_place_beer_price_until'),
+        ('budgethak', '0007_place_beer_price_until'),
     ]
 
     operations = [

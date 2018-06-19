@@ -9,7 +9,7 @@ import budgethak.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('places', '0011_auto_20160707_0205'),
+        ('budgethak', '0011_auto_20160707_0205'),
     ]
 
     operations = [

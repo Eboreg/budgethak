@@ -9,7 +9,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('places', '0008_place_image'),
+        ('budgethak', '0008_place_image'),
     ]
 
     operations = [
