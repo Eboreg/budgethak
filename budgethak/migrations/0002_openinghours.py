@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('weekday', models.PositiveSmallIntegerField(choices=[(0, 'Monday'), (1, 'Tuesday'), (2, 'Wednesday'), (3, 'Thursday'), (4, 'Friday'), (5, 'Saturday'), (6, 'Sunday')])),
                 ('opening_time', models.TimeField()),
                 ('closing_time', models.TimeField()),
-                ('place', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='places.Place')),
+                ('place', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='budgethak.Place')),
             ],
         ),
     ]
