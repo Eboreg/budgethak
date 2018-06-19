@@ -4,8 +4,7 @@ from __future__ import unicode_literals
 
 import autoslug.fields
 from django.db import migrations, models
-import places.models
-
+import budgethak.models
 
 class Migration(migrations.Migration):
 
@@ -32,6 +31,6 @@ class Migration(migrations.Migration):
         migrations.AlterField(
             model_name='place',
             name='slug',
-            field=autoslug.fields.AutoSlugField(editable=False, populate_from=places.models.concat_name_city, unique=True),
+            field=autoslug.fields.AutoSlugField(editable=False, populate_from=budgethak.models.concat_name_city, unique=True),
         ),
     ]
