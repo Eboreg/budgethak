@@ -20,6 +20,7 @@ define([
 			this.marker = new L.marker([this.model.get('lat'), this.model.get('lng')], {
 				icon : (this.model.get('opened') ? settings.placeIconActive : settings.placeIcon),
 			});
+			// Måste lyssna på events här eftersom events-hashen körs FÖRE initialize()
 			this.bindMarkerEvents();
 			this.listenTo(this.model, 'change:opened', this.onOpenedChange);
 			this.listenTo(this.model, 'change:zIndex', this.onZIndexChange);

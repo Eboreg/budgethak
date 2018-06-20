@@ -149,12 +149,6 @@ define([
 			this.renderAllMarkers();
 			// Ny loop eftersom mapview.markercluster måste vara färdigpopulerad innan dessa callbacks körs:
 			_.each(this.placeviews, function(placeview) {
-				this.listenTo(placeview.model, 'change:visible', function(model, value) {
-					if (value)
-						this.mapview.markercluster.addLayer(placeview.marker);
-					else
-						this.mapview.markercluster.removeLayer(placeview.marker);
-				});
 				this.listenTo(placeview.model, 'change:opened', function(model, value) {
 					// När platsen är öppnad, ska markören "brytas ut" ur klustret
 					if (value) {
