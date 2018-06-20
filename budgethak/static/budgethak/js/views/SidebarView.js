@@ -140,7 +140,11 @@ define([
 		// Triggas av model:change (tills platsinfo stängts). 
 		// Reagerar på förändringar i själva modellen som this.model.place pekar på.
 		onPlaceModelChange : function(model) {
-			this.$el.find("#sidebar-element").html(this.placeTemplate(model.toJSON()));
+			if (!model.get('visible')) {
+				this.closePlace();
+			} else {
+				this.$el.find("#sidebar-element").html(this.placeTemplate(model.toJSON()));
+			}
 		},
 	});
 	return SidebarView;

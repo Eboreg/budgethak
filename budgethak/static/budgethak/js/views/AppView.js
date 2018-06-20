@@ -4,13 +4,14 @@
 var budgethak = budgethak || {};
 define([
 	'backbone',
+	'jquery',
 	'models/App',
 	'views/MapView',
 	'views/SidebarView',
 	'views/MenuBarView',
 	'views/PlaceView',
 	'collections/PlaceCollection',
-], function(Backbone, App, MapView, SidebarView, MenuBarView, PlaceView, PlaceCollection) {
+], function(Backbone, $, App, MapView, SidebarView, MenuBarView, PlaceView, PlaceCollection) {
 	var AppView = Backbone.View.extend({
 		//el: '#app',
 		tagName : 'section',
@@ -26,21 +27,21 @@ define([
 			// MenuBarView behöver ha koll på collection pga autocomplete
 			this.menubarview = new MenuBarView({ collection : this.collection });
 			this.listenTo(this.model, 'change:filterClosedPlaces change:maxBeerPrice', this.filterPlaces);
-			this.listenTo(this.mapview, 'map-click', this.closeSidebar);
+			this.listenTo(this.collection, 'change:visible', )
+			this.mapview.on('map-click', this.sidebarview.model.close, this.sidebarview.model)
 			this.listenTo(this.mapview, 'map-viewport-change', this.setHash);
 			this.menubarview.on('my-location-click', this.mapview.gotoUserLocation, this.mapview);
-//			this.listenTo(this.menubarview, 'my-location-click', this.mapview.gotoUserLocation);
 			this.listenTo(this.menubarview, 'info-icon-click', this.toggleInfoOpen);
 			this.listenTo(this.menubarview, 'filter-closed-places-click', this.toggleFilterClosedPlaces);
 			this.listenTo(this.menubarview, 'max-beer-price-change', this.setMaxBeerPrice);
-			this.listenTo(this.menubarview, 'autocomplete-select', this.flyToPlace);
+			this.listenTo(this.menubarview, 'autocomplete-select', this.flyToPlaceId);
 			this.listenTo(this.sidebarview, 'transitionend', this.mapview.reloadMapSize);
 			this.listenTo(this.sidebarview, 'place-open', this.onPlaceOpen);
 			this.listenTo(this.sidebarview, 'place-close', this.onPlaceClose);
 			this.listenTo(this.sidebarview, 'close', this.onSidebarClose);
 			this.listenTo(this.sidebarview, 'info-open', this.onInfoOpen);
 			this.listenTo(this.sidebarview, 'info-close', this.onInfoClose);
-			this.listenTo(this.sidebarview, 'map-marker-click', this.onSidebarMapMarkerClick);
+			this.listenTo(this.sidebarview, 'map-marker-click', this.flyToPlace);
 			window.setInterval(this.cron30min, 60000);
 			// Kommer PlaceCollection alltid att vara färdig-bootstrappad när vi är här?
 			//this.listenTo(this.collection, 'reset', this.renderAllMarkers);
@@ -63,19 +64,19 @@ define([
 			//this.mapview.render();
 		},
 		renderPlace : function(id) {
-			var model = this.collection.get(id);
+			var place = this.collection.get(id);
 			this.sidebarview.model.set('transition', false);
 			this.sidebarview.open();
 			this.mapview.reloadMapSize();
-			this.mapview.model.set('location', { lat : parseFloat(model.get('lat')), lng : parseFloat(model.get('lng'))});
+			this.mapview.model.set('location', { lat : parseFloat(place.get('lat')), lng : parseFloat(place.get('lng'))});
 			this.mapview.model.set('zoom', 17);
 			this.render();
 			this.showPlace(id);
 		},
 		showPlace : function(id) {
-			var model = this.collection.get(id);
-			this.sidebarview.model.set('place', model);
-			model.set('opened', true);
+			var place = this.collection.get(id);
+			this.sidebarview.model.set('place', place);
+			place.set('opened', true);
 		},
 		renderInfo : function(hash) {
 			this.sidebarview.model.set('infoOpen', true);
@@ -94,9 +95,6 @@ define([
 		filterPlaces : function() {
 			var filterFunc = _.bind(function(place) {
 				place.filter({ maxBeerPrice : this.model.get('maxBeerPrice'), openNow : this.model.get('filterClosedPlaces') });
-				if (place.get('opened') && !place.get('visible')) {
-					this.sidebarview.model.close();
-				}
 			}, this);
 			this.collection.each(filterFunc);
 		},
@@ -129,9 +127,9 @@ define([
 		 */
 		renderAllMarkers : function() {
 			var markers = [];
-			this.collection.each(function(model) {
+			this.collection.each(function(place) {
 				var placeview = new PlaceView({
-					model : model,
+					model : place,
 				});
 				placeview.markercluster = this.mapview.markercluster;
 				placeview.mapview = this.mapview;
@@ -141,11 +139,11 @@ define([
 			this.mapview.markercluster.addLayers(markers);
 		},
 		/* Brygga PlaceView -> SidebarView */
-		togglePlaceOpen : function(model) {
-			if (model.get('opened')) {
-				this.sidebarview.model.set('place', model);
+		togglePlaceOpen : function(place) {
+			if (place.get('opened')) {
+				this.sidebarview.model.set('place', place);
 				this.listenToOnce(this.sidebarview, 'fully-open', function() {
-					this.mapview.panToIfOutOfBounds([ parseFloat(model.get('lat')), parseFloat(model.get('lng')) ]);
+					this.mapview.panToIfOutOfBounds([ parseFloat(place.get('lat')), parseFloat(place.get('lng')) ]);
 				});
 			} else {
 				this.sidebarview.model.set('place', null);
@@ -165,27 +163,27 @@ define([
 			this.model.set('maxBeerPrice', value);
 		},
 		/* Brygga MenuBarView -> SidebarView och MapView */
-		flyToPlace : function(id) {
-			var zoomFunc = _.bind(function() {
-				var place = this.collection.get(this.sidebarview.model.get('place'));
+		flyToPlaceId : function(id) {
+			var place = this.collection.get(id);
+			this.flyToPlace(place);
+		},
+		/* Brygga SidebarView -> this.collection och MapView */
+		flyToPlace : function(place) {
+			var flyFunc = _.bind(function(place) {
 				this.mapview.flyTo([parseFloat(place.get('lat')), parseFloat(place.get('lng'))], true);
 			}, this);
-			this.showPlace(id);
+			this.showPlace(place.id);
 			if (this.sidebarview.model.get('fullyOpen'))
-				zoomFunc();
+				flyFunc();
 			else
-				this.listenToOnce(this.sidebarview, 'fully-open', zoomFunc);
-		},
-		/* Brygga MapView -> SidebarView */
-		closeSidebar : function() {
-			this.sidebarview.model.close();
+				this.listenToOnce(this.sidebarview, 'fully-open', flyFunc);
 		},
 		/* Brygga SidebarView -> Router */
-		onPlaceOpen : function(model) {
-			budgethak.router.navigate('place/'+model.id);
+		onPlaceOpen : function(place) {
+			budgethak.router.navigate('place/'+place.id);
 		},
-		onPlaceClose : function(model) {
-			model.set('opened', false);
+		onPlaceClose : function(place) {
+			place.set('opened', false);
 		},
 		/* Brygga SidebarView() -> Router och MenuBarView() */
 		onInfoOpen : function() {
@@ -194,17 +192,12 @@ define([
 			this.menubarview.model.set('infoActive', true);
 		},
 		/* Brygga SidebarView -> MenuBarView */
-		onInfoClose : function(model) {
+		onInfoClose : function() {
 			this.menubarview.model.set('infoActive', false);
 		},
 		/* Brygga SidebarView -> Router */
 		onSidebarClose : function() {
 			budgethak.router.navigate('');
-		},
-		/* Brygga SidebarView -> this.collection och MapView */
-		onSidebarMapMarkerClick : function(model) {
-			this.mapview.flyTo([parseFloat(model.get('lat')), parseFloat(model.get('lng'))], true);
-			this.showPlace(model.id);
 		},
 	});
 	return AppView;

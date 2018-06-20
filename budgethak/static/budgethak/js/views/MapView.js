@@ -21,8 +21,8 @@ define([
 	
 		initialize : function() {
 			this.model = new Map();
-			this.listenTo(this.model, 'change:userLocation', this.onUserLocationChange);
-			this.listenTo(this.model, 'change:zoom change:location', this.onMapViewportChange);
+			this.listenTo(this.model, 'change:userLocation', this.moveUserMarker);
+			this.listenTo(this.model, 'change:zoom change:location', function() { this.trigger('map-viewport-change'); });
 			this.markercluster = L.markerClusterGroup({
 				maxClusterRadius : settings.maxClusterRadius,
 			});
@@ -35,7 +35,6 @@ define([
 					attributionControl : false,
 				});
 				this.bindMapEvents();
-//				L.tileLayer('http://{s}.tile.osm.org/{z}/{x}/{y}.png').addTo(this.map);
 				L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
 					id : 'mapbox.streets',
 					'accessToken': settings.mapboxAccessToken,
@@ -134,15 +133,13 @@ define([
 			this.model.set('userLocation', location);
 			this.trigger('map-location-found', location);
 		},
-
-		// DOM-EVENTS
 		// Klickat någonstans på kartan men ej på en marker
 		onMapClick : function() {
 			this.trigger('map-click');
 		},
 
 		// MODELL-EVENTS
-		onUserLocationChange : function(model, value) {
+		moveUserMarker : function(model, value) {
 			if (!this.userMarker) {
 				this.userMarker = L.userMarker(value.latlng, {
 					smallIcon : true,
@@ -152,9 +149,6 @@ define([
 			}
 			this.userMarker.setLatLng(value.latlng);
 			this.userMarker.setAccuracy(value.accuracy);
-		},
-		onMapViewportChange : function() {
-			this.trigger('map-viewport-change');
 		},
 
 		/**
