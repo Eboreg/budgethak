@@ -169,8 +169,8 @@ define([
 		},
 		/* Brygga SidebarView -> this.collection och MapView */
 		flyToPlace : function(place) {
-			var flyFunc = _.bind(function(place) {
-				this.mapview.flyTo([parseFloat(place.get('lat')), parseFloat(place.get('lng'))], true);
+			var flyFunc = _.bind(function() {
+				this.mapview.flyTo([parseFloat(this.sidebarview.place.get('lat')), parseFloat(this.sidebarview.place.get('lng'))], true);
 			}, this);
 			this.showPlace(place.id);
 			if (this.sidebarview.model.get('fullyOpen'))
