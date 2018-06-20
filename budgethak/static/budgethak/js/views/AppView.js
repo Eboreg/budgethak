@@ -16,7 +16,6 @@ define([
 		tagName : 'section',
 		id : 'app',
 		collection : new PlaceCollection(),
-		placeviews : {},
 		
 		initialize : function() {
 			this.model = new App();
@@ -27,14 +26,14 @@ define([
 			// MenuBarView behöver ha koll på collection pga autocomplete
 			this.menubarview = new MenuBarView({ collection : this.collection });
 			this.listenTo(this.model, 'change:filterClosedPlaces change:maxBeerPrice', this.filterPlaces);
-			this.listenTo(this.mapview, 'map-click', this.onMapClick);
+			this.listenTo(this.mapview, 'map-click', this.sidebarview.model.close);
 			this.listenTo(this.mapview, 'map-viewport-change', this.setHash);
-			this.listenTo(this.menubarview, 'my-location-click', this.onMyLocationClick);
-			this.listenTo(this.menubarview, 'info-icon-click', this.onInfoIconClick);
-			this.listenTo(this.menubarview, 'filter-closed-places-click', this.onFilterClosedPlacesClick);
-			this.listenTo(this.menubarview, 'max-beer-price-change', this.onMaxBeerPriceChange);
-			this.listenTo(this.menubarview, 'autocomplete-select', this.onAutocompleteSelect);
-			this.listenTo(this.sidebarview, 'transitionend', this.onSidebarTransitionEnd);
+			this.listenTo(this.menubarview, 'my-location-click', this.mapview.gotoUserLocation);
+			this.listenTo(this.menubarview, 'info-icon-click', this.toggleInfoOpen);
+			this.listenTo(this.menubarview, 'filter-closed-places-click', this.toggleFilterClosedPlaces);
+			this.listenTo(this.menubarview, 'max-beer-price-change', this.setMaxBeerPrice);
+			this.listenTo(this.menubarview, 'autocomplete-select', this.flyToPlace);
+			this.listenTo(this.sidebarview, 'transitionend', this.mapview.reloadMapSize);
 			this.listenTo(this.sidebarview, 'place-open', this.onPlaceOpen);
 			this.listenTo(this.sidebarview, 'place-close', this.onPlaceClose);
 			this.listenTo(this.sidebarview, 'close', this.onSidebarClose);
@@ -43,8 +42,8 @@ define([
 			this.listenTo(this.sidebarview, 'map-marker-click', this.onSidebarMapMarkerClick);
 			window.setInterval(this.cron30min, 60000);
 			// Kommer PlaceCollection alltid att vara färdig-bootstrappad när vi är här?
-			//this.listenTo(this.collection, 'reset', this.onPlaceReset);
-			this.onPlaceReset();
+			//this.listenTo(this.collection, 'reset', this.renderAllMarkers);
+			this.renderAllMarkers();
 		},
 		render : function() {
 			this.sidebarview.render();
@@ -122,48 +121,26 @@ define([
 			}
 		},
 
-		renderAllMarkers : function() {
-			var markers = [];
-			this.collection.each(function(model) {
-				if (typeof this.placeviews[model.id] == "undefined") {
-					var placeview = new PlaceView({
-						model : model,
-					});
-					placeview.markercluster = this.mapview.markercluster;
-					placeview.mapview = this.mapview;
-					markers.push(placeview.marker);
-					this.listenTo(placeview, 'marker-click', this.onPlaceMarkerClick);
-				}
-			}, this);
-			this.mapview.markercluster.addLayers(markers);
-		},
-
-		/* MODELL-/COLLECTION-EVENTS */
-
 		/* Brygga MapView <-> PlaceView
 		 * Skapar alla PlaceView:s, lägger till dem i MapView:s markercluster samt lyssnar på deras modeller så att de
 		 * kan plockas bort från kartan vid behov och läggas till igen 
 		 * Körs när PlaceCollection har resettats
 		 */
-		onPlaceReset : function() {
-			this.renderAllMarkers();
-			// Ny loop eftersom mapview.markercluster måste vara färdigpopulerad innan dessa callbacks körs:
-			_.each(this.placeviews, function(placeview) {
-				this.listenTo(placeview.model, 'change:opened', function(model, value) {
-					// När platsen är öppnad, ska markören "brytas ut" ur klustret
-					if (value) {
-						this.mapview.markercluster.removeLayer(placeview.marker);
-						this.mapview.addMarker(placeview.marker);
-					} else {
-						this.mapview.removeMarker(placeview.marker);
-						this.mapview.markercluster.addLayer(placeview.marker);
-					}
+		renderAllMarkers : function() {
+			var markers = [];
+			this.collection.each(function(model) {
+				var placeview = new PlaceView({
+					model : model,
 				});
-				this.listenTo(placeview, 'marker-click', this.onPlaceMarkerClick);
+				placeview.markercluster = this.mapview.markercluster;
+				placeview.mapview = this.mapview;
+				markers.push(placeview.marker);
+				this.listenTo(placeview, 'marker-click', this.togglePlaceOpen);
 			}, this);
+			this.mapview.markercluster.addLayers(markers);
 		},
 		/* Brygga PlaceView -> SidebarView */
-		onPlaceMarkerClick : function(model) {
+		togglePlaceOpen : function(model) {
 			if (model.get('opened')) {
 				this.sidebarview.model.set('place', model);
 				this.listenToOnce(this.sidebarview, 'fully-open', function() {
@@ -173,29 +150,21 @@ define([
 				this.sidebarview.model.set('place', null);
 			}
 		},
-		/* Brygga MenuBarView -> MapView */
-		onMyLocationClick : function() {
-			this.mapview.gotoUserLocation();
-		},
 		/* Brygga MenuBarView -> SidebarView 
 		 * När MenuBarView:s info-icon klickas, ändrar vi Sidebar:s infoOpen så får SidebarView agera på detta */
-		onInfoIconClick : function() {
+		toggleInfoOpen : function() {
 			this.sidebarview.model.set('infoOpen', this.menubarview.model.get('infoActive'));
 		},
 		/* Brygga MenuBarView -> this.collection -> PlaceView */
-		onFilterClosedPlacesClick : function(value) {
+		toggleFilterClosedPlaces : function(value) {
 			this.model.set('filterClosedPlaces', value);
 		},
 		/* Brygga MenuBarView -> this.collection -> PlaceView */
-		onMaxBeerPriceChange : function(value) {
+		setMaxBeerPrice : function(value) {
 			this.model.set('maxBeerPrice', value);
 		},
-		/* Brygga MapView -> SidebarView och MenuBarView */
-		onMapClick : function() {
-			this.sidebarview.model.close();
-		},
 		/* Brygga MenuBarView -> SidebarView och MapView */
-		onAutocompleteSelect : function(id) {
+		flyToPlace : function(id) {
 			var zoomFunc = _.bind(function() {
 				var place = this.collection.get(this.sidebarview.model.get('place'));
 				this.mapview.flyTo([parseFloat(place.get('lat')), parseFloat(place.get('lng'))], true);
@@ -205,10 +174,6 @@ define([
 				zoomFunc();
 			else
 				this.listenToOnce(this.sidebarview, 'fully-open', zoomFunc);
-		},
-		/* Brygga SidebarView -> MapView */
-		onSidebarTransitionEnd : function() {
-			this.mapview.reloadMapSize();
 		},
 		/* Brygga SidebarView -> Router och MapView */
 		onPlaceOpen : function(model) {
