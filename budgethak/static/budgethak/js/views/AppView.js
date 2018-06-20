@@ -26,9 +26,10 @@ define([
 			// MenuBarView behöver ha koll på collection pga autocomplete
 			this.menubarview = new MenuBarView({ collection : this.collection });
 			this.listenTo(this.model, 'change:filterClosedPlaces change:maxBeerPrice', this.filterPlaces);
-			this.mapview.on('map-click', this.sidebarview.model.close);
+			this.listenTo(this.mapview, 'map-click', this.closeSidebar);
 			this.listenTo(this.mapview, 'map-viewport-change', this.setHash);
-			this.menubarview.on('my-location-click', this.mapview.gotoUserLocation);
+			this.menubarview.on('my-location-click', this.mapview.gotoUserLocation, this.mapview);
+//			this.listenTo(this.menubarview, 'my-location-click', this.mapview.gotoUserLocation);
 			this.listenTo(this.menubarview, 'info-icon-click', this.toggleInfoOpen);
 			this.listenTo(this.menubarview, 'filter-closed-places-click', this.toggleFilterClosedPlaces);
 			this.listenTo(this.menubarview, 'max-beer-price-change', this.setMaxBeerPrice);
@@ -175,7 +176,11 @@ define([
 			else
 				this.listenToOnce(this.sidebarview, 'fully-open', zoomFunc);
 		},
-		/* Brygga SidebarView -> Router och MapView */
+		/* Brygga MapView -> SidebarView */
+		closeSidebar : function() {
+			this.sidebarview.model.close();
+		},
+		/* Brygga SidebarView -> Router */
 		onPlaceOpen : function(model) {
 			budgethak.router.navigate('place/'+model.id);
 		},
