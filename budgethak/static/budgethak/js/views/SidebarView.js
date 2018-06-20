@@ -67,6 +67,7 @@ define([
 			this.place = null;
 			this.trigger('info-open');
 		},
+		// Stänger inte själva rutan
 		closeInfo : function() {
 			this.trigger('info-close');
 		},
@@ -82,6 +83,7 @@ define([
 			} 
 			this.trigger('place-open', this.place);
 		},
+		// Stänger inte själva rutan
 		closePlace : function() {
 			this.stopListening(this.place);
 			this.trigger('place-close', this.place);
@@ -106,9 +108,6 @@ define([
 		},
 		onMapMarkerClick : function() {
 			this.trigger('map-marker-click', this.place);
-		},
-		onSwipe : function() {
-			this.model.close();
 		},
 
 		/* MODELL-EVENTS */
@@ -142,6 +141,7 @@ define([
 		onPlaceModelChange : function(model) {
 			if (!model.get('visible')) {
 				this.closePlace();
+				this.model.close();
 			} else {
 				this.$el.find("#sidebar-element").html(this.placeTemplate(model.toJSON()));
 			}
