@@ -21,7 +21,7 @@ from django.views.generic import TemplateView
 from rest_framework import routers
 from .views import IndexView, PlaceViewSet
 
-router = routers.DefaultRouter()
+router = routers.SimpleRouter()
 router.register(r'^api/places', PlaceViewSet)
 
 urlpatterns = static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

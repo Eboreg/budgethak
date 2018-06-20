@@ -8,9 +8,8 @@ define([
 	'underscore',
 	'leaflet',
 	'settings',
-	'jquery',
 	'models/Place',
-], function(Backbone, _, L, settings, $) {
+], function(Backbone, _, L, settings) {
 	var PlaceView = Backbone.View.extend({
 		markerEvents : {
 			'click' : 'onMarkerClick', 

@@ -1,14 +1,12 @@
 # -*- coding: utf-8 -*-
 
-#from django.shortcuts import render
 import json
-from rest_framework import viewsets
-from rest_framework.response import Response
-from rest_framework.renderers import JSONRenderer
-from .serializers import PlaceSerializer, PlaceListSerializer
-from .models import Place
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateView
+from rest_framework import viewsets
+from rest_framework.response import Response
+from .serializers import PlaceSerializer, PlaceListSerializer
+from .models import Place
 
 """
 REST-API.

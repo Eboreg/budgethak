@@ -9,6 +9,11 @@ define([
 			zIndex : 0,
 		},
 		
+		url : function() {
+			var origUrl = Backbone.Model.prototype.url.call(this);
+			return origUrl + (origUrl.charAt(origUrl.length - 1) == '/' ? '' : '/');
+		},
+		
 		initialize : function() {
 			this.on('change:opened', function(model, value) {
 				if (value)
