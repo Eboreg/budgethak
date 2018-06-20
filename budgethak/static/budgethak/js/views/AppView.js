@@ -4,14 +4,13 @@
 var budgethak = budgethak || {};
 define([
 	'backbone',
-	'urljs',
 	'models/App',
 	'views/MapView',
 	'views/SidebarView',
 	'views/MenuBarView',
 	'views/PlaceView',
 	'collections/PlaceCollection',
-], function(Backbone, Url, App, MapView, SidebarView, MenuBarView, PlaceView, PlaceCollection) {
+], function(Backbone, App, MapView, SidebarView, MenuBarView, PlaceView, PlaceCollection) {
 	var AppView = Backbone.View.extend({
 		//el: '#app',
 		tagName : 'section',
@@ -82,8 +81,6 @@ define([
 			this.sidebarview.model.set('infoOpen', true);
 			this.menubarview.model.set('infoActive', true);
 			this.hashToMapModel(hash);
-//			this.mapview.render();
-//			this.$el.append(this.mapview.render().el);
 			this.render();
 		},
 		cron30min : function() {
@@ -103,6 +100,7 @@ define([
 			}, this);
 			this.collection.each(filterFunc);
 		},
+		// Sätter url:ens hashsträng enligt data från map-modellen
 		setHash : function() {
 			var location = this.mapview.model.get('location');
 			var hash = '#'+
@@ -112,6 +110,7 @@ define([
 			if (history.replaceState)
 				history.replaceState(null, null, window.location.pathname+hash);
 		},
+		// Tar hash-strängen och skickar dess data till map-modellen (motsatsen till setHash())
 		hashToMapModel : function(hash) {
 			var arr = hash.split("/");
 			if (arr.length < 3)
@@ -122,13 +121,8 @@ define([
 				return true;
 			}
 		},
-		
-		/* MODELL-/COLLECTION-EVENTS */
 
-		/* Brygga MapView <-> PlaceView
-		 * Skapar alla PlaceView:s, lägger till dem i MapView:s markercluster samt lyssnar på deras modeller så att de
-		 * kan plockas bort från kartan vid behov och läggas till igen */
-		onPlaceReset : function() {
+		renderAllMarkers : function() {
 			var markers = [];
 			this.collection.each(function(model) {
 				if (typeof this.placeviews[model.id] == "undefined") {
@@ -138,17 +132,21 @@ define([
 					placeview.markercluster = this.mapview.markercluster;
 					placeview.mapview = this.mapview;
 					markers.push(placeview.marker);
-					//if (model.get('visible'))
-					//this.placeviews[model.id] = placeview;
 					this.listenTo(placeview, 'marker-click', this.onPlaceMarkerClick);
 				}
 			}, this);
 			this.mapview.markercluster.addLayers(markers);
-/*
-			this.mapview.markercluster.addLayers(_.map(this.placeviews, function(placeview) { 
-				return placeview.marker; 
-			}));
-*/
+		},
+
+		/* MODELL-/COLLECTION-EVENTS */
+
+		/* Brygga MapView <-> PlaceView
+		 * Skapar alla PlaceView:s, lägger till dem i MapView:s markercluster samt lyssnar på deras modeller så att de
+		 * kan plockas bort från kartan vid behov och läggas till igen 
+		 * Körs när PlaceCollection har resettats
+		 */
+		onPlaceReset : function() {
+			this.renderAllMarkers();
 			// Ny loop eftersom mapview.markercluster måste vara färdigpopulerad innan dessa callbacks körs:
 			_.each(this.placeviews, function(placeview) {
 				this.listenTo(placeview.model, 'change:visible', function(model, value) {
