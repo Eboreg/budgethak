@@ -24,7 +24,7 @@ define([
 		place : null,
 		
 		initialize : function() {
-			this.model = new Sidebar();
+			this.model = Sidebar;
 			this.$el.append('<div id="sidebar-element" class="w3-container"></div>');
 			_.bindAll(this, 'onMapMarkerClick', 'onCloseButtonClick');
 			this.listenTo(this.model, 'change:open', this.onOpenChange);

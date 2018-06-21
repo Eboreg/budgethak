@@ -21,13 +21,12 @@ define([
 			});
 			// Måste lyssna på events här eftersom events-hashen körs FÖRE initialize()
 			this.bindMarkerEvents();
-			this.listenTo(this.model, 'change:opened', this.onOpenedChange);
-			this.listenTo(this.model, 'change:zIndex', this.onZIndexChange);
-			this.listenTo(this.model, 'change:visible', this.onVisibleChange);
+			this.listenTo(this.model, 'change:opened', this.toggleOpened);
+			this.listenTo(this.model, 'change:visible', this.toggleVisible);
 		},
 
 		/* MODELL-EVENTS */
-		onVisibleChange : function(model, value) {
+		toggleVisible : function(model, value) {
 			if (value)
 				this.markercluster.addLayer(this.marker);
 			else {
@@ -35,23 +34,22 @@ define([
 				this.mapview.removeMarker(this.marker);
 			}
 		},
-		onOpenedChange : function(model, value) {
+		toggleOpened : function(model, value) {
 			if (value) {
 				this.marker.setIcon(settings.placeIconActive);
 				if (this.markercluster.hasLayer(this.marker)) {
 					this.markercluster.removeLayer(this.marker);
 					this.mapview.addMarker(this.marker);
 				}
+				this.marker.setZIndexOffset(1000);
 			} else {
 				this.marker.setIcon(settings.placeIcon);
 				if (this.markercluster.hasLayer(this.marker)) {
 					this.mapview.removeMarker(this.marker);
 					this.markercluster.addLayer(this.marker);
 				}
+				this.marker.setZIndexOffset(0);
 			}
-		},
-		onZIndexChange : function(model, value) {
-			this.marker.setZIndexOffset(value);
 		},
 
 		/* DOM-EVENTS */

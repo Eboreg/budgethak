@@ -19,7 +19,7 @@ define([
 		collection : PlaceCollection,
 		
 		initialize : function() {
-			this.model = new App();
+			this.model = App;
 			_.bindAll(this, 'cron30min');
 			this.$el.html('<div id="main-wrapper"><div id="map-wrapper"><div id="map-element"></div></div></div>');
 			this.mapview = new MapView({ el : this.$("#map-element")[0] });

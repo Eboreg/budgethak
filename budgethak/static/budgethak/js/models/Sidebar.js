@@ -33,5 +33,5 @@ define([
 			this.set('open', this.isOpen());
 		},
 	});
-	return Sidebar;
+	return new Sidebar();
 });

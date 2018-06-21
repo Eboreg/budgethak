@@ -10,5 +10,5 @@ define([
 			searchFieldOpen : false, // searchFieldOpen är ett deskriptivt fält, inte något som events ska reagera på utan som bara ska kollas
 		},
 	});
-	return MenuBar;
+	return new MenuBar();
 });

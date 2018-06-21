@@ -6,23 +6,14 @@ define([
 		defaults : {
 			visible : true,
 			opened : false,
-			zIndex : 0,
 		},
 		
 		url : function() {
+			// Fix för trasiga REST-requests (utan trailing slash)
 			var origUrl = Backbone.Model.prototype.url.call(this);
 			return origUrl + (origUrl.charAt(origUrl.length - 1) == '/' ? '' : '/');
 		},
 		
-		initialize : function() {
-			this.on('change:opened', function(model, value) {
-				if (value)
-					this.set('zIndex', 1000);
-				else
-					this.set('zIndex', 0);
-			});
-		},
-
 		// options.maxBeerPrice == maxpris på öl
 		// options.openNow == true om sådant filter ska tillämpas
 		filter : function(options) {

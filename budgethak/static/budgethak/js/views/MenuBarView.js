@@ -13,7 +13,7 @@ define([
 ], function (Backbone, _, MenuBar, settings, L, $) {
 	var MenuBarView = Backbone.View.extend({
 		initialize: function () {
-			this.model = new MenuBar();
+			this.model = MenuBar;
 			_.bindAll(this, 'onMobileMenuButtonClick', 'onMyLocationClick', 'onFilterClosedPlacesClick', 'onSearchIconClick',
 				'onInfoIconClick', 'setupAutocomplete', 'onMaxBeerPriceSliderChange');
 			this.menuBar = L.control({

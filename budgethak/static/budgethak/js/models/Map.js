@@ -11,5 +11,5 @@ define([
 			userMarkerSet : false,
 		},
 	});
-	return Map;
+	return new Map();
 });

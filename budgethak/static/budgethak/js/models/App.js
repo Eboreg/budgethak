@@ -7,5 +7,5 @@ define([
 			maxBeerPrice : 40,
 		},
 	});
-	return App;
+	return new App();
 });

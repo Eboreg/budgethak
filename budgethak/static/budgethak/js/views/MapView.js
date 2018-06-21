@@ -2,12 +2,10 @@ define([
 	'backbone',
 	'underscore',
 	'leaflet',
-	'leaflet-markercluster',
 	'settings',
 	'models/Map',
-	'urljs',
 	'leaflet-usermarker',
-], function(Backbone, _, L, markercluster, settings, Map, Url) {
+], function(Backbone, _, L, settings, Map) {
 	var MapView = Backbone.View.extend({
 		id : 'map-element',
 		// Vi kan inte använda events-hashen eftersom den behandlas före initialize(), varför ej map:* kommer att funka
@@ -20,7 +18,7 @@ define([
 		},
 	
 		initialize : function() {
-			this.model = new Map();
+			this.model = Map;
 			this.listenTo(this.model, 'change:userLocation', this.moveUserMarker);
 			this.listenTo(this.model, 'change:zoom change:location', function() { this.trigger('map-viewport-change'); });
 			this.markercluster = L.markerClusterGroup({
