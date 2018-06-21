@@ -6,11 +6,6 @@ Fixa ":active"-motsvarighet för touchskärm.
 
 Rensa AppView från hänvisningar till placeviews.
 
-Sökfält:
-* Elementet ska ej autostängas om det är text i fältet
-* Om elementet stängs manuellt, ska ändå ev text finnas kvar
-* Kör autocomplete när fältet aktiveras, ej bara när texten i det ändras
-
 DESIGNMÅL:
 1. Alla variabla data om en viss vy ("position", "visible", "active" m.m.) ska ej lagras i vyn utan i korresponderande modell.
 2. Vyer ska endast uppdatera DOM på signal från modell. Modellens state styr vyn. (Undantag: panorering m.m. i kartan)

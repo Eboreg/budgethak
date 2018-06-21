@@ -138,7 +138,6 @@ define([
 		},
 		onSearchIconClick: function () {
 			if (this.model.get("searchFieldOpen") == false) {
-				//			if (this.$el.find("#search-field-container.open").length == 0) {
 				this.openSearchField();
 			}
 		},
