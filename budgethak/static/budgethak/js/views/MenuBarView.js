@@ -15,7 +15,7 @@ define([
 		initialize : function() {
 			this.model = new MenuBar();
 			_.bindAll(this, 'onMobileMenuButtonClick', 'onMyLocationClick', 'onFilterClosedPlacesClick', 'onSearchIconClick',
-				'onInfoIconClick', 'closeSearchField', 'setupAutocomplete', 'onMaxBeerPriceSliderChange');
+				'onInfoIconClick', 'closeSearchField', 'closeSearchFieldIfEmpty', 'setupAutocomplete', 'onMaxBeerPriceSliderChange');
 			this.menuBar = L.control({ position : 'topleft' });
 			this.menuBar.onAdd = _.bind(function() {
 				var template = _.template($("#menuBar").html());
@@ -112,7 +112,7 @@ define([
 				minLength : 1,
 				select : selectFunc,
 			});
-			this.$el.focus(function() {
+			this.$el.find("#search-field").focus(function() {
 				$(this).autocomplete("search");
 			});
 		},
