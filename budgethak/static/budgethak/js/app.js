@@ -1,6 +1,9 @@
+const debug = true;
+const version = debug ? (new Date()).getTime() : "2018.1";
+
 require.config({
 	waitSeconds : 120,
-	urlArgs: "bust=" +  (new Date()).getTime(), // Bara för devmiljö!!
+	urlArgs: "v=" + version,
 	//baseUrl : '/static', 
 	paths : {
 		'underscore' : [
@@ -21,13 +24,10 @@ require.config({
 			'../../lib/jquery.touchSwipe.min',
 		],
 		'leaflet' : [
-//			'//cdnjs.cloudflare.com/ajax/libs/leaflet/1.0.0-rc.1/leaflet',
 			'//cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/leaflet',
 			'../../lib/leaflet/leaflet',
 		],
 		'leaflet-markercluster' : [
-//			'//cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.0-rc.1.0/leaflet.markercluster',
-//			'//cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.0.0-rc.1.0/leaflet.markercluster-src',
 			'//cdnjs.cloudflare.com/ajax/libs/leaflet.markercluster/1.3.0/leaflet.markercluster-src',
 			'../../lib/leaflet.markercluster',
 		],
