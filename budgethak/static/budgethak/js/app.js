@@ -1,5 +1,6 @@
 require.config({
 	waitSeconds : 120,
+	urlArgs: "bust=" +  (new Date()).getTime(), // Bara för devmiljö!!
 	//baseUrl : '/static', 
 	paths : {
 		'underscore' : [
