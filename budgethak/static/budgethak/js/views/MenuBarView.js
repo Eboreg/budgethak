@@ -64,19 +64,23 @@ define([
 			// På mobiler ska sökfältet alltid synas när menyn är öppen
 			if ($(window).width() > 600) {
 				this.$el.find("#search-field").focusout(this.closeSearchFieldIfEmpty);
-			} else { // ... och därför sätter vi upp autocomplete en gång för alla (på mobil):
-				this.setupAutocomplete();
-			}
+			} 
+			this.setupAutocomplete();
 		},
 		openSearchField : function() {
 			if ($(window).width() > 600) {
-				this.$el.find("#search-field-container").show('fast', this.setupAutocomplete);
+				// Ersätt med CSS-transition
+				// Kör ej setupAutocomplete varje gång
+//				this.$el.find("#search-field-container").show('fast', this.setupAutocomplete);
+				this.$el.find("#search-field-container").addClass("open");
 				this.$el.find("#search-field").focus();
 			}
 		},
 		closeSearchField : function() {
 			if ($(window).width() > 600) {
-				this.$el.find("#search-field-container").hide('fast');
+				// Ersätt med CSS-transition
+//				this.$el.find("#search-field-container").hide('fast');
+				this.$el.find("#search-field-container").removeClass("open");
 //				this.$el.find("#search-field").val("");
 			}
 		},

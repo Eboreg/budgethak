@@ -81,8 +81,13 @@
         width: 200px;
     }
     #search-field-container {
-        display: none;
+        transition: width 0.5s;
+/*        display: none;*/
+        width: 0;
         padding-left: 0;
+    }
+    #search-field-container.open {
+        width: 150px;
     }
     .menu-bar-element-section.link {
         cursor: pointer;
