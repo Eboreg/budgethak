@@ -5,6 +5,7 @@ define([
 	'settings',
 	'models/Map',
 	'leaflet-usermarker',
+	'leaflet-markercluster',
 ], function(Backbone, _, L, settings, Map) {
 	var MapView = Backbone.View.extend({
 		id : 'map-element',
