@@ -5,6 +5,7 @@ define(['leaflet'], function(L) {
 		maxClusterRadius : 15,
 		maxBeerPrice : 40,
 		minBeerPrice : 20,
+		maxAutocompleteMatches : 10,
 		beerPriceSliderStep : 5,
 		placeIcon : L.icon({
 			iconUrl : '/media/beermug-dark.png',

@@ -96,14 +96,14 @@ define([
 				this.trigger('autocomplete-select', ui.item.id);
 			}, this);
 			$.widget('ui.autocomplete', $.ui.autocomplete, {
-				_renderMenu: function (ul, items) {
+/* 				_renderMenu: function (ul, items) {
 					var that = this;
 					$.each(items, function (index, item) {
 						if (index < 10)
 							that._renderItemData(ul, item);
 					});
 				},
-				_renderItem: function (ul, item) {
+ */				_renderItem: function (ul, item) {
 					return $(template(item)).appendTo(ul);
 				},
 				_resizeMenu: function () {
