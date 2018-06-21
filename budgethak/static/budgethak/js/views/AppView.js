@@ -16,7 +16,7 @@ define([
 		//el: '#app',
 		tagName : 'section',
 		id : 'app',
-		collection : new PlaceCollection(),
+		collection : PlaceCollection,
 		
 		initialize : function() {
 			this.model = new App();

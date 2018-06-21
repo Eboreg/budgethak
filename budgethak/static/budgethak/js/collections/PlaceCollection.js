@@ -53,5 +53,5 @@ define([
 			response(matches);
 		},
 	});
-	return PlaceCollection;
+	return new PlaceCollection();
 });
