@@ -63,8 +63,9 @@ define([
 			this.$el.find("#info-icon").click(this.onInfoIconClick);
 			// På mobiler ska sökfältet alltid synas när menyn är öppen
 			if ($(window).width() > 600) {
-				var transitionendFunc = _.bind(function() {
+				var transitionendFunc = _.bind(function(event) {
 					// searchFieldOpen är ett deskriptivt fält, inte något som events ska reagera på utan som bara ska kollas
+					console.log(event);
 					this.model.set("searchFieldOpen", !this.model.get("searchFieldOpen"));
 					if (this.model.get("searchFieldOpen")) {
 						this.$el.find("#search-field").focus();
