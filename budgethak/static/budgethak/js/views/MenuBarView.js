@@ -15,7 +15,7 @@ define([
 		initialize : function() {
 			this.model = new MenuBar();
 			_.bindAll(this, 'onMobileMenuButtonClick', 'onMyLocationClick', 'onFilterClosedPlacesClick', 'onSearchIconClick',
-				'onInfoIconClick', 'closeSearchField', 'closeSearchFieldIfEmpty', 'setupAutocomplete', 'onMaxBeerPriceSliderChange');
+				'onInfoIconClick', 'closeSearchField', 'setupAutocomplete', 'onMaxBeerPriceSliderChange');
 			this.menuBar = L.control({ position : 'topleft' });
 			this.menuBar.onAdd = _.bind(function() {
 				var template = _.template($("#menuBar").html());
@@ -63,25 +63,19 @@ define([
 			this.$el.find("#info-icon").click(this.onInfoIconClick);
 			// På mobiler ska sökfältet alltid synas när menyn är öppen
 			if ($(window).width() > 600) {
-				this.$el.find("#search-field").focusout(this.closeSearchFieldIfEmpty);
+				this.$el.find("#search-field").focusout(this.closeSearchField);
 			} 
 			this.setupAutocomplete();
 		},
 		openSearchField : function() {
-			if ($(window).width() > 600) {
-				this.$el.find("#search-field-container").addClass("open");
-				this.$el.find("#search-field").focus();
-			}
+			this.$el.find("#search-field-container")
+				.addClass("open")
+				.one("transitionend", function() {
+					$(this).find("#search-field").focus();
+				});
 		},
 		closeSearchField : function() {
-			if ($(window).width() > 600) {
-				this.$el.find("#search-field-container").removeClass("open");
-			}
-		},
-		closeSearchFieldIfEmpty : function() {
-			if (this.$el.find("#search-field").val() == "") {
-				this.closeSearchField();
-			}
+			this.$el.find("#search-field-container").removeClass("open");
 		},
 		setupAutocomplete : function() {
 			var template = _.template($("#autocompleteItem").html());
@@ -133,8 +127,6 @@ define([
 		onSearchIconClick : function() {
 			if (this.$el.find("#search-field-container.open").length == 0) {
 				this.openSearchField();
-			} else {
-				this.closeSearchField();
 			}
 		},
 		onInfoIconClick : function() {
