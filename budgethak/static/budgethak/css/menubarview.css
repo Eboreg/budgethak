@@ -37,6 +37,7 @@
     padding: 0;
     margin: 0;
     cursor: default;
+    overflow: hidden;
 }
 .menu-bar-element-section {
     padding: 10px 20px;
@@ -81,13 +82,14 @@
         width: 200px;
     }
     #search-field-container {
-        transition: width 0.5s;
-/*        display: none;*/
+        transition: width 0.5s, padding-right 0.5s;
         width: 0;
         padding-left: 0;
+        padding-right: 0;
     }
     #search-field-container.open {
         width: 150px;
+        padding-right: 20px;
     }
     .menu-bar-element-section.link {
         cursor: pointer;

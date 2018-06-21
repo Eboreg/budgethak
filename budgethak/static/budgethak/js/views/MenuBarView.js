@@ -69,19 +69,13 @@ define([
 		},
 		openSearchField : function() {
 			if ($(window).width() > 600) {
-				// Ersätt med CSS-transition
-				// Kör ej setupAutocomplete varje gång
-//				this.$el.find("#search-field-container").show('fast', this.setupAutocomplete);
 				this.$el.find("#search-field-container").addClass("open");
 				this.$el.find("#search-field").focus();
 			}
 		},
 		closeSearchField : function() {
 			if ($(window).width() > 600) {
-				// Ersätt med CSS-transition
-//				this.$el.find("#search-field-container").hide('fast');
 				this.$el.find("#search-field-container").removeClass("open");
-//				this.$el.find("#search-field").val("");
 			}
 		},
 		closeSearchFieldIfEmpty : function() {
@@ -137,7 +131,7 @@ define([
 			this.trigger('filter-closed-places-click', this.model.get('filterClosedPlaces'));
 		},
 		onSearchIconClick : function() {
-			if (this.$el.find("#search-field-container").css('display') == 'none') {
+			if (this.$el.find("#search-field-container.open").length == 0) {
 				this.openSearchField();
 			} else {
 				this.closeSearchField();
