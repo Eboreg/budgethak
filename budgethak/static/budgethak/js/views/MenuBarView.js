@@ -6,10 +6,11 @@ define([
 	'backbone',
 	'underscore',
 	'models/MenuBar',
+	'settings',
 	'leaflet',
 	'jquery',
 	'jquery-ui',
-], function(Backbone, _, MenuBar, L, $) {
+], function(Backbone, _, MenuBar, settings, L, $) {
 	var MenuBarView = Backbone.View.extend({
 		initialize : function() {
 			this.model = new MenuBar();
@@ -38,9 +39,9 @@ define([
 			// Lägg till maxpris-slider och bind till event:
 			this.$el.find("#max-beer-price-slider").slider({
 				value : this.model.get('maxBeerPrice'),
-				min : 20,
-				max : 40,
-				step : 5,
+				min : settings.minBeerPrice,
+				max : settings.maxBeerPrice,
+				step : settings.beerPriceSliderStep,
 				slide : slideFunc,
 				change : this.onMaxBeerPriceSliderChange,
 			});
@@ -62,7 +63,7 @@ define([
 			this.$el.find("#info-icon").click(this.onInfoIconClick);
 			// På mobiler ska sökfältet alltid synas när menyn är öppen
 			if ($(window).width() > 600) {
-				this.$el.find("#search-field").focusout(this.closeSearchField);
+				this.$el.find("#search-field").focusout(this.closeSearchFieldIfEmpty);
 			} else { // ... och därför sätter vi upp autocomplete en gång för alla (på mobil):
 				this.setupAutocomplete();
 			}
@@ -76,7 +77,12 @@ define([
 		closeSearchField : function() {
 			if ($(window).width() > 600) {
 				this.$el.find("#search-field-container").hide('fast');
-				this.$el.find("#search-field").val("");
+//				this.$el.find("#search-field").val("");
+			}
+		},
+		closeSearchFieldIfEmpty : function() {
+			if (this.$el.find("#search-field").val() == "") {
+				this.closeSearchField();
 			}
 		},
 		setupAutocomplete : function() {
@@ -98,13 +104,6 @@ define([
 				},
 				_resizeMenu : function() {
 					var maxHeight = $(document).height() - $("#search-field").offset().top - $("#search-field").height() - 10;
-/*
-					if (this.menu.element.height() > maxHeight) {
-						this.menu.element.css('overflow-y', 'scroll');
-					} else {
-						this.menu.element.css('overflow-y', 'hidden');
-					}
-*/
 					this.menu.element.css('max-height', maxHeight);
 				},
 			});
@@ -112,6 +111,9 @@ define([
 				source : this.collection.autocomplete,
 				minLength : 1,
 				select : selectFunc,
+			});
+			this.$el.focus(function() {
+				$(this).autocomplete("search");
 			});
 		},
 		

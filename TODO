@@ -2,13 +2,14 @@ Klura på hur sidebar och annat ska renderas på padda.
 
 Skriva fler tester.
 
-Går det att sortera autocomplete-träffar så att de som matchar på namn ligger först? -- tror det funkar nu 161228
-
-Fixa färgerna på markörer och markerclusters -- fixat för alla utom markercluster:large (vet ej när den används)
-
 Fixa ":active"-motsvarighet för touchskärm.
 
 Rensa AppView från hänvisningar till placeviews.
+
+Sökfält:
+* Elementet ska ej autostängas om det är text i fältet
+* Om elementet stängs manuellt, ska ändå ev text finnas kvar
+* Kör autocomplete när fältet aktiveras, ej bara när texten i det ändras
 
 DESIGNMÅL:
 1. Alla variabla data om en viss vy ("position", "visible", "active" m.m.) ska ej lagras i vyn utan i korresponderande modell.
@@ -19,3 +20,10 @@ DESIGNMÅL:
 6. Vyer är i första hand ansvariga för att hålla sina modeller uppdaterade som följd av egna DOM-händelser,
    och trigga events EFTER att så har skett.
    
+
+EV. KLART
+
+Går det att sortera autocomplete-träffar så att de som matchar på namn ligger först? -- tror det funkar nu 161228
+
+Fixa färgerna på markörer och markerclusters -- fixat för alla utom markercluster:large (vet ej när den används)
+
