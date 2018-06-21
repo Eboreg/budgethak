@@ -2,4 +2,9 @@
     font: inherit;
 }
 
-
+/* MOBILER */
+@media (max-width: 601px) {
+    .leaflet-control-attribution {
+        display: none;
+    }
+}
