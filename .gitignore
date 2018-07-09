@@ -2,3 +2,4 @@
 sdb.sqlite3
 static/**
 *.pyc
+.vscode/**
