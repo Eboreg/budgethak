@@ -10,10 +10,6 @@
     width: 100%;
     margin-bottom: 10px;
 }
-#place-map-marker,
-#close-sidebar-button {
-    cursor: pointer;
-}
 #place-map-marker {
     vertical-align: baseline;
     margin-right: 10px;

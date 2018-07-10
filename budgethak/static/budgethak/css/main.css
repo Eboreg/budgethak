@@ -30,6 +30,9 @@ html, body, #app, #main-wrapper, #map-element, #map-wrapper {
     #sidebar-container {
         height: 100%;
     }
+    .icon.clickable {
+        cursor: pointer;
+    }
     .icon.clickable:active {
         color: gold;
     }
