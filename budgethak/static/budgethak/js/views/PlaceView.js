@@ -44,7 +44,7 @@ define([
 				this.marker.setZIndexOffset(1000);
 			} else {
 				this.marker.setIcon(settings.placeIcon);
-				if (this.markercluster.hasLayer(this.marker)) {
+				if (!this.markercluster.hasLayer(this.marker)) {
 					this.mapview.removeMarker(this.marker);
 					this.markercluster.addLayer(this.marker);
 				}

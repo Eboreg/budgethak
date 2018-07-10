@@ -7,8 +7,6 @@ Fixa ":active"-motsvarighet för touchskärm.
 Rensa AppView från hänvisningar till placeviews.
 
 BUGGAR:
-Markörer verkar ej återgå till sina kluster efter stängning (öppna några, stäng dem o zooma ut).
-Testa särskilt de två närbelägna på Hornsgatan!
 
 DESIGNMÅL:
 1. Alla variabla data om en viss vy ("position", "visible", "active" m.m.) ska ej lagras i vyn utan i korresponderande modell.

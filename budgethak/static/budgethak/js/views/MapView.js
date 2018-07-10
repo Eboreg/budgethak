@@ -36,7 +36,7 @@ define([
 				this.bindMapEvents();
 				L.tileLayer('https://api.tiles.mapbox.com/v4/{id}/{z}/{x}/{y}.png?access_token={accessToken}', {
 					id : 'mapbox.streets',
-					'accessToken': settings.mapboxAccessToken,
+					accessToken: settings.mapboxAccessToken,
 				}).addTo(this.map);
 				L.control.attribution({
 					position : 'bottomleft',

@@ -27,8 +27,8 @@ define([
 			// MenuBarView behöver ha koll på collection pga autocomplete
 			this.menubarview = new MenuBarView({ collection : this.collection });
 			this.listenTo(this.model, 'change:filterClosedPlaces change:maxBeerPrice', this.filterPlaces);
-			this.listenTo(this.collection, 'change:visible', )
-			this.mapview.on('map-click', this.sidebarview.model.close, this.sidebarview.model)
+			//this.listenTo(this.collection, 'change:visible', )   // ???
+			this.mapview.on('map-click', this.sidebarview.model.close, this.sidebarview.model);
 			this.listenTo(this.mapview, 'map-viewport-change', this.setHash);
 			this.menubarview.on('my-location-click', this.mapview.gotoUserLocation, this.mapview);
 			this.listenTo(this.menubarview, 'info-icon-click', this.toggleInfoOpen);
