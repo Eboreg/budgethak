@@ -6,8 +6,8 @@ define([
 ], function(Backbone, Url) {
 	var Router = Backbone.Router.extend({
 		routes : {
-			'place/:id' : 'renderPlace',
-			'info' : 'renderInfo',
+			'place/:id/' : 'renderPlace',
+			'info/' : 'renderInfo',
 			'*default' : 'renderMap',
 		},
 		hash : Url.hash(),

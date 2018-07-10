@@ -180,14 +180,14 @@ define([
 		},
 		/* Brygga SidebarView -> Router */
 		onPlaceOpen : function(place) {
-			budgethak.router.navigate('place/'+place.id);
+			budgethak.router.navigate('place/'+place.id+'/');
 		},
 		onPlaceClose : function(place) {
 			place.set('opened', false);
 		},
 		/* Brygga SidebarView() -> Router och MenuBarView() */
 		onInfoOpen : function() {
-			budgethak.router.navigate('info');
+			budgethak.router.navigate('info/');
 			this.setHash();
 			this.menubarview.model.set('infoActive', true);
 		},
