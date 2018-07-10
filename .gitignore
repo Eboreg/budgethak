@@ -1,4 +1,5 @@
-.git/**
-sdb.sqlite3
-static/**
+/.git
+/static
 *.pyc
+**/__pycache__
+/.vscode
