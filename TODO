@@ -1,3 +1,5 @@
+Bättre layout av översta raden i place-sidebar. Dvs kanske ej tabell utan element med float och fast bredd för ikonerna.
+
 Klura på hur sidebar och annat ska renderas på padda.
 
 Skriva fler tester.

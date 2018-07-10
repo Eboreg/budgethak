@@ -36,11 +36,11 @@ class PlaceAdmin(admin.ModelAdmin):
         )
     class Media:
         css = { "all": (
-                        "admin/css/place.css", 
+                        "budgethak/admin/css/place.css", 
                         )
                }
         js = (
-              "admin/js/place.js",
+              "budgethak/admin/js/place.js",
               "https://maps.googleapis.com/maps/api/js?key=AIzaSyAiF3cmg81Ro5PHFY2iA3HOy5Hfx3Gs0Oc&libraries=places",
               )
 
