@@ -146,7 +146,7 @@ define([
 				this.listenToOnce(this.sidebarview, 'fully-open', function() {
 					MapView.panToIfOutOfBounds([ parseFloat(place.get('lat')), parseFloat(place.get('lng')) ]);
 				});
-				this.trigger('user-opened-place', place);
+				this.trigger('user-opened-place', { id : place.id });
 			} else {
 				this.sidebarview.model.set('place', null);
 				this.trigger('user-closed-sidebar');
@@ -174,20 +174,18 @@ define([
 		/* Brygga MenuBarView -> SidebarView och MapView */
 		autocompleteSelected : function(id) {
 			var place = this.collection.get(id);
-			this.trigger('user-opened-place', place)
-			this.flyToPlace(place);
-		},
-		/* Brygga SidebarView -> this.collection och MapView */
-		flyToPlace : function(place) {
-			// Uppdaterar Map-modellen redan här så att routern får rätt location- och zoom-data.
-			// Annars ändras de först när kartan panorerats klart.
-			Map.set({ 
+			this.trigger('user-opened-place', { 
+				id : place.id,
+				zoom : settings.maxZoom, 
 				location : {
 					lat : parseFloat(place.get('lat')),
 					lng : parseFloat(place.get('lng')),
 				},
-				zoom : settings.maxZoom,
 			});
+			this.flyToPlace(place);
+		},
+		/* Brygga SidebarView -> this.collection och MapView */
+		flyToPlace : function(place) {
 			var flyFunc = _.bind(function() {
 				MapView.flyTo([parseFloat(this.sidebarview.place.get('lat')), parseFloat(this.sidebarview.place.get('lng'))], true);
 			}, this);
