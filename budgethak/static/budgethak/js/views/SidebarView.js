@@ -104,6 +104,7 @@ define([
 			}
 		},
 		onCloseButtonClick : function() {
+			this.trigger('close-button-click');
 			this.model.close();
 		},
 		onMapMarkerClick : function() {

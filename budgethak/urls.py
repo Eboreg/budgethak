@@ -10,6 +10,7 @@ router = routers.SimpleRouter()
 router.register('api/places', PlaceViewSet)
 
 urlpatterns = static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+urlpatterns += router.urls
 urlpatterns += [
     path('tests/', TemplateView.as_view(template_name='index.html')),
     path('admin/', admin.site.urls),
@@ -18,7 +19,6 @@ urlpatterns += [
     path('info/', IndexView.as_view(), name="info"),
     path('', IndexView.as_view(), name="index"),
 ]
-urlpatterns += router.urls
 '''
 if settings.DEBUG:
     urlpatterns += patterns('django.contrib.staticfiles.views', url(r'^(?P<path>.*)$', 'serve'))

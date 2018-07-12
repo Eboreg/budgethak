@@ -1,29 +1,81 @@
 var budgethak = budgethak || {};
 define([
 	'backbone',
-	'urljs',
+	'underscore',
 	'views/AppView',
-], function(Backbone, Url) {
+	'models/Sidebar',
+	'models/Map',
+	'urljs',
+	'settings',
+], function(Backbone, _, AppView, Sidebar, Map, Url, settings) {
 	var Router = Backbone.Router.extend({
 		routes : {
-			'place/:id/' : 'renderPlace',
+			'place/:slug/' : 'renderPlace',
 			'info/' : 'renderInfo',
 			'*default' : 'renderMap',
 		},
-		hash : Url.hash(),
 
 		initialize : function() {
-			Url.removeHash(false);
+			var params = Url.parseQuery();
+			this.params = {
+				zoom : parseInt(params.zoom) || settings.defaultZoom,
+				lat : parseFloat(params.lat) || settings.defaultLocation.lat,
+				lng : parseFloat(params.lng) || settings.defaultLocation.lng,
+			};
 		},
-		renderPlace : function(id) {
-			budgethak.appview.renderPlace(id);
+		setUpListeners : _.once(function() {
+			this.listenTo(AppView, 'user-opened-info', function() { this.navigate('info/'); });
+			this.listenTo(AppView, 'user-opened-place', function(place) { 
+				this.navigate('place/'+place.id+'/'); 
+			});
+			this.listenTo(AppView, 'user-closed-sidebar', function() { this.navigate(''); });
+			this.listenTo(Map, 'change:zoom change:location', this.setLocationParams);
+		}),
+		renderPlace : function(slug) {
+			AppView.renderPlace(slug);
+			this.setUpListeners();
 		},
 		renderInfo : function() {
-			budgethak.appview.renderInfo(this.hash);
+			AppView.renderInfo(this.hash);
+			this.setUpListeners();
 		},
 		renderMap : function() {
-			budgethak.appview.renderMap(this.hash);
+			AppView.renderMap(this.hash);
+			this.setUpListeners();
+		},
+ 		navigate : function(fragment, options) {
+			this.setLocationParams();
+			Backbone.history.navigate(fragment + '?' + Url.stringify(this.params), options);
+			return this;
+		},
+		toggleInfoOpen : function(sidebar, isOpen) {
+			if (isOpen) {
+				this.navigate('info/');
+			} else {
+				this.navigate('');
+			}
+		},
+		togglePlaceOpen : function(sidebar, place) {
+			if (null !== place) {
+				this.navigate('place/'+place.id+'/');
+			} else {
+				this.navigate('');
+			}
+		},
+		getLocationParams : function() {
+			var latlng = Map.get('location');
+			this.params = {
+				zoom : Map.get('zoom'),
+				lat : parseFloat(latlng.lat),
+				lng : parseFloat(latlng.lng),
+			};
+		},
+		setLocationParams : function() {
+			this.getLocationParams();
+			Url.updateSearchParam("zoom", this.params.zoom);
+			Url.updateSearchParam("lat", this.params.lat);
+			Url.updateSearchParam("lng", this.params.lng);
 		},
 	});
-	return Router;
+	return new Router();
 });

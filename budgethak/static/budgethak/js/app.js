@@ -1,4 +1,4 @@
-const debug = true;
+const debug = false;
 const version = debug ? (new Date()).getTime() : "2018.1";
 
 require.config({
@@ -35,6 +35,10 @@ require.config({
 			'//cdnjs.cloudflare.com/ajax/libs/urljs/2.3.1/url.min',
 			'../../lib/url.min',
 		],
+		'history' : [
+			'//cdnjs.cloudflare.com/ajax/libs/history.js/1.8/bundled/html4+html5/native.history',
+			'../../lib/native.history',
+		],
 		'leaflet-usermarker' : '../../lib/leaflet-usermarker/leaflet.usermarker',
 		'router' : 'router',
 		'settings' : 'settings',
@@ -65,22 +69,29 @@ require.config({
 		'urljs' : {
 			exports : 'Url',
 		},
+		'history': {
+			exports : 'History',
+		},
 	},
 });
 
 var budgethak = budgethak || {};
-require(['router', 'views/AppView', 'backbone', 'settings'], function(Router, AppView, Backbone, settings) {
-	budgethak.router = new Router();
-	budgethak.appview = new AppView();
+require(['views/AppView', 'backbone', 'settings', 'router'], function(AppView, Backbone, settings, router) {
+	//budgethak.router = new Router();
+	//budgethak.appview = new AppView();
 	//$(document.body).append(budgethak.appview.render().el);
-	$(document.body).append(budgethak.appview.el);
+	//$(document.body).append(budgethak.appview.el);
+	$(document.body).append(AppView.el);
 
 	// Trigger the initial route and enable HTML5 History API support, set the
 	// root folder to '/' by default.  Change in app.js.
 	Backbone.history.start({
 		pushState : true,
+		hashChange : false,
 		root : settings.urlroot
 	});
+
+	router.setLocationParams();
 
 	// All navigation that is relative should be passed through the navigate
 	// method, to be processed by the router. If the link has a `data-bypass`

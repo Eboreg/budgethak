@@ -8,7 +8,29 @@ Fixa ":active"-motsvarighet för touchskärm.
 
 Rensa AppView från hänvisningar till placeviews.
 
+Klick på kartan ska ej stänga sidebar.
+
 BUGGAR:
+Om man t.ex. går direkt från /info till /place/... via autocomplete, lagras en rot-url med pushState emellan. Så ska ej ske.
+
+Fram/tillbaka i browsern flyttar inte kartan enligt hashen, tvärtom ändras hashen enligt kartan ...
+pushState görs nämligen innan man har "flugit" till stället i fråga (vid autocomplete), inte efter.
+
+Idag:
+Användare navigerar bakåt/framåt i webbläsaren 
+    -> router.render*() körs 
+    -> modelldata ändras 
+    -> router fångar signaler o kör navigate()
+    -> webbläsarhistorik fuckas upp
+Hur fixa så att router BARA agerar på signaler och kör navigate() när ändringar i state kommer från andra interaktioner,
+d.v.s. inte har sin grund i routern själv?
+Antagligen tänka om så att routern inte alls reagerar på förändringar i modeller, utan helt särskilda signaler från views.
+Typ: 
+    'user-opened-place' (med frivilligt location-objekt)
+    'user-closed-place'
+    'user-opened-info'
+    'user-closed-info'
+    'user-closed-sidebar'
 
 DESIGNMÅL:
 1. Alla variabla data om en viss vy ("position", "visible", "active" m.m.) ska ej lagras i vyn utan i korresponderande modell.

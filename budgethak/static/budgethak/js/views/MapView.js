@@ -4,6 +4,7 @@ define([
 	'leaflet',
 	'settings',
 	'models/Map',
+	'jquery',
 	'leaflet-usermarker',
 	'leaflet-markercluster',
 ], function(Backbone, _, L, settings, Map) {
@@ -25,7 +26,10 @@ define([
 			this.markercluster = L.markerClusterGroup({
 				maxClusterRadius : settings.maxClusterRadius,
 			});
-		},
+/* 			$(_.bind(function() {
+				this.render();
+			}, this));
+ */		},
 		render : function() {
 			if (!this.model.get('rendered')) {
 				this.map = L.map(this.el, {
@@ -44,6 +48,8 @@ define([
 					.addTo(this.map);
 				// Triggar map:load som kör this.onMapReady():
 				this.map.setView(this.model.get('location'), this.model.get('zoom'));
+			} else {
+				this.flyTo(this.model.get('location'));
 			}
 			return this;
 		},
@@ -59,13 +65,12 @@ define([
 				reloadFunc();
 			}
 		},
-		// fullZoom = bool
 		flyTo : function(latlng, fullZoom) {
 			fullZoom = fullZoom || false;
-			if (!fullZoom)
-				this.map.flyTo(latlng);
+			if (!fullZoom) 
+				this.map.flyTo(latlng, this.model.get('zoom'));
 			else
-				this.map.flyTo(latlng, 17);
+				this.map.flyTo(latlng, settings.maxZoom);
 		},
 		panToIfOutOfBounds : function(latlng) {
 			try {
@@ -178,6 +183,5 @@ define([
 			}, this);
 		},
 	});
-	return MapView;
+	return new MapView();
 });
-

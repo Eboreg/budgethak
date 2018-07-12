@@ -5,8 +5,8 @@ define([
 	var Map = Backbone.Model.extend({
 		defaults : {
 			rendered : false,
-			zoom : 13,
-			location : { lat : 59.3219, lng : 18.0720 },
+			zoom : settings.defaultZoom,
+			location : settings.defaultLocation,
 			userLocation : null,
 			userMarkerSet : false,
 		},

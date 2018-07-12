@@ -1,6 +1,8 @@
 define(['leaflet'], function(L) {
 	return {
 		urlroot : '/',
+		defaultZoom : 13,
+		defaultLocation : { lat : 59.3219, lng : 18.0720 },
 		maxZoom : 17,
 		maxClusterRadius : 15,
 		maxBeerPrice : 40,
