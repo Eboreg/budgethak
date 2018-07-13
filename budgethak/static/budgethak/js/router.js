@@ -7,21 +7,29 @@ define([
 	'models/Map',
 	'urljs',
 	'settings',
-], function(Backbone, _, AppView, Sidebar, Map, Url, settings) {
+], function(Backbone, _, AppView, Map, Url, settings) {
 	var Router = Backbone.Router.extend({
 		routes : {
 			'place/:slug/' : 'renderPlace',
 			'info/' : 'renderInfo',
 			'*default' : 'renderMap',
 		},
+		params : {
+			zoom : settings.defaultZoom,
+			location : {
+				lat : settings.defaultLocation.lat,
+				lng : settings.defaultLocation.lng,
+			},
+		},
 
 		initialize : function() {
+			this.getParams();
+		},
+		getParams : function() {
 			var params = Url.parseQuery();
-			this.params = {
-				zoom : parseInt(params.zoom) || settings.defaultZoom,
-				lat : parseFloat(params.lat) || settings.defaultLocation.lat,
-				lng : parseFloat(params.lng) || settings.defaultLocation.lng,
-			};
+			if (params.zoom) this.params.zoom = parseInt(params.zoom);
+			if (params.lat) this.params.location.lat = parseFloat(params.lat);
+			if (params.lng) this.params.location.lng = parseFloat(params.lng);
 		},
 		setUpListeners : _.once(function() {
 			this.listenTo(AppView, 'user-opened-place', this.navigateToPlace);
@@ -35,15 +43,22 @@ define([
 			this.setUpListeners();
 		},
 		renderInfo : function() {
-			AppView.renderInfo(this.hash);
+			this.getParams();
+			AppView.renderInfo(this.params);
 			this.setUpListeners();
 		},
 		renderMap : function() {
-			AppView.renderMap(this.hash);
+			this.getParams();
+			AppView.renderMap(this.params);
 			this.setUpListeners();
 		},
  		navigate : function(fragment, options) {
-			Backbone.history.navigate(fragment + '?' + Url.stringify(this.params), options);
+			var params = {
+				zoom : this.params.zoom,
+				lat : this.params.location.lat,
+				lng : this.params.location.lng,
+			};
+			Backbone.history.navigate(fragment + '?' + Url.stringify(params), options);
 			return this;
 		},
 		navigateToPlace : function(params) {
@@ -56,16 +71,15 @@ define([
 			this.updateZoomParam();
 		},
 		setLocationParams : function(model, value) {
-			this.params.lat = value.lat;
-			this.params.lng = value.lng;
+			this.params.location = value;
 			this.updateLocationParams();
 		},
 		updateZoomParam : function() {
 			Url.updateSearchParam("zoom", this.params.zoom);
 		},
 		updateLocationParams : function() {
-			Url.updateSearchParam("lat", this.params.lat);
-			Url.updateSearchParam("lng", this.params.lng);
+			Url.updateSearchParam("lat", this.params.location.lat);
+			Url.updateSearchParam("lng", this.params.location.lng);
 		},
 		updateParams : function() {
 			this.updateLocationParams();

@@ -59,12 +59,11 @@ define([
 			return this;
 		},
 		// Anropas av router
-		renderMap : function(hash) {
+		renderMap : function(params) {
 			this.sidebarview.model.close();
-			if (typeof hash !== "undefined")
-				this.hashToMapModel(hash);
+			if (params)
+				Map.set({ zoom : params.zoom, location : { lat : params.lat, lng : params.lng }});
 			this.render();
-			//MapView.render();
 		},
 		// Anropas av router
 		renderPlace : function(slug) {
@@ -89,10 +88,11 @@ define([
 			place.set('opened', true);
 		},
 		// Anropas av router
-		renderInfo : function(hash) {
+		renderInfo : function(params) {
 			this.sidebarview.model.set('infoOpen', true);
 			this.menubarview.model.set('infoActive', true);
-			this.hashToMapModel(hash);
+			if (params)
+				Map.set({ zoom : params.zoom, location : { lat : params.lat, lng : params.lng }});
 			this.render();
 		},
 		cron30min : function() {
@@ -108,17 +108,6 @@ define([
 				place.filter({ maxBeerPrice : this.model.get('maxBeerPrice'), openNow : this.model.get('filterClosedPlaces') });
 			}, this);
 			this.collection.each(filterFunc);
-		},
-		// Tar hash-strängen och skickar dess data till map-modellen
-		hashToMapModel : function(hash) {
-			var arr = hash.split("/");
-			if (arr.length < 3)
-				return false;
-			else {
-				Map.set('location', { lat : parseFloat(arr[1]), lng : parseFloat(arr[2]) });
-				Map.set('zoom', parseInt(arr[0]));
-				return true;
-			}
 		},
 
 		/* Brygga MapView <-> PlaceView
