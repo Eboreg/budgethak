@@ -26,10 +26,7 @@ define([
 			this.markercluster = L.markerClusterGroup({
 				maxClusterRadius : settings.maxClusterRadius,
 			});
-/* 			$(_.bind(function() {
-				this.render();
-			}, this));
- */		},
+		},
 		render : function() {
 			if (!this.model.get('rendered')) {
 				this.map = L.map(this.el, {
@@ -167,7 +164,6 @@ define([
 			];
 			_.each(mapEventNames, function(mapEventName) {
 				var handler = function() {
-					//console.log('map:'+mapEventName);
 					this.trigger('map:'+mapEventName);
 				};
 				handler = _.bind(handler, this);
