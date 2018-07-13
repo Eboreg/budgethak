@@ -1,21 +1,18 @@
 #sidebar-container {
-    /*display: none;*/
     z-index: 1000;
     overflow: hidden;
 }
 #sidebar-element {
     padding-bottom: 16px;
 }
+.sidebar-icon {
+    font-size: 24px;
+    padding-top: 20px;
+    padding-left: 20px;
+}
 .place-image {
     width: 100%;
     margin-bottom: 10px;
-}
-#place-map-marker {
-    vertical-align: baseline;
-    margin-right: 10px;
-}
-#close-sidebar-button {
-    vertical-align: baseline;
 }
 .opening-hours-table {
     width: auto;

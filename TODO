@@ -8,6 +8,8 @@ Fixa ":active"-motsvarighet för touchskärm.
 
 Rensa AppView från hänvisningar till placeviews.
 
+Vore snyggast om GET-querystring ej lades på just när man går in på "förstasidan".
+
 BUGGAR:
 När man navigerar i webbläsaren från place till '', verkar inte kartan panoreras?
 

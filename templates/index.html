@@ -27,6 +27,7 @@
                 </div>
             </li>
         </script>
+
         <script id="menuBar" type="text/template">
             <div id="menu-bar-container" class="w3-card-4">
                 <div class="w3-container menu-bar-element w3-hide-medium w3-hide-large">
@@ -77,30 +78,15 @@
                 </div>
             </div>
         </script>
+
         <script id="placeText" type="text/template">
             <div class="w3-container w3-padding-0">
-                <table class="sidebar-title-block">
-                    <tr>
-                        <td>
-                            <h3 class="w3-left"><%- name %></h3>
-                        </td>
-                        <td class="w3-hide-small">
-                            <h3 class="w3-right">
-                                <i class="fas fa-map-marker-alt icon clickable" id="place-map-marker" title="Visa plats på kartan" />
-                            </h3>
-                        </td>
-                        <td class="w3-hide-small">
-                            <h3 class="w3-right">
-                                <i class="fas fa-edit icon clickable" id="edit-place-icon" title="Uppdatera platsinfo" />
-                            </h3>
-                        </td>
-                        <td>
-                            <h3 class="w3-right">
-                                <i class="fas fa-times icon clickable" id="close-sidebar-button" title="Stäng" />
-                            </h3>
-                        </td>
-                    </tr>
-                </table>
+                <h3 class="w3-left"><%- name %></h3>
+                <div class="w3-right">
+                    <i class="fas fa-map-marker-alt icon clickable sidebar-icon" id="place-map-marker" title="Visa plats på kartan" />
+                    <i class="fas fa-edit icon clickable sidebar-icon" id="edit-place-icon" title="Uppdatera platsinfo" />
+                    <i class="fas fa-times icon clickable sidebar-icon" id="close-sidebar-button" title="Stäng" />
+                </div>
             </div>
             <div id="sidebar-block-1">
                 <% if (image != '') { %>
@@ -157,7 +143,8 @@
                     <p><%- comment %></p>
                 <% } %>
             </div>
-         </script>
+        </script>
+
         <script id="infoText" type="text/template">
             <div class="w3-container w3-padding-0">
                 <h3 class="w3-left">Vad?</h3>
