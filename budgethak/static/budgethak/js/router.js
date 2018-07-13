@@ -3,7 +3,6 @@ define([
 	'backbone',
 	'underscore',
 	'views/AppView',
-	'models/Sidebar',
 	'models/Map',
 	'urljs',
 	'settings',

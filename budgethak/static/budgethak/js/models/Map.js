@@ -1,7 +1,7 @@
 define([
 	'backbone',
-	'leaflet',
-], function(Backbone, L) {
+	'settings',
+], function(Backbone, settings) {
 	var Map = Backbone.Model.extend({
 		defaults : {
 			rendered : false,

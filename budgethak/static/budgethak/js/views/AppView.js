@@ -1,7 +1,6 @@
 /**
  * Övergripande View som sköter den nödvändiga kommunikationen mellan views.
  */
-var budgethak = budgethak || {};
 define([
 	'backbone',
 	'jquery',
@@ -15,7 +14,6 @@ define([
 	'settings',
 ], function(Backbone, $, App, Map, MapView, SidebarView, MenuBarView, PlaceView, PlaceCollection, settings) {
 	var AppView = Backbone.View.extend({
-		//el: '#app',
 		tagName : 'section',
 		id : 'app',
 		collection : PlaceCollection,
@@ -24,45 +22,41 @@ define([
 			this.model = App;
 			_.bindAll(this, 'cron30min');
 			this.$el.html('<div id="main-wrapper"><div id="map-wrapper"></div></div>');
-			this.sidebarview = new SidebarView();
 			// MenuBarView behöver ha koll på collection pga autocomplete
-			this.menubarview = new MenuBarView({ collection : this.collection });
 			this.listenTo(this.model, 'change:filterClosedPlaces change:maxBeerPrice', this.filterPlaces);
 			//this.listenTo(this.collection, 'change:visible', )   // ???
-			this.menubarview.on('my-location-click', MapView.gotoUserLocation, MapView);
-			this.listenTo(this.menubarview, 'info-icon-click', this.infoIconClicked);
-			this.listenTo(this.menubarview, 'filter-closed-places-click', this.toggleFilterClosedPlaces);
-			this.listenTo(this.menubarview, 'max-beer-price-change', this.setMaxBeerPrice);
-			this.listenTo(this.menubarview, 'autocomplete-select', this.autocompleteSelected);
-			this.listenTo(this.sidebarview, 'transitionend', MapView.reloadMapSize);
-			this.listenTo(this.sidebarview, 'place-open', this.onPlaceOpen);
-			this.listenTo(this.sidebarview, 'place-close', this.onPlaceClose);
-			this.listenTo(this.sidebarview, 'close', this.onSidebarClose);
-			this.listenTo(this.sidebarview, 'info-open', this.onInfoOpen);
-			this.listenTo(this.sidebarview, 'info-close', this.onInfoClose);
-			this.listenTo(this.sidebarview, 'map-marker-click', this.flyToPlace);
-			this.listenTo(this.sidebarview, 'close-button-click', function() { this.trigger('user-closed-sidebar'); })
+			MenuBarView.on('my-location-click', MapView.gotoUserLocation, MapView);
+			this.listenTo(MenuBarView, 'info-icon-click', this.infoIconClicked);
+			this.listenTo(MenuBarView, 'filter-closed-places-click', this.toggleFilterClosedPlaces);
+			this.listenTo(MenuBarView, 'max-beer-price-change', this.setMaxBeerPrice);
+			this.listenTo(MenuBarView, 'autocomplete-select', this.autocompleteSelected);
+			this.listenTo(SidebarView, 'transitionend', MapView.reloadMapSize);
+			this.listenTo(SidebarView, 'place-close', this.onPlaceClose);
+			this.listenTo(SidebarView, 'info-open', this.onInfoOpen);
+			this.listenTo(SidebarView, 'info-close', this.onInfoClose);
+			this.listenTo(SidebarView, 'map-marker-click', this.flyToPlace);
+			this.listenTo(SidebarView, 'close-button-click', function() { this.trigger('user-closed-sidebar'); })
 			window.setInterval(this.cron30min, 60000);
 			// Kommer PlaceCollection alltid att vara färdig-bootstrappad när vi är här?
 			//this.listenTo(this.collection, 'reset', this.renderAllMarkers);
 			this.renderAllMarkers();
 		},
 		render : function() {
-			this.sidebarview.render();
-			this.$("#main-wrapper").append(this.sidebarview.el);
+			SidebarView.render();
+			this.$("#main-wrapper").append(SidebarView.el);
 			this.$("#map-wrapper").append(MapView.el);
 			// Vi måste vänta tills DOM är klart för att rita ut karta
 			$(_.bind(function() {
 				MapView.render();
-				this.menubarview.render(MapView.map);
+				MenuBarView.render(MapView.map);
 			}, this));
 			return this;
 		},
 		// Anropas av router
 		renderMap : function(params) {
-			this.sidebarview.model.close();
+			SidebarView.model.close();
 			if (params)
-				Map.set({ zoom : params.zoom, location : { lat : params.lat, lng : params.lng }});
+				Map.set({ zoom : params.zoom, location : params.location });
 			this.render();
 		},
 		// Anropas av router
@@ -71,8 +65,8 @@ define([
 			if (typeof place === "undefined") {
 				this.renderMap();
 			} else {
-				this.sidebarview.model.set('transition', false);
-				this.sidebarview.open();
+				SidebarView.model.set('transition', false);
+				SidebarView.open();
 				MapView.reloadMapSize();
 				Map.set({
 					location : { lat : parseFloat(place.get('lat')), lng : parseFloat(place.get('lng'))},
@@ -84,13 +78,13 @@ define([
 		},
 		showPlace : function(slug) {
 			var place = this.collection.get(slug);
-			this.sidebarview.model.set('place', place);
+			SidebarView.model.set('place', place);
 			place.set('opened', true);
 		},
 		// Anropas av router
 		renderInfo : function(params) {
-			this.sidebarview.model.set('infoOpen', true);
-			this.menubarview.model.set('infoActive', true);
+			SidebarView.model.set('infoOpen', true);
+			MenuBarView.model.set('infoActive', true);
 			if (params)
 				Map.set({ zoom : params.zoom, location : { lat : params.lat, lng : params.lng }});
 			this.render();
@@ -131,21 +125,21 @@ define([
 		/* Brygga PlaceView -> SidebarView */
 		placeMarkerClicked : function(place) {
 			if (place.get('opened')) {
-				this.sidebarview.model.set('place', place);
-				this.listenToOnce(this.sidebarview, 'fully-open', function() {
+				SidebarView.model.set('place', place);
+				this.listenToOnce(SidebarView, 'fully-open', function() {
 					MapView.panToIfOutOfBounds([ parseFloat(place.get('lat')), parseFloat(place.get('lng')) ]);
 				});
 				this.trigger('user-opened-place', { id : place.id });
 			} else {
-				this.sidebarview.model.set('place', null);
+				SidebarView.model.set('place', null);
 				this.trigger('user-closed-sidebar');
 			}
 		},
 		/* Brygga MenuBarView -> SidebarView 
 		 * När MenuBarView:s info-icon klickas, ändrar vi Sidebar:s infoOpen så får SidebarView agera på detta */
 		infoIconClicked : function() {
-			var infoOpen = this.menubarview.model.get('infoActive');
-			this.sidebarview.model.set('infoOpen', infoOpen);
+			var infoOpen = MenuBarView.model.get('infoActive');
+			SidebarView.model.set('infoOpen', infoOpen);
 			if (infoOpen) {
 				this.trigger('user-opened-info');
 			} else {
@@ -176,34 +170,24 @@ define([
 		/* Brygga SidebarView -> this.collection och MapView */
 		flyToPlace : function(place) {
 			var flyFunc = _.bind(function() {
-				MapView.flyTo([parseFloat(this.sidebarview.place.get('lat')), parseFloat(this.sidebarview.place.get('lng'))], true);
+				MapView.flyTo([parseFloat(SidebarView.place.get('lat')), parseFloat(SidebarView.place.get('lng'))], true);
 			}, this);
 			this.showPlace(place.id);
-			if (this.sidebarview.model.get('fullyOpen'))
+			if (SidebarView.model.get('fullyOpen'))
 				flyFunc();
 			else
-				this.listenToOnce(this.sidebarview, 'fully-open', flyFunc);
-		},
-		/* Brygga SidebarView -> Router */
-		onPlaceOpen : function(place) {
-			//router.navigate('place/'+place.id+'/');
+				this.listenToOnce(SidebarView, 'fully-open', flyFunc);
 		},
 		onPlaceClose : function(place) {
 			place.set('opened', false);
 		},
 		/* Brygga SidebarView() -> Router och MenuBarView() */
 		onInfoOpen : function() {
-			//router.navigate('info/');
-			//this.setHash();
-			this.menubarview.model.set('infoActive', true);
+			MenuBarView.model.set('infoActive', true);
 		},
 		/* Brygga SidebarView -> MenuBarView */
 		onInfoClose : function() {
-			this.menubarview.model.set('infoActive', false);
-		},
-		/* Brygga SidebarView -> Router */
-		onSidebarClose : function() {
-			//router.navigate('');
+			MenuBarView.model.set('infoActive', false);
 		},
 	});
 	return new AppView();

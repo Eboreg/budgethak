@@ -1,17 +1,16 @@
-/**
- * collection måste skickas med vid skapande (förslagsvis PlaceCollection).
- * Detta p.g.a. autocomplete.
- */
 define([
 	'backbone',
 	'underscore',
 	'models/MenuBar',
+	'collections/PlaceCollection',
 	'settings',
 	'leaflet',
 	'jquery',
 	'jquery-ui',
-], function (Backbone, _, MenuBar, settings, L, $) {
+], function (Backbone, _, MenuBar, PlaceCollection, settings, L, $) {
 	var MenuBarView = Backbone.View.extend({
+		collection : PlaceCollection,
+
 		initialize: function () {
 			this.model = MenuBar;
 			_.bindAll(this, 'onMobileMenuButtonClick', 'onMyLocationClick', 'onFilterClosedPlacesClick', 'onSearchIconClick',
@@ -162,5 +161,5 @@ define([
 				this.$el.find(".menu-bar-row").hide();
 		},
 	});
-	return MenuBarView;
+	return new MenuBarView();
 });

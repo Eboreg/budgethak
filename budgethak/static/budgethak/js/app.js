@@ -1,5 +1,5 @@
 const debug = false;
-const version = debug ? (new Date()).getTime() : "2018.1";
+const version = debug ? (new Date()).getTime() : "2018.2";
 
 require.config({
 	waitSeconds : 120,

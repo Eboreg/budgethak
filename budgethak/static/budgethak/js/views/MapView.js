@@ -67,10 +67,9 @@ define([
 		},
 		flyTo : function(latlng, fullZoom) {
 			fullZoom = fullZoom || false;
-			if (!fullZoom) 
-				this.map.flyTo(latlng, this.model.get('zoom'));
-			else
-				this.map.flyTo(latlng, settings.maxZoom);
+			var zoom = fullZoom ? settings.maxZoom : this.model.get('zoom');
+			var options = { duration : 1 };
+			this.map.flyTo(latlng, zoom, options);
 		},
 		panToIfOutOfBounds : function(latlng) {
 			try {

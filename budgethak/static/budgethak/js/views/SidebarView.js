@@ -148,5 +148,5 @@ define([
 			}
 		},
 	});
-	return SidebarView;
+	return new SidebarView();
 });
