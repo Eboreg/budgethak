@@ -81,12 +81,18 @@
 
         <script id="placeText" type="text/template">
             <div class="w3-container w3-padding-0">
-                <h3 class="w3-left"><%- name %></h3>
-                <div class="w3-right">
-                    <i class="fas fa-map-marker-alt icon clickable sidebar-icon" id="place-map-marker" title="Visa plats på kartan" />
-                    <i class="fas fa-edit icon clickable sidebar-icon" id="edit-place-icon" title="Uppdatera platsinfo" />
-                    <i class="fas fa-times icon clickable sidebar-icon" id="close-sidebar-button" title="Stäng" />
-                </div>
+                <table id="sidebar-header">
+                    <tr>
+                        <td><h3 class="w3-left"><%- name %></h3></td>
+                        <td>
+                            <div class="w3-right" id="sidebar-icons">
+                                <i class="fas fa-map-marker-alt icon clickable sidebar-icon" id="place-map-marker" title="Visa plats på kartan" />
+                                <i class="fas fa-edit icon clickable sidebar-icon" id="edit-place-icon" title="Uppdatera platsinfo" />
+                                <i class="fas fa-times icon clickable sidebar-icon" id="close-sidebar-button" title="Stäng" />
+                            </div>
+                        </td>
+                    </tr>
+                </table>
             </div>
             <div id="sidebar-block-1">
                 <% if (image != '') { %>

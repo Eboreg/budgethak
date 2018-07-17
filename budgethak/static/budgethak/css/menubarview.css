@@ -72,8 +72,8 @@
         margin-left: 0;
         box-shadow: none !important;
     }
-    #menu-bar-row {
-        padding-bottom: 10px;
+    .menu-bar-row {
+        margin-bottom: 10px;
     }
     .menu-bar-element {
         margin-left: 10px;

@@ -1,5 +1,3 @@
-Bättre layout av översta raden i place-sidebar. Dvs kanske ej tabell utan element med float och fast bredd för ikonerna.
-
 Klura på hur sidebar och annat ska renderas på padda.
 
 Skriva fler tester.
@@ -11,7 +9,7 @@ Rensa AppView från hänvisningar till placeviews.
 Vore snyggast om GET-querystring ej lades på just när man går in på "förstasidan".
 
 BUGGAR:
-När man navigerar i webbläsaren från place till '', verkar inte kartan panoreras?
+
 
 DESIGNMÅL:
 1. Alla variabla data om en viss vy ("position", "visible", "active" m.m.) ska ej lagras i vyn utan i korresponderande modell.

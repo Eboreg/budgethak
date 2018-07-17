@@ -5,6 +5,12 @@
 #sidebar-element {
     padding-bottom: 16px;
 }
+#sidebar-header {
+    width: 100%;
+}
+#sidebar-icons {
+    white-space: nowrap;
+}
 .sidebar-icon {
     font-size: 24px;
     padding-top: 20px;
@@ -20,9 +26,6 @@
 }
 .opening-hours-table td {
     padding: 6px 0.3em 0 0;
-}
-.sidebar-title-block {
-    width: 100%;
 }
 
 

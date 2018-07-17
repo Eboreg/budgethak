@@ -23,6 +23,9 @@ define([
 
 		initialize : function() {
 			this.getParams();
+			Url.updateSearchParam("zoom", this.params.zoom);
+			Url.updateSearchParam("lat", this.params.location.lat);
+			Url.updateSearchParam("lng", this.params.location.lng);
 		},
 		getParams : function() {
 			var params = Url.parseQuery();
@@ -34,8 +37,8 @@ define([
 			this.listenTo(AppView, 'user-opened-place', this.navigateToPlace);
 			this.listenTo(AppView, 'user-opened-info', function() { this.navigate('info/'); });
 			this.listenTo(AppView, 'user-closed-sidebar', function() { this.navigate(''); });
-			this.listenTo(Map, 'change:zoom', this.setZoomParam);
-			this.listenTo(Map, 'change:location', this.setLocationParams);
+			this.listenTo(Map, 'change:zoom', this.updateZoomParam);
+			this.listenTo(Map, 'change:location', this.updateLocationParams);
 		}),
 		renderPlace : function(slug) {
 			AppView.renderPlace(slug);
@@ -61,28 +64,18 @@ define([
 			return this;
 		},
 		navigateToPlace : function(params) {
-			if (params.zoom) this.setZoomParam(null, params.zoom);
-			if (params.location) this.setLocationParams(null, params.location);
+			if (params.zoom) this.params.zoom = params.zoom;
+			if (params.location) this.params.location = params.location;
 			this.navigate('place/'+params.id+'/');
 		},
-		setZoomParam : function(model, value) {
+		updateZoomParam : function(model, value) {
 			this.params.zoom = value;
-			this.updateZoomParam();
-		},
-		setLocationParams : function(model, value) {
-			this.params.location = value;
-			this.updateLocationParams();
-		},
-		updateZoomParam : function() {
 			Url.updateSearchParam("zoom", this.params.zoom);
 		},
-		updateLocationParams : function() {
+		updateLocationParams : function(model, value) {
+			this.params.location = value;
 			Url.updateSearchParam("lat", this.params.location.lat);
 			Url.updateSearchParam("lng", this.params.location.lng);
-		},
-		updateParams : function() {
-			this.updateLocationParams();
-			this.updateZoomParam();
 		},
 	});
 	return new Router();
