@@ -106,49 +106,114 @@
                         Ölpris: <% print (beer_price ? beer_price+" kr" : "Okänt"); %>
                         <% print (beer_price_until ? " (t.o.m. "+beer_price_until+")" : ""); %>
                     </p>
-                    <% if (true == uteservering) { %>
-                        <p>Uteservering: <strong class="w3-text-green">JA</strong></p>
-                    <% } else if (false == uteservering) { %>
-                        <p>Uteservering: <strong class="w3-text-red">NEJ</strong></p>
-                    <% } %>
+                    <p>
+                        Uteservering: 
+                        <% if (true == uteservering) { %>
+                            <strong class="w3-text-green">JA</strong>
+                        <% } else if (false == uteservering) { %>
+                            <strong class="w3-text-red">NEJ</strong>
+                        <% } %>
+                    </p>
                 </div>
             </div>
             <div id="sidebar-block-2">
                 <% if (opening_hours.length > 0) { %>
-                    <h5 class="opening-hours-headline">Öppettider</h5>
-                    <table class="opening-hours-table">
-                    <% _.each(opening_hours, function(elem) { %>
-                        <tr>
-                            <td>
-                                <%- budgethak.weekdays[elem.start_weekday] %>
-                                <% if (elem.end_weekday != elem.start_weekday) { %>
-                                    - <%- budgethak.weekdays[elem.end_weekday].toLowerCase() %>
-                                <% } %>
-                            </td>
-                            <% if (elem.closed_entire_day) { %>
-                                <td colspan="2">Stängt</td>
-                            <% } else { %>
-                                <td>
-                                    <% print(elem.opening_time || '00:00'); %>
-                                </td>
-                                <td>
-                                    - <% print(elem.closing_time || '00:00'); %>
-                                </td>
-                            <% } %>
-                        </tr>
-                    <% }); %>
-                    </table>
-                    <% if (open_now === true) { %>
-                        <p class="w3-text-green"><strong>Öppet just nu \o/</strong></p>
-                    <% } else if (open_now === false) { %>
-                        <p class="w3-text-red"><strong>Stängt just nu :-(</strong></p>
+                <h5 class="opening-hours-headline">Öppettider</h5>
+                <table class="opening-hours-table">
+                <% _.each(opening_hours, function(elem) { %>
+                <tr>
+                    <td>
+                        <%- budgethak.weekdays[elem.start_weekday] %>
+                        <% if (elem.end_weekday != elem.start_weekday) { %>
+                        - <%- budgethak.weekdays[elem.end_weekday].toLowerCase() %>
+                        <% } %>
+                    </td>
+                    <% if (elem.closed_entire_day) { %>
+                    <td colspan="2">Stängt</td>
+                    <% } else { %>
+                    <td>
+                        <% print(elem.opening_time || '00:00'); %>
+                    </td>
+                    <td>
+                        - <% print(elem.closing_time || '00:00'); %>
+                    </td>
                     <% } %>
+                </tr>
+                <% }); %>
+                </table>
+                <% if (open_now === true) { %>
+                    <p class="w3-text-green"><strong>Öppet just nu \o/</strong></p>
+                <% } else if (open_now === false) { %>
+                    <p class="w3-text-red"><strong>Stängt just nu :-(</strong></p>
+                <% } %>
                 <% } %> <!-- opening_hours -->
                 <% if (comment != '') { %>
-                    <h5>Övrigt</h5>
-                    <p><%- comment %></p>
+                <h5>Övrigt</h5>
+                <p><%- comment %></p>
                 <% } %>
             </div>
+        </script>
+
+        <script id="placeEdit" type="text/template">
+            <form action="." method="post">
+                {% csrf_token %}
+                <input type="hidden" name="id" value="<%= id %>" />
+                <div class="w3-container w3-padding-0">
+                    <h3>
+                        <input class="w3-input w3-border" type="text" name="name" value="<%- name %>" />                    
+                    </h3>
+                </div>
+                <div id="sidebar-block-1">
+                    <% if (image != '') { %>
+                    <p>
+                        <img src="{{ MEDIA_URL }}<%= image %>" class="place-image w3-round w3-card-4" />
+                    </p>
+                    <% } %>
+                    <div class="w3-container w3-padding-0">
+                        <p>
+                            <label for="beer_price">Ölpris</label>
+                            <input type="number" min="1" max="40" class="w3-input w3-border" name="beer_price" id="beer_price" value="<%- beer_price %>" />
+                            <label for="beer_price_until">Ölpris gäller t.o.m. klockan</label>
+                            <input type="time" class="w3-input w3-border" name="beer_price_until" id="beer_price_until" value="<%- beer_price_until %>" />
+                        </p>
+                        <p>
+                            <input type="checkbox" name="uteservering" class="w3-check" id="uteservering"<% print (true == uteservering ? " checked" : "") %> />
+                            <label for="uteservering">Uteservering</label>
+                        </p>
+                    </div>
+                </div>
+                <div id="sidebar-block-2">
+                    <h5 class="opening-hours-headline">Öppettider</h5>
+                    <table class="opening-hours-table">
+                        <% 
+                            var idx = 0;
+                            var elem;
+                            for (var day = 0; day < 7; day++) { 
+                                elem = null;
+                                do {
+                                    if (opening_hours[idx] && opening_hours[idx].start_weekday <= day && opening_hours[idx].end_weekday >= day)
+                                        elem = opening_hours[idx];
+                                    else
+                                        idx++;
+                                } while (elem == null && idx < 7);
+                        %>
+                        <tr>
+                            <td><%- budgethak.weekdays[day] %></td>
+                            <td>
+                                <input type="time" name="opening_time[<%= day %>]" id="opening_time[<%= day %>]" value="<% print (elem != null && elem.opening_time != null ? elem.opening_time : "") %>" />
+                                - <input type="time" name="closing_time[<%= day %>]" id="closing_time[<%= day %>]" value="<% print (elem != null && elem.closing_time != null ? elem.closing_time : "") %>" />
+                                <input type="checkbox" name="closed_entire_day[<%= day %>]" id="closed_entire_day[<%= day %>]"<% print (elem != null && elem.closed_entire_day == true ? " checked" : "") %> class="w3-check" />
+                                <label for="closed_entire_day[<%= day %>]">Stängt</label>
+                            </td>
+                        </tr>
+                        <% } %>
+                    </table>
+                    <h5>Kommentar</h5>
+                    <textarea name="comment" id="comment" class="w3-input w3-border"></textarea>
+                    <button type="submit" class="w3-button submit">Skicka</button>
+                    <button class="w3-button cancel">Avbryt</button>
+                </div>
+            </form>
         </script>
 
         <script id="infoText" type="text/template">

@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from __future__ import unicode_literals
+import os
 
 from django.db import models
 from django.utils.dates import WEEKDAYS
@@ -18,23 +19,38 @@ class PlaceManager(models.Manager):
         #queryset = [p for p in queryset if not p.is_temporarily_closed() and p.visible]
         return super(PlaceManager, self).filter(id__in=custom_list)
 
-
-class Place(models.Model):
+class PlaceUserEditable(models.Model):
     name = models.CharField(max_length=50, blank=False)
-    lat = models.DecimalField(decimal_places=7, max_digits=10)
-    lng = models.DecimalField(decimal_places=7, max_digits=10)
-    street_address = models.CharField(max_length=200)
-    neighbourhood = models.CharField(max_length=200, blank=True)
-    city = models.CharField(max_length=50)
     beer_price = models.PositiveSmallIntegerField(null=True, blank=True)
     beer_price_until = models.TimeField(blank=True, null=True)
     comment = models.TextField(blank=True)
     uteservering = models.NullBooleanField()
     temporarily_closed_from = models.DateField(null=True, blank=True)
     temporarily_closed_until = models.DateField(null=True, blank=True)
+    image = AjaxImageField(upload_to="place_images", max_width=1024, null=True, blank=True) 
+
+    class Meta:
+        abstract = True
+
+    def delete(*args, **kwargs):
+        os.unlink(self.image.path)
+        super(PlaceUserEditable, self).delete(*args, **kwargs)
+
+
+class PlaceUserEdit(PlaceUserEditable):
+    place = models.ForeignKey("Place", related_name="user_edits", on_delete=models.CASCADE)
+    date_added = models.DateTimeField(auto_now_add=True)
+    ip_address = models.GenericIPAddressField()
+
+
+class Place(PlaceUserEditable):
+    lat = models.DecimalField(decimal_places=7, max_digits=10)
+    lng = models.DecimalField(decimal_places=7, max_digits=10)
+    street_address = models.CharField(max_length=200)
+    neighbourhood = models.CharField(max_length=200, blank=True)
+    city = models.CharField(max_length=50)
     date_published = models.DateTimeField(auto_now_add=True)
     date_updated = models.DateTimeField(auto_now=True)
-    image = AjaxImageField(upload_to="place_images", max_width=1024, null=True, blank=True) 
     visible = models.BooleanField(default=True)
     slug = AutoSlugField(unique=True, populate_from=concat_name_city)
     objects = PlaceManager()
@@ -85,19 +101,44 @@ class Place(models.Model):
         return None
     
     
-class OpeningHours(models.Model):
-    place = models.ForeignKey('Place', on_delete=models.CASCADE, related_name='opening_hours')
+class OpeningHoursAbstract(models.Model):
     start_weekday = models.PositiveSmallIntegerField(choices=WEEKDAYS.items(), default=0)
     end_weekday = models.PositiveSmallIntegerField(choices=WEEKDAYS.items(), default=0)
     opening_time = models.TimeField(null=True, blank=True)
     closing_time = models.TimeField(null=True, blank=True)
     closed_entire_day = models.BooleanField(default=False)
 
+    class Meta:
+        abstract = True
+
     def save(self, *args, **kwargs):
         if self.start_weekday > self.end_weekday:
             self.end_weekday = self.start_weekday
-        if self.opening_time == None and self.closing_time == None:
+        if self.opening_time == None or self.closing_time == None:
+            self.opening_time = None
+            self.closing_time = None
             self.closed_entire_day = True
         else:
             self.closed_entire_day = False
-        return super(OpeningHours, self).save(*args, **kwargs)
+        return super(OpeningHoursAbstract, self).save(*args, **kwargs)
+
+
+class OpeningHours(OpeningHoursAbstract):
+    place = models.ForeignKey('Place', on_delete=models.CASCADE, related_name='opening_hours')
+
+
+class OpeningHoursUserEdit(OpeningHoursAbstract):
+    place = models.ForeignKey('Place', on_delete=models.CASCADE, related_name='opening_hours_user_edit')
+    def save(self, *args, **kwargs):
+        try:
+            previous_row = OpeningHoursUserEdit.objects.get(
+                place_id=self.place_id, 
+                end_weekday=self.start_weekday - 1,
+                opening_time=self.opening_time,
+                closing_time=self.closing_time,
+                closed_entire_day=self.closed_entire_day
+            )
+            previous_row.end_weekday = self.end_weekday
+            previous_row.save()
+        except:
+            return super(OpeningHoursUserEdit, self).save(*args, **kwargs)

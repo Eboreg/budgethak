@@ -5,8 +5,14 @@
 #sidebar-element {
     padding-bottom: 16px;
 }
+#sidebar-container .place-edit {
+    display: none;
+}
 #sidebar-header {
     width: 100%;
+}
+#sidebar-header td {
+    vertical-align: top;
 }
 #sidebar-icons {
     white-space: nowrap;
@@ -26,6 +32,9 @@
 }
 .opening-hours-table td {
     padding: 6px 0.3em 0 0;
+}
+#sidebar-container .submit {
+    background-color: goldenrod;
 }
 
 

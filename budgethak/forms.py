@@ -1,5 +1,5 @@
 from django import forms
-from .models import Place, OpeningHours
+from .models import Place, PlaceUserEdit, OpeningHours
 
 class PlaceForm(forms.ModelForm):
     class Meta:

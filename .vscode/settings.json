@@ -1,5 +1,5 @@
 {
-    "python.pythonPath": "C:\\Users\\robert\\envs\\django\\Scripts\\python.exe",
+    "python.pythonPath": "/home/klaatu/virtenv/bin/python",
     "python.linting.enabled": true,
     "python.linting.pylintEnabled": true
 }

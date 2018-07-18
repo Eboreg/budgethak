@@ -1,7 +1,7 @@
 * {
     margin: 0;
     padding: 0;
-    vertical-align: top;
+    /*vertical-align: top;*/
 }
 
 html, body, #app, #main-wrapper, #map-element, #map-wrapper {

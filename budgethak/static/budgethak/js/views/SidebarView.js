@@ -18,9 +18,11 @@ define([
 			'transitionend' : 'onTransitionEnd',
 			'click #place-map-marker' : 'onMapMarkerClick',
 			'click #close-sidebar-button' : 'onCloseButtonClick',
+			'click #edit-place-icon': 'openPlaceEditor',
 		},
 		infoTemplate : _.template($("#infoText").html()),
 		placeTemplate : _.template($("#placeText").html()),
+		placeEditTemplate : _.template($("#placeEdit").html()),
 		place : null,
 		
 		initialize : function() {
@@ -109,6 +111,9 @@ define([
 		},
 		onMapMarkerClick : function() {
 			this.trigger('map-marker-click', this.place);
+		},
+		openPlaceEditor : function() {
+			this.$el.find("#sidebar-element").html(this.placeEditTemplate(this.model.get("place").toJSON()));
 		},
 
 		/* MODELL-EVENTS */
