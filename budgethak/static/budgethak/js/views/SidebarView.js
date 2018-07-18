@@ -9,6 +9,7 @@ define([
 	'models/Sidebar',
 	'models/Place',
 	'jquery-touchswipe',
+	'jquery-timepicker',
 ], function(Backbone, _, $, Sidebar) {
 	var SidebarView = Backbone.View.extend({
 		//el : '#sidebar-container',
@@ -24,6 +25,12 @@ define([
 		placeTemplate : _.template($("#placeText").html()),
 		placeEditTemplate : _.template($("#placeEdit").html()),
 		place : null,
+		timePickerOptions : {
+			scrollDefault : "12:00",
+			timeFormat : "H:i",
+			step : 30,
+			closeOnWindowScroll : true,
+		},
 		
 		initialize : function() {
 			this.model = Sidebar;
@@ -113,7 +120,8 @@ define([
 			this.trigger('map-marker-click', this.place);
 		},
 		openPlaceEditor : function() {
-			this.$el.find("#sidebar-element").html(this.placeEditTemplate(this.model.get("place").toJSON()));
+			this.$("#sidebar-element").html(this.placeEditTemplate(this.model.get("place").toJSON()));
+			this.$(".timepicker").timepicker(this.timePickerOptions);
 		},
 
 		/* MODELL-EVENTS */

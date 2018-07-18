@@ -6,7 +6,7 @@ from django.views.generic.base import TemplateView
 from rest_framework import viewsets
 from rest_framework.response import Response
 from .serializers import PlaceSerializer, PlaceListSerializer
-from .models import Place
+from .models import Place, PlaceUserEdit
 
 """
 REST-API.
@@ -14,8 +14,9 @@ REST-API.
 Senare, när användare får föreslå ställen, kan jag ändra till ModelViewSet och
 implementera create(), update(), partial_update() och destroy()
 """
-class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
+class PlaceViewSet(viewsets.ModelViewSet):
     queryset = Place.objects.only_visible()
+    serializer_class = PlaceSerializer
     
     def list(self, request, *args, **kwargs):
         serializer = PlaceListSerializer(self.queryset, many=True)
@@ -25,6 +26,11 @@ class PlaceViewSet(viewsets.ReadOnlyModelViewSet):
         place = get_object_or_404(self.queryset, slug=pk)
         serializer = PlaceSerializer(place)
         return Response(serializer.data)
+
+    def update(self, request, pk=None):
+        place = self.queryset.get(slug=pk)
+        # TODO: Kasta exception om felaktig pk
+        place_edit = PlaceUserEdit(place=place, )
     
 
 """

@@ -33,10 +33,13 @@ class PlaceSerializer(serializers.ModelSerializer):
     
     class Meta:
         model = Place
-        fields = '__all__'
-        
+        fields = (
+            'name', 'beer_price', 'beer_price_until', 'comment', 'uteservering', 'street_address', 'city',
+            'open_now', 'image', 'opening_hours', 'slug',
+        )
+
     def get_open_now(self, obj):
-        return obj.is_open_now()
+        return obj.open_now
 
         
 class PlaceListSerializer(serializers.ModelSerializer):
@@ -46,7 +49,6 @@ class PlaceListSerializer(serializers.ModelSerializer):
         model = Place
         # Namn o adress behövs för autocomplete
         fields = ('slug', 'name', 'street_address', 'city', 'lat', 'lng', 'beer_price', 'open_now',)
-        
-    def get_open_now(self, obj):
-        return obj.is_open_now()
     
+    def get_open_now(self, obj):
+        return obj.open_now

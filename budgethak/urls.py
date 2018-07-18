@@ -19,6 +19,11 @@ urlpatterns += [
     path('info/', IndexView.as_view(), name="info"),
     path('', IndexView.as_view(), name="index"),
 ]
+if settings.DEBUG:
+    import debug_toolbar
+    urlpatterns = [
+        path('__debug__/', include(debug_toolbar.urls)),
+    ] + urlpatterns
 '''
 if settings.DEBUG:
     urlpatterns += patterns('django.contrib.staticfiles.views', url(r'^(?P<path>.*)$', 'serve'))

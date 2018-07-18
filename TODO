@@ -10,7 +10,6 @@ Vore snyggast om GET-querystring ej lades på just när man går in på "första
 
 BUGGAR:
 
-
 DESIGNMÅL:
 1. Alla variabla data om en viss vy ("position", "visible", "active" m.m.) ska ej lagras i vyn utan i korresponderande modell.
 2. Vyer ska endast uppdatera DOM på signal från modell. Modellens state styr vyn. (Undantag: panorering m.m. i kartan)

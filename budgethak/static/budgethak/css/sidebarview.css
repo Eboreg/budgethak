@@ -1,39 +1,43 @@
 #sidebar-container {
     z-index: 1000;
-    overflow: hidden;
+    overflow-x: hidden;
+    overflow-y: auto;  /* eller visible? */
 }
-#sidebar-element {
+#sidebar-container #sidebar-element {
     padding-bottom: 16px;
 }
 #sidebar-container .place-edit {
     display: none;
 }
-#sidebar-header {
+#sidebar-container #sidebar-header {
     width: 100%;
 }
-#sidebar-header td {
+#sidebar-container #sidebar-header td {
     vertical-align: top;
 }
-#sidebar-icons {
+#sidebar-container #sidebar-icons {
     white-space: nowrap;
 }
-.sidebar-icon {
+#sidebar-container .sidebar-icon {
     font-size: 24px;
     padding-top: 20px;
     padding-left: 20px;
 }
-.place-image {
+#sidebar-container .place-image {
     width: 100%;
     margin-bottom: 10px;
 }
-.opening-hours-table {
+#sidebar-container .opening-hours-table {
     width: auto;
     margin-bottom: 10px;
 }
-.opening-hours-table td {
+#sidebar-container .opening-hours-table input.timepicker {
+    width: 5em;
+}
+#sidebar-container .opening-hours-table td {
     padding: 6px 0.3em 0 0;
 }
-#sidebar-container .submit {
+#sidebar-container #sidebar-container .submit {
     background-color: goldenrod;
 }
 
@@ -48,7 +52,7 @@
         transition: width 0.2s;
     }
     #sidebar-container.open,
-    #sidebar-element {
+    #sidebar-container #sidebar-element {
         width: 425px;
     }
 }
@@ -73,15 +77,15 @@
 }
 /* MOBILER, LIGGANDE */
 @media (max-width: 601px) and (orientation: landscape) {
-    #sidebar-block-1 {
+    #sidebar-container #sidebar-block-1 {
         width: 50%;
         float: left;
         margin-right: 16px;
     }
-    #sidebar-block-2 {
+    #sidebar-container #sidebar-block-2 {
         float: left;
     }
-    .opening-hours-headline {
+    #sidebar-container .opening-hours-headline {
         margin-top: 0;
     }
 } 

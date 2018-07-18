@@ -14,6 +14,9 @@ def concat_name_city(place):
 
 
 class PlaceManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().prefetch_related('opening_hours')
+
     def only_visible(self):
         custom_list = [p.id for p in super(PlaceManager, self).get_queryset() if not p.is_temporarily_closed() and p.visible]
         #queryset = [p for p in queryset if not p.is_temporarily_closed() and p.visible]
@@ -69,8 +72,8 @@ class Place(PlaceUserEditable):
             return True
         else:
             return False
-        
-    def is_open_now(self):
+    @property
+    def open_now(self):
         """ Returnerar None om okänt. """
         now = datetime.now()
         current_weekday = now.weekday()

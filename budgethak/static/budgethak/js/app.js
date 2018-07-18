@@ -1,5 +1,5 @@
 const debug = false;
-const version = debug ? (new Date()).getTime() : "2018.2";
+const version = debug ? (new Date()).getTime() : "2018.3";
 
 require.config({
 	waitSeconds : 120,
@@ -22,6 +22,10 @@ require.config({
 		'jquery-touchswipe' : [
 			'//cdnjs.cloudflare.com/ajax/libs/jquery.touchswipe/1.6.18/jquery.touchSwipe.min',
 			'../../lib/jquery.touchSwipe.min',
+		],
+		'jquery-timepicker' : [
+			'//cdnjs.cloudflare.com/ajax/libs/jquery-timepicker/1.10.0/jquery.timepicker.min',
+			'../../lib/jquery.timepicker.min',
 		],
 		'leaflet' : [
 			'//cdnjs.cloudflare.com/ajax/libs/leaflet/1.3.1/leaflet',
@@ -55,6 +59,9 @@ require.config({
 			deps : ['jquery'],
 		},
 		'jquery-touchswipe' : {
+			deps : ['jquery'],
+		},
+		'jquery-timepicker' : {
 			deps : ['jquery'],
 		},
 		'leaflet' : {
