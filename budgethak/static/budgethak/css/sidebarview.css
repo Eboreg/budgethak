@@ -40,6 +40,10 @@
 #sidebar-container .submit {
     background-color: goldenrod;
 }
+#sidebar-container .error-message {
+    color: red;
+    font-style: italic;
+}
 
 
 /* DATORER */

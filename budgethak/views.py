@@ -27,7 +27,6 @@ class PlaceViewSet(viewsets.ModelViewSet):
             return PlaceListSerializer
         elif self.action == "update":
             return PlaceUserEditSerializer
-#        import pdb; pdb.set_trace()
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop('partial', False)

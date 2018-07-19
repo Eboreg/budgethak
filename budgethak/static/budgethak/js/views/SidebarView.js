@@ -121,19 +121,29 @@ define([
 			this.trigger('map-marker-click', this.place);
 		},
 		openPlaceEditor : function() {
+			console.log(this.model.get("place").toJSON());
 			this.$("#sidebar-element").html(this.placeEditTemplate(this.model.get("place").toJSON()));
 			this.$(".timepicker").timepicker(this.timePickerOptions);
 		},
 		submitChanges : function() {
 			var place = this.model.get("place");
-			place.set({
+			place.save({
 				name : this.$("#name").val(),
 				beer_price : parseInt(this.$("#beer_price").val()),
 				beer_price_until : this.$("#beer_price_until").val(),
 				uteservering : this.$("#uteservering").prop("checked"),
 				comment : this.$("#comment").val(),
+			}, { 
+				wait: true, 
+				error : this.placeSaveFailed, 
 			});
-			place.save();
+		},
+		placeSaveFailed : function(model, response, options) {
+			var errors = response.responseJSON;
+			for (key in errors) {
+				this.$(".error-message[data-for='"+key+"']").text(errors[key].join("<br/>"));
+			}
+			console.log(model, response, options);
 		},
 
 		/* MODELL-EVENTS */
