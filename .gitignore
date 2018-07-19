@@ -1,6 +1,10 @@
 /.git
 /static
 *.pyc
+<<<<<<< HEAD
 **/__pycache__
 /.vscode
 .vscode/settings.json
+=======
+.vscode/**
+>>>>>>> 61c6c44e4932133f1a00b5caf2f001d2db6b627c
