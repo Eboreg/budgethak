@@ -122,17 +122,28 @@ define([
 		},
 		openPlaceEditor : function() {
 			console.log(this.model.get("place").toJSON());
+			console.log(this.model.get("place").get("opening_hours"));
 			this.$("#sidebar-element").html(this.placeEditTemplate(this.model.get("place").toJSON()));
 			this.$(".timepicker").timepicker(this.timePickerOptions);
 		},
 		submitChanges : function() {
 			var place = this.model.get("place");
+			var opening_hours = [];
+			for (var i = 0; i < 7; i++) {
+				opening_hours.push({
+					weekday : i,
+					opening_time : this.$("#opening_time_"+i).val(),
+					closing_time : this.$("#closing_time_"+i).val(),
+					closed_entire_day : this.$("#closed_entire_day_"+i).prop("checked"),
+				});
+			}
 			place.save({
 				name : this.$("#name").val(),
 				beer_price : parseInt(this.$("#beer_price").val()),
 				beer_price_until : this.$("#beer_price_until").val(),
 				uteservering : this.$("#uteservering").prop("checked"),
 				comment : this.$("#comment").val(),
+				opening_hours : opening_hours,
 			}, { 
 				wait: true, 
 				error : this.placeSaveFailed, 
@@ -179,7 +190,7 @@ define([
 				this.closePlace();
 				this.model.close();
 			} else {
-				this.$el.find("#sidebar-element").html(this.placeTemplate(model.toJSON()));
+				this.$el.find("#sidebar-element").html(this.placeTemplate(model.toJSONGrouped()));
 			}
 		},
 	});

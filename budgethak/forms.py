@@ -13,5 +13,5 @@ class OpeningHoursForm(forms.ModelForm):
     class Meta:
         model = OpeningHours
         fields = [
-            'start_weekday', 'end_weekday', 'opening_time', 'closing_time', 'closed_entire_day',
+            'weekday', 'opening_time', 'closing_time', 'closed_entire_day',
         ]

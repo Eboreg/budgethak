@@ -25,6 +25,36 @@ define([
 				this.set("visible", true);
 			}
 		},
+
+		oh_equals : function(oh1, oh2) {
+			return (oh1.opening_time == oh2.opening_time && oh1.closing_time == oh2.closing_time && oh1.closed_entire_day == oh2.closed_entire_day);
+		},
+
+		groupOpeningHours : function() {
+			var oh = this.get("opening_hours");
+			var oh_grouped = [];
+			for (var i = 0; i < oh.length; i++) {
+				if (0 == i || !this.oh_equals(oh[i-1], oh[i])) {
+					oh_grouped.push({
+						start_weekday : oh[i].weekday,
+						end_weekday : oh[i].weekday,
+						opening_time : oh[i].opening_time,
+						closing_time : oh[i].closing_time,
+						closed_entire_day : oh[i].closed_entire_day,
+					});
+				} else {
+					// Denna dags öppettider == föregående dags; gruppera dem
+					oh_grouped[oh_grouped.length-1].end_weekday = oh[i].weekday;
+				}
+			}
+			return oh_grouped;
+		},
+
+		toJSONGrouped : function() {
+			var json = this.toJSON();
+			json.opening_hours = this.groupOpeningHours();
+			return json;
+		},
 	});
 	return Place;
 });

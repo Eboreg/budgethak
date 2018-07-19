@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 
-from .models import Place, OpeningHours, PlaceUserEdit
+from .models import Place, OpeningHours, PlaceUserEdit, OpeningHoursUserEdit
 from rest_framework import serializers
 
 
@@ -20,7 +20,7 @@ class OpeningHoursSerialiser(serializers.ModelSerializer):
     
     class Meta:
         model = OpeningHours
-        fields = ('start_weekday', 'end_weekday', 'opening_time', 'closing_time', 'closed_entire_day',)
+        fields = ('weekday', 'opening_time', 'closing_time', 'closed_entire_day',)
 
 
 class PlaceSerializer(serializers.ModelSerializer):
@@ -42,6 +42,21 @@ class PlaceUserEditSerializer(PlaceSerializer):
         fields = (
             'name', 'beer_price', 'beer_price_until', 'comment', 'uteservering', 'opening_hours',
         )
+
+    def update(self, instance, validated_data):
+        for attr, value in validated_data.items():
+            if attr != 'opening_hours':
+                setattr(instance, attr, value)
+        instance.save()
+        try:
+            for day in validated_data['opening_hours']:
+                oh = OpeningHoursUserEdit(place_user_edit=instance)
+                for oh_attr in day:
+                    setattr(oh, oh_attr, day[oh_attr])
+                oh.save()
+        except KeyError:
+            pass
+        return instance
 
         
 class PlaceListSerializer(serializers.ModelSerializer):

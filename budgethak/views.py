@@ -36,7 +36,8 @@ class PlaceViewSet(viewsets.ModelViewSet):
         if not serializer.is_valid():
             return Response(data=serializer.errors, status=400)
         else:
-            return Response()
+            self.perform_update(serializer)
+            return Response(serializer.data)
 
 
 """

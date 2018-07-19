@@ -158,7 +158,7 @@
         <script id="placeEdit" type="text/template">
             <div class="w3-container w3-padding-0">
                 <h3>
-                    <input class="w3-input w3-border" type="text" id="name" name="name" value="<%- name %>" />                    
+                    <input class="w3-input w3-border" type="text" id="name" value="<%- name %>" />                    
                 </h3>
                 <p class="error-message" data-for="name"></p>
             </div>
@@ -171,14 +171,14 @@
                 <div class="w3-container w3-padding-0">
                     <p>
                         <label for="beer_price">Ölpris</label>
-                        <input type="number" min="1" max="40" class="w3-input w3-border" name="beer_price" id="beer_price" value="<%- beer_price %>" />
+                        <input type="number" min="1" max="40" class="w3-input w3-border" id="beer_price" value="<%- beer_price %>" />
                         <p class="error-message" data-for="beer_price"></p>
                         <label for="beer_price_until">Ölpris gäller t.o.m. klockan</label>
-                        <input type="text" class="w3-input w3-border timepicker" name="beer_price_until" id="beer_price_until" value="<%- beer_price_until %>" />
+                        <input type="text" class="w3-input w3-border timepicker" id="beer_price_until" value="<%- beer_price_until %>" />
                         <p class="error-message" data-for="beer_price_until"></p>
                     </p>
                     <p>
-                        <input type="checkbox" name="uteservering" class="w3-check" id="uteservering"<% print (true == uteservering ? " checked" : "") %> />
+                        <input type="checkbox" class="w3-check" id="uteservering"<% print (true == uteservering ? " checked" : "") %> />
                         <label for="uteservering">Uteservering</label>
                     </p>
                 </div>
@@ -186,33 +186,22 @@
             <div id="sidebar-block-2">
                 <h5 class="opening-hours-headline">Öppettider</h5>
                 <table class="opening-hours-table">
-                    <% 
-                        var idx = 0;
-                        var elem;
-                        for (var day = 0; day < 7; day++) { 
-                            elem = null;
-                            do {
-                                if (opening_hours[idx] && opening_hours[idx].start_weekday <= day && opening_hours[idx].end_weekday >= day)
-                                    elem = opening_hours[idx];
-                                else
-                                    idx++;
-                            } while (elem == null && idx < 7);
-                    %>
+                    <% _.each(opening_hours, function(elem) { %>
                     <tr>
-                        <td><%- budgethak.weekdays[day] %></td>
+                        <td><%- budgethak.weekdays[elem.weekday] %></td>
                         <td>
-                            <input type="text" class="timepicker" name="opening_time[<%= day %>]" id="opening_time[<%= day %>]" value="<% print (elem != null && elem.opening_time != null ? elem.opening_time : "") %>" />
-                            - <input type="text" class="timepicker" name="closing_time[<%= day %>]" id="closing_time[<%= day %>]" value="<% print (elem != null && elem.closing_time != null ? elem.closing_time : "") %>" />
-                            <input type="checkbox" name="closed_entire_day[<%= day %>]" id="closed_entire_day[<%= day %>]"<% print (elem != null && elem.closed_entire_day == true ? " checked" : "") %> class="w3-check" />
-                            <label for="closed_entire_day[<%= day %>]">Stängt</label>
-                            <p class="error-message" data-for="opening_time[<%= day %>]"></p>
-                            <p class="error-message" data-for="closing_time[<%= day %>]"></p>
+                            <input type="text" class="timepicker" id="opening_time_<%= elem.weekday %>" value="<% print (elem != null && elem.opening_time != null ? elem.opening_time : "") %>" />
+                            - <input type="text" class="timepicker" id="closing_time_<%= elem.weekday %>" value="<% print (elem != null && elem.closing_time != null ? elem.closing_time : "") %>" />
+                            <input type="checkbox" id="closed_entire_day_<%= elem.weekday %>"<% print (elem != null && elem.closed_entire_day == true ? " checked" : "") %> class="w3-check" />
+                            <label for="closed_entire_day[<%= elem.weekday %>]">Stängt</label>
+                            <p class="error-message" data-for="opening_time_<%= elem.weekday %>"></p>
+                            <p class="error-message" data-for="closing_time_<%= elem.weekday %>"></p>
                         </td>
                     </tr>
-                    <% } %>
+                    <% }); %>
                 </table>
                 <h5>Kommentar</h5>
-                <textarea name="comment" id="comment" class="w3-input w3-border"></textarea>
+                <textarea id="comment" class="w3-input w3-border"></textarea>
                 <button id="edit-place-submit" class="w3-button submit">Skicka</button>
                 <button id="edit-place-cancel" class="w3-button cancel">Avbryt</button>
             </div>

@@ -5,6 +5,7 @@ import os
 
 from django.db import models
 from django.utils.dates import WEEKDAYS
+from django.utils.translation import gettext as _
 from ajaximage.fields import AjaxImageField
 from autoslug import AutoSlugField
 from datetime import datetime
@@ -43,6 +44,9 @@ class PlaceUserEdit(PlaceUserEditable):
     date_added = models.DateTimeField(auto_now_add=True)
     ip_address = models.GenericIPAddressField(null=True)
 
+    def __str__(self):
+        return '%s, %s, %s' % (self.name, self.place.street_address, self.place.city,)
+
 
 class Place(PlaceUserEditable):
     lat = models.DecimalField(decimal_places=7, max_digits=10)
@@ -58,6 +62,9 @@ class Place(PlaceUserEditable):
     temporarily_closed_until = models.DateField(null=True, blank=True)
     objects = PlaceManager()
     
+    def __str__(self):
+        return '%s, %s, %s' % (self.name, self.street_address, self.city,)
+
     def is_temporarily_closed(self):
         current_date = datetime.now().date() 
         if self.temporarily_closed_from == None and self.temporarily_closed_until == None:
@@ -72,6 +79,7 @@ class Place(PlaceUserEditable):
             return True
         else:
             return False
+
     @property
     def open_now(self):
         """ Returnerar None om okänt. """
@@ -84,39 +92,35 @@ class Place(PlaceUserEditable):
         current_time = now.time()
         ''' Loopa igenom platsens OpeningHours: '''
         for day in self.opening_hours.all():
-            ''' Loopa igenom veckodagarna inom aktuell öppettid-post: '''
-            for weekday in range(day.start_weekday, day.end_weekday + 1):
-                ''' Om det t.ex. är lördag kl. 01:00 och stängningstid för fredag är 02:00 -> öppet nu: '''
+            ''' Om det t.ex. är lördag kl. 01:00 och stängningstid för fredag är 02:00 -> öppet nu: '''
+            try:
+                if day.weekday == weekday_yesterday and day.closing_time < day.opening_time and current_time < day.closing_time:
+                    return True
+            except TypeError:
+                pass
+            if day.weekday == current_weekday:
                 try:
-                    if weekday == weekday_yesterday and day.closing_time < day.opening_time and current_time < day.closing_time:
+                    if day.closing_time < day.opening_time and current_time >= day.opening_time:
+                        return True
+                    elif day.opening_time <= current_time < day.closing_time:
                         return True
                 except TypeError:
                     pass
-                if weekday == current_weekday:
-                    try:
-                        if day.closing_time < day.opening_time and current_time >= day.opening_time:
-                            return True
-                        elif day.opening_time <= current_time < day.closing_time:
-                            return True
-                    except TypeError:
-                        pass
-                    return False 
+                return False 
         return None
     
     
 class OpeningHoursAbstract(models.Model):
-    start_weekday = models.PositiveSmallIntegerField(choices=WEEKDAYS.items(), default=0)
-    end_weekday = models.PositiveSmallIntegerField(choices=WEEKDAYS.items(), default=0)
+    weekday = models.PositiveSmallIntegerField(choices=WEEKDAYS.items(), default=0)
     opening_time = models.TimeField(null=True, blank=True)
     closing_time = models.TimeField(null=True, blank=True)
     closed_entire_day = models.BooleanField(default=False)
 
     class Meta:
         abstract = True
+        ordering = ['weekday',]
 
     def save(self, *args, **kwargs):
-        if self.start_weekday > self.end_weekday:
-            self.end_weekday = self.start_weekday
         if self.opening_time == None or self.closing_time == None:
             self.opening_time = None
             self.closing_time = None
@@ -129,19 +133,13 @@ class OpeningHoursAbstract(models.Model):
 class OpeningHours(OpeningHoursAbstract):
     place = models.ForeignKey('Place', on_delete=models.CASCADE, related_name='opening_hours')
 
+    def __str__(self):
+        return '%s: %s' % (self.place.name, _(WEEKDAYS[self.weekday]),)
+
 
 class OpeningHoursUserEdit(OpeningHoursAbstract):
-    place = models.ForeignKey('Place', on_delete=models.CASCADE, related_name='opening_hours_user_edit')
-    def save(self, *args, **kwargs):
-        try:
-            previous_row = OpeningHoursUserEdit.objects.get(
-                place_id=self.place_id, 
-                end_weekday=self.start_weekday - 1,
-                opening_time=self.opening_time,
-                closing_time=self.closing_time,
-                closed_entire_day=self.closed_entire_day
-            )
-            previous_row.end_weekday = self.end_weekday
-            previous_row.save()
-        except:
-            return super(OpeningHoursUserEdit, self).save(*args, **kwargs)
+    place_user_edit = models.ForeignKey('PlaceUserEdit', on_delete=models.CASCADE, related_name='opening_hours')
+
+    def __str__(self):
+        return '%s: %s' % (self.place_user_edit.place.name, _(WEEKDAYS[self.weekday]),)
+
