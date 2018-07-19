@@ -156,12 +156,12 @@
         </script>
 
         <script id="placeEdit" type="text/template">
-            <form action="." method="post">
+<!--            <form action="#" method="post" id="edit-place">-->
                 {% csrf_token %}
-                <input type="hidden" name="slug" value="<%= slug %>" />
+                <input type="hidden" name="slug" id="slug" value="<%= slug %>" />
                 <div class="w3-container w3-padding-0">
                     <h3>
-                        <input class="w3-input w3-border" type="text" name="name" value="<%- name %>" />                    
+                        <input class="w3-input w3-border" type="text" id="name" name="name" value="<%- name %>" />                    
                     </h3>
                 </div>
                 <div id="sidebar-block-1">
@@ -211,10 +211,10 @@
                     </table>
                     <h5>Kommentar</h5>
                     <textarea name="comment" id="comment" class="w3-input w3-border"></textarea>
-                    <button type="submit" class="w3-button submit">Skicka</button>
-                    <button class="w3-button cancel">Avbryt</button>
+                    <button id="edit-place-submit" class="w3-button submit">Skicka</button>
+                    <button id="edit-place-cancel" class="w3-button cancel">Avbryt</button>
                 </div>
-            </form>
+<!--            </form>-->
         </script>
 
         <script id="infoText" type="text/template">

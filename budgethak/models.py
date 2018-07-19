@@ -28,8 +28,6 @@ class PlaceUserEditable(models.Model):
     beer_price_until = models.TimeField(blank=True, null=True)
     comment = models.TextField(blank=True)
     uteservering = models.NullBooleanField()
-    temporarily_closed_from = models.DateField(null=True, blank=True)
-    temporarily_closed_until = models.DateField(null=True, blank=True)
     image = AjaxImageField(upload_to="place_images", max_width=1024, null=True, blank=True) 
 
     class Meta:
@@ -43,7 +41,7 @@ class PlaceUserEditable(models.Model):
 class PlaceUserEdit(PlaceUserEditable):
     place = models.ForeignKey("Place", related_name="user_edits", on_delete=models.CASCADE)
     date_added = models.DateTimeField(auto_now_add=True)
-    ip_address = models.GenericIPAddressField()
+    ip_address = models.GenericIPAddressField(null=True)
 
 
 class Place(PlaceUserEditable):
@@ -56,6 +54,8 @@ class Place(PlaceUserEditable):
     date_updated = models.DateTimeField(auto_now=True)
     visible = models.BooleanField(default=True)
     slug = AutoSlugField(unique=True, populate_from=concat_name_city)
+    temporarily_closed_from = models.DateField(null=True, blank=True)
+    temporarily_closed_until = models.DateField(null=True, blank=True)
     objects = PlaceManager()
     
     def is_temporarily_closed(self):

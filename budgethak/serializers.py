@@ -1,13 +1,10 @@
 # -*- coding: utf-8 -*-
 
-from .models import Place, OpeningHours
+from .models import Place, OpeningHours, PlaceUserEdit
 from rest_framework import serializers
 
 
 class OpeningHoursSerialiser(serializers.ModelSerializer):
-    opening_time = serializers.TimeField(format='%H:%M', input_formats='%H:%M')
-    closing_time = serializers.TimeField(format='%H:%M', input_formats='%H:%M')
-    
     def __init__(self, *args, **kwargs):
         super(OpeningHoursSerialiser, self).__init__(*args, **kwargs)
         # CP-bugg någonstans gör att tidpunkten 00:00 tolkas som None här och sedermera null i JSON.
@@ -28,8 +25,6 @@ class OpeningHoursSerialiser(serializers.ModelSerializer):
 
 class PlaceSerializer(serializers.ModelSerializer):
     opening_hours = OpeningHoursSerialiser(many=True)
-    beer_price_until = serializers.TimeField(format='%H:%M')
-    open_now = serializers.SerializerMethodField()
     
     class Meta:
         model = Place
@@ -38,17 +33,19 @@ class PlaceSerializer(serializers.ModelSerializer):
             'open_now', 'image', 'opening_hours', 'slug',
         )
 
-    def get_open_now(self, obj):
-        return obj.open_now
+
+class PlaceUserEditSerializer(PlaceSerializer):
+    beer_price = serializers.IntegerField(min_value=1, max_value=40)
+
+    class Meta:
+        model = PlaceUserEdit
+        fields = (
+            'name', 'beer_price', 'beer_price_until', 'comment', 'uteservering', 'opening_hours',
+        )
 
         
 class PlaceListSerializer(serializers.ModelSerializer):
-    open_now = serializers.SerializerMethodField()
-    
     class Meta:
         model = Place
         # Namn o adress behövs för autocomplete
         fields = ('slug', 'name', 'street_address', 'city', 'lat', 'lng', 'beer_price', 'open_now',)
-    
-    def get_open_now(self, obj):
-        return obj.open_now

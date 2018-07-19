@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
 
 import json
+from ipware import get_client_ip
 from django.shortcuts import get_object_or_404
 from django.views.generic.base import TemplateView
-from rest_framework import viewsets
+from django.utils.translation import gettext as _
+from rest_framework import viewsets, exceptions
 from rest_framework.response import Response
-from .serializers import PlaceSerializer, PlaceListSerializer
+from .serializers import PlaceSerializer, PlaceListSerializer, PlaceUserEditSerializer
 from .models import Place, PlaceUserEdit
 
 """
@@ -16,22 +18,27 @@ implementera create(), update(), partial_update() och destroy()
 """
 class PlaceViewSet(viewsets.ModelViewSet):
     queryset = Place.objects.only_visible()
-    serializer_class = PlaceSerializer
+    lookup_field = 'slug'
     
-    def list(self, request, *args, **kwargs):
-        serializer = PlaceListSerializer(self.queryset, many=True)
-        return Response(serializer.data)
-        
-    def retrieve(self, request, pk=None):
-        place = get_object_or_404(self.queryset, slug=pk)
-        serializer = PlaceSerializer(place)
-        return Response(serializer.data)
+    def get_serializer_class(self):
+        if self.action == "retrieve":
+            return PlaceSerializer
+        elif self.action == "list":
+            return PlaceListSerializer
+        elif self.action == "update":
+            return PlaceUserEditSerializer
+#        import pdb; pdb.set_trace()
 
-    def update(self, request, pk=None):
-        place = self.queryset.get(slug=pk)
-        # TODO: Kasta exception om felaktig pk
-        place_edit = PlaceUserEdit(place=place, )
-    
+    def update(self, request, *args, **kwargs):
+        partial = kwargs.pop('partial', False)
+        place = self.queryset.get(slug=kwargs.pop("slug"))
+        instance = PlaceUserEdit(place=place, ip_address=get_client_ip(request)[0])
+        serializer = self.get_serializer(instance, data=request.data, partial=partial)
+        if not serializer.is_valid():
+            return Response(data=serializer.errors, status=400)
+        else:
+            return Response()
+
 
 """
 Langar upp templates/index.html med lämplig context.

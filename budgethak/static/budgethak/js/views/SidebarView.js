@@ -20,6 +20,7 @@ define([
 			'click #place-map-marker' : 'onMapMarkerClick',
 			'click #close-sidebar-button' : 'onCloseButtonClick',
 			'click #edit-place-icon': 'openPlaceEditor',
+			'click #edit-place-submit': 'submitChanges',
 		},
 		infoTemplate : _.template($("#infoText").html()),
 		placeTemplate : _.template($("#placeText").html()),
@@ -122,6 +123,17 @@ define([
 		openPlaceEditor : function() {
 			this.$("#sidebar-element").html(this.placeEditTemplate(this.model.get("place").toJSON()));
 			this.$(".timepicker").timepicker(this.timePickerOptions);
+		},
+		submitChanges : function() {
+			var place = this.model.get("place");
+			place.set({
+				name : this.$("#name").val(),
+				beer_price : parseInt(this.$("#beer_price").val()),
+				beer_price_until : this.$("#beer_price_until").val(),
+				uteservering : this.$("#uteservering").prop("checked"),
+				comment : this.$("#comment").val(),
+			});
+			place.save();
 		},
 
 		/* MODELL-EVENTS */
