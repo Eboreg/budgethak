@@ -34,7 +34,14 @@ class PlaceViewSet(viewsets.ModelViewSet):
         instance = PlaceUserEdit(place=place, ip_address=get_client_ip(request)[0])
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         if not serializer.is_valid():
-            return Response(data=serializer.errors, status=400)
+            errors = serializer.errors.copy()
+            try:
+                for idx in range(0, len(errors['opening_hours'])):
+                    for key, value in errors['opening_hours'][idx].items():
+                        errors[key+'-'+str(idx)] = value
+            except:
+                pass
+            return Response(data=errors, status=400)
         else:
             self.perform_update(serializer)
             return Response(serializer.data)

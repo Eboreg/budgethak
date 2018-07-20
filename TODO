@@ -9,15 +9,13 @@ Rensa AppView från hänvisningar till placeviews.
 Vore snyggast om GET-querystring ej lades på just när man går in på "förstasidan".
 
 Se till så att:
- * OpeningHoursUserEdit accepterar tomma strängar som tid
- * Felmeddelanden från OpeningHoursUserEdit har rätt namn och hamnar på rätt plats
- * Edit-listan över öppettider alltid innehåller alla dagar
- * "Skicka" blir inaktiv medan data skickas och aktiveras igen efteråt
  * Tack-meddelande dyker upp vid lyckad submit
 
 Fixa användaruppladdning av foto
 
 BUGGAR:
+Om man går in på Place-länk med zoom angivet till t ex 15, ignoreras detta MEN querystring uppdateras ej.
+Antingen ska man hamna på angiven plats och zoomnivå ELLER så ska querystring uppdateras.
 
 DESIGNMÅL:
 1. Alla variabla data om en viss vy ("position", "visible", "active" m.m.) ska ej lagras i vyn utan i korresponderande modell.

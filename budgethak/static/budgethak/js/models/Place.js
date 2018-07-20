@@ -50,9 +50,31 @@ define([
 			return oh_grouped;
 		},
 
+		// Lägg till null-rader för saknade dagar
+		padOpeningHours : function() {
+			var oh = this.get("opening_hours");
+			var oh_padded = [];
+			var oh_idx = 0;
+			for (var day = 0; day < 7; day++) {
+				if (oh[oh_idx] && oh[oh_idx].weekday == day) {
+					oh_padded.push(oh[oh_idx]);
+					oh_idx++;
+				} else {
+					oh_padded.push({ weekday: day });
+				}
+			}
+			return oh_padded;
+		},
+
 		toJSONGrouped : function() {
 			var json = this.toJSON();
 			json.opening_hours = this.groupOpeningHours();
+			return json;
+		},
+
+		toJSONPadded : function() {
+			var json = this.toJSON();
+			json.opening_hours = this.padOpeningHours();
 			return json;
 		},
 	});

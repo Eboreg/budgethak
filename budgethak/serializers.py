@@ -1,12 +1,15 @@
 # -*- coding: utf-8 -*-
 
+from .fields import CustomTimeField
 from .models import Place, OpeningHours, PlaceUserEdit, OpeningHoursUserEdit
 from rest_framework import serializers
 
+class OpeningHoursSerializer(serializers.ModelSerializer):
+    opening_time = CustomTimeField(allow_null=True)
+    closing_time = CustomTimeField(allow_null=True)
 
-class OpeningHoursSerialiser(serializers.ModelSerializer):
     def __init__(self, *args, **kwargs):
-        super(OpeningHoursSerialiser, self).__init__(*args, **kwargs)
+        super(OpeningHoursSerializer, self).__init__(*args, **kwargs)
         # CP-bugg någonstans gör att tidpunkten 00:00 tolkas som None här och sedermera null i JSON.
         # Går nu runt det genom att köra i template: print(opening_time || '00:00') osv. 
         # "Lösningen" nedan funkar ej pga min inkompetens, kanske ta tag i senare?
@@ -23,8 +26,10 @@ class OpeningHoursSerialiser(serializers.ModelSerializer):
         fields = ('weekday', 'opening_time', 'closing_time', 'closed_entire_day',)
 
 
+
 class PlaceSerializer(serializers.ModelSerializer):
-    opening_hours = OpeningHoursSerialiser(many=True)
+    opening_hours = OpeningHoursSerializer(many=True)
+    beer_price_until = CustomTimeField(allow_null=True)
     
     class Meta:
         model = Place
@@ -32,6 +37,7 @@ class PlaceSerializer(serializers.ModelSerializer):
             'name', 'beer_price', 'beer_price_until', 'comment', 'uteservering', 'street_address', 'city',
             'open_now', 'image', 'opening_hours', 'slug',
         )
+
 
 
 class PlaceUserEditSerializer(PlaceSerializer):

@@ -121,13 +121,12 @@ class OpeningHoursAbstract(models.Model):
         ordering = ['weekday',]
 
     def save(self, *args, **kwargs):
-        if self.opening_time == None or self.closing_time == None:
+        if self.opening_time == None or self.closing_time == None or self.closed_entire_day:
             self.opening_time = None
             self.closing_time = None
-            self.closed_entire_day = True
-        else:
-            self.closed_entire_day = False
-        return super(OpeningHoursAbstract, self).save(*args, **kwargs)
+        if self.closed_entire_day or (self.opening_time is not None and self.closing_time is not None):
+            # Spara bara raden om vi uttryckligen vet något om denna dag.
+            return super(OpeningHoursAbstract, self).save(*args, **kwargs)
 
 
 class OpeningHours(OpeningHoursAbstract):

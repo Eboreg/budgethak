@@ -21,6 +21,7 @@ define([
 			'click #close-sidebar-button' : 'onCloseButtonClick',
 			'click #edit-place-icon': 'openPlaceEditor',
 			'click #edit-place-submit': 'submitChanges',
+			'click #edit-place-cancel': 'closePlaceEditor',
 		},
 		infoTemplate : _.template($("#infoText").html()),
 		placeTemplate : _.template($("#placeText").html()),
@@ -121,20 +122,30 @@ define([
 			this.trigger('map-marker-click', this.place);
 		},
 		openPlaceEditor : function() {
+			var onClosedEntireDayChange = function() {
+				$(this).siblings(".timepicker").prop("disabled", $(this).prop("checked"));
+			};
 			console.log(this.model.get("place").toJSON());
 			console.log(this.model.get("place").get("opening_hours"));
-			this.$("#sidebar-element").html(this.placeEditTemplate(this.model.get("place").toJSON()));
+			this.$("#sidebar-element").html(this.placeEditTemplate(this.model.get("place").toJSONPadded()));
 			this.$(".timepicker").timepicker(this.timePickerOptions);
+			this.$("[id|='closed_entire_day']").change(onClosedEntireDayChange);
+			this.$("[id|='closed_entire_day']").each(onClosedEntireDayChange);
+		},
+		closePlaceEditor : function() {
+			this.$el.find("#sidebar-element").html(this.placeTemplate(this.model.get("place").toJSONGrouped()));
 		},
 		submitChanges : function() {
+			this.$(".error_message").text("");
+			this.$("#edit-place-submit").prop("disabled", true);
 			var place = this.model.get("place");
 			var opening_hours = [];
 			for (var i = 0; i < 7; i++) {
 				opening_hours.push({
 					weekday : i,
-					opening_time : this.$("#opening_time_"+i).val(),
-					closing_time : this.$("#closing_time_"+i).val(),
-					closed_entire_day : this.$("#closed_entire_day_"+i).prop("checked"),
+					opening_time : this.$("#opening_time-"+i).val(),
+					closing_time : this.$("#closing_time-"+i).val(),
+					closed_entire_day : this.$("#closed_entire_day-"+i).prop("checked"),
 				});
 			}
 			place.save({
@@ -146,15 +157,21 @@ define([
 				opening_hours : opening_hours,
 			}, { 
 				wait: true, 
+				success : this.placeSaveSucceeded,
 				error : this.placeSaveFailed, 
 			});
 		},
 		placeSaveFailed : function(model, response, options) {
+			this.$("#edit-place-submit").prop("disabled", false);
 			var errors = response.responseJSON;
 			for (key in errors) {
 				this.$(".error-message[data-for='"+key+"']").text(errors[key].join("<br/>"));
 			}
 			console.log(model, response, options);
+		},
+		placeSaveSucceeded : function(model, response, options) {
+			this.$("#edit-place-submit").prop("disabled", false);
+			// TODO: Fortsätt här
 		},
 
 		/* MODELL-EVENTS */
