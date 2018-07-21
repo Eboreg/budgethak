@@ -18,6 +18,7 @@
         <link rel="stylesheet" href="{{ STATIC_URL }}budgethak/css/mapview.css" />
         <link rel="stylesheet" href="{{ STATIC_URL }}budgethak/css/menubarview.css" />
         <link rel="stylesheet" href="{{ STATIC_URL }}budgethak/css/sidebarview.css" />
+        <link rel="stylesheet" href="{{ STATIC_URL }}budgethak/css/modalview.css" />
     </head>
     <body>
         <script id="autocompleteItem" type="text/template">
@@ -240,6 +241,20 @@
             <h3>
                 <img style="width:50%;" class="w3-round w3-card-4" src="{{ MEDIA_URL }}Robert.jpg" />
             </h3>
+        </script>
+
+        <script id="modal" type="text/template">
+            <div class="w3-modal-content">
+                <div class="w3-container">
+                    <span class="w3-button w3-display-topright" id="close-modal"><i class="fas fa-times"></i></span>
+                    <div id="modal-content"><%= content %></div>
+                </div>
+            </div>
+        </script>
+
+        <script id="thankYouText" type="text/template">
+            <p><strong>Tack för ditt bidrag!</strong></p>
+            <p>Det är nu inskickat till admin för kontroll.</p>
         </script>
 
         <script>

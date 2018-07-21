@@ -1,0 +1,22 @@
+.w3-modal {
+    z-index: 2000;
+}
+.w3-modal .w3-modal-content {
+    min-height: 100px;
+    border-radius: 5px;
+}
+.w3-modal .w3-modal-content .w3-container {
+    padding: 20px;
+}
+.w3-modal p {
+    margin-bottom: 10px;
+}
+.w3-modal p:last-of-type {
+    margin-bottom: 0px;
+}
+
+@media (min-width: 993px) {
+    .w3-modal .w3-modal-content {
+        width: 500px;
+    }
+}

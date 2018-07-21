@@ -6,11 +6,12 @@ define([
 	'backbone',
 	'underscore',
 	'jquery',
+	'messagebus',
 	'models/Sidebar',
 	'models/Place',
 	'jquery-touchswipe',
 	'jquery-timepicker',
-], function(Backbone, _, $, Sidebar) {
+], function(Backbone, _, $, MessageBus, Sidebar) {
 	var SidebarView = Backbone.View.extend({
 		//el : '#sidebar-container',
 		id : 'sidebar-container',
@@ -26,6 +27,7 @@ define([
 		infoTemplate : _.template($("#infoText").html()),
 		placeTemplate : _.template($("#placeText").html()),
 		placeEditTemplate : _.template($("#placeEdit").html()),
+		thankYouTemplate : _.template($("#thankYouText").html()),
 		place : null,
 		timePickerOptions : {
 			scrollDefault : "12:00",
@@ -37,7 +39,7 @@ define([
 		initialize : function() {
 			this.model = Sidebar;
 			this.$el.append('<div id="sidebar-element" class="w3-container"></div>');
-			_.bindAll(this, 'onMapMarkerClick', 'onCloseButtonClick');
+			_.bindAll(this, 'onMapMarkerClick', 'onCloseButtonClick', 'placeSaveFailed', 'placeSaveSucceeded');
 			this.listenTo(this.model, 'change:open', this.onOpenChange);
 			this.listenTo(this.model, 'change:infoOpen', this.onInfoOpenChange);
 			this.listenTo(this.model, 'change:place', this.onPlaceChange);
@@ -171,7 +173,8 @@ define([
 		},
 		placeSaveSucceeded : function(model, response, options) {
 			this.$("#edit-place-submit").prop("disabled", false);
-			// TODO: Fortsätt här
+			this.closePlaceEditor();
+			MessageBus.trigger('show', this.thankYouTemplate());
 		},
 
 		/* MODELL-EVENTS */

@@ -10,9 +10,10 @@ define([
 	'views/SidebarView',
 	'views/MenuBarView',
 	'views/PlaceView',
+	'views/ModalView',
 	'collections/PlaceCollection',
 	'settings',
-], function(Backbone, $, App, Map, MapView, SidebarView, MenuBarView, PlaceView, PlaceCollection, settings) {
+], function(Backbone, $, App, Map, MapView, SidebarView, MenuBarView, PlaceView, ModalView, PlaceCollection, settings) {
 	var AppView = Backbone.View.extend({
 		tagName : 'section',
 		id : 'app',
@@ -45,6 +46,7 @@ define([
 			SidebarView.render();
 			this.$("#main-wrapper").append(SidebarView.el);
 			this.$("#map-wrapper").append(MapView.el);
+			this.$("#main-wrapper").append(ModalView.el);
 			// Vi måste vänta tills DOM är klart för att rita ut karta
 			$(_.bind(function() {
 				MapView.render();
