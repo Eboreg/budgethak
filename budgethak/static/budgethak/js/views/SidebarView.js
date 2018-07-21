@@ -124,11 +124,10 @@ define([
 			this.trigger('map-marker-click', this.place);
 		},
 		openPlaceEditor : function() {
+			this.$(".error_message").text("");
 			var onClosedEntireDayChange = function() {
 				$(this).siblings(".timepicker").prop("disabled", $(this).prop("checked"));
 			};
-			console.log(this.model.get("place").toJSON());
-			console.log(this.model.get("place").get("opening_hours"));
 			this.$("#sidebar-element").html(this.placeEditTemplate(this.model.get("place").toJSONPadded()));
 			this.$(".timepicker").timepicker(this.timePickerOptions);
 			this.$("[id|='closed_entire_day']").change(onClosedEntireDayChange);

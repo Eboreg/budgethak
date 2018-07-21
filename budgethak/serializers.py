@@ -49,6 +49,25 @@ class PlaceUserEditSerializer(PlaceSerializer):
             'name', 'beer_price', 'beer_price_until', 'comment', 'uteservering', 'opening_hours',
         )
 
+    def has_changed(self):
+        for attr, value in self.validated_data.items():
+            if attr == 'comment' and value != '':
+                return True
+            elif attr == 'opening_hours':
+                for day in value:
+                    try:
+                        orig_day = self.instance.place.opening_hours.get(weekday=day['weekday'])
+                    except self.instance.place.opening_hours.model.DoesNotExist:
+                        if day['opening_time'] is not None or day['closing_time'] is not None or day['closed_entire_day'] == True:
+                            return True
+                        continue
+                    if day['opening_time'] is not None or day['closing_time'] is not None or day['closed_entire_day'] == True:
+                        if day['opening_time'] != orig_day.opening_time or day['closing_time'] != orig_day.closing_time or day['closed_entire_day'] != orig_day.closed_entire_day:
+                            return True
+            elif getattr(self.instance.place, attr) != value:
+                return True
+        return False
+
     def update(self, instance, validated_data):
         for attr, value in validated_data.items():
             if attr != 'opening_hours':

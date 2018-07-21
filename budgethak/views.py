@@ -42,9 +42,11 @@ class PlaceViewSet(viewsets.ModelViewSet):
             except:
                 pass
             return Response(data=errors, status=400)
-        else:
+        elif serializer.has_changed():
             self.perform_update(serializer)
             return Response(serializer.data)
+        else:
+            return Response(serializer.initial_data)
 
 
 """
