@@ -46,6 +46,7 @@ require.config({
 		'leaflet-usermarker' : '../../lib/leaflet-usermarker/leaflet.usermarker',
 		'router' : 'router',
 		'settings' : 'settings',
+		'ajaximage' : '../../ajaximage/js/ajaximage',
 	},
 	shim : {
 		'underscore' : {

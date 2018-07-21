@@ -11,6 +11,7 @@ define([
 	'models/Place',
 	'jquery-touchswipe',
 	'jquery-timepicker',
+	'ajaximage',
 ], function(Backbone, _, $, MessageBus, Sidebar) {
 	var SidebarView = Backbone.View.extend({
 		//el : '#sidebar-container',

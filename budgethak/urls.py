@@ -4,7 +4,7 @@ from django.conf import settings
 from django.contrib import admin
 from django.views.generic import TemplateView
 from rest_framework import routers
-from .views import IndexView, PlaceViewSet
+from .views import IndexView, PlaceViewSet, TestView
 
 router = routers.SimpleRouter()
 router.register('api/places', PlaceViewSet)
@@ -12,7 +12,7 @@ router.register('api/places', PlaceViewSet)
 urlpatterns = static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 urlpatterns += router.urls
 urlpatterns += [
-    path('tests/', TemplateView.as_view(template_name='index.html')),
+    path('test/', TestView.as_view()),
     path('admin/', admin.site.urls),
     path('ajaximage/', include('ajaximage.urls')),
     path('place/<slug:id>/', IndexView.as_view(), name="place"),

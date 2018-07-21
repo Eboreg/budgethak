@@ -8,10 +8,7 @@ Rensa AppView från hänvisningar till placeviews.
 
 Vore snyggast om GET-querystring ej lades på just när man går in på "förstasidan".
 
-Se till så att:
- * Tack-meddelande dyker upp vid lyckad submit
-
-Fixa användaruppladdning av foto
+Fixa användaruppladdning av foto: Lägg {{ form }} på lämplig plats och anpassa den!
 
 BUGGAR:
 Om man går in på Place-länk med zoom angivet till t ex 15, ignoreras detta MEN querystring uppdateras ej.

@@ -2,12 +2,13 @@
 
 import json
 from ipware import get_client_ip
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, render
 from django.views.generic.base import TemplateView
 from django.utils.translation import gettext as _
 from rest_framework import viewsets, exceptions
 from rest_framework.response import Response
 from .serializers import PlaceSerializer, PlaceListSerializer, PlaceUserEditSerializer
+from .forms import UserImageForm, PlaceForm
 from .models import Place, PlaceUserEdit
 
 """
@@ -63,5 +64,15 @@ class IndexView(TemplateView):
         context = super(IndexView, self).get_context_data(**kwargs)
         serializer = PlaceListSerializer(self.queryset, many=True)
         context['places'] = json.dumps(serializer.data, separators=(',', ':', ))
+        # TODO: Skicka med ngt slags ajaximage-widget-grej
+        context['form'] = UserImageForm()
         return context
-    
+
+
+class TestView(TemplateView):
+    template_name = 'test.html'
+
+    def get(self, request, *args, **kwargs):
+        form = UserImageForm()
+        #form = PlaceForm()
+        return render(request, self.template_name, {'form': form})

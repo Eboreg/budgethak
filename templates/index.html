@@ -19,6 +19,8 @@
         <link rel="stylesheet" href="{{ STATIC_URL }}budgethak/css/menubarview.css" />
         <link rel="stylesheet" href="{{ STATIC_URL }}budgethak/css/sidebarview.css" />
         <link rel="stylesheet" href="{{ STATIC_URL }}budgethak/css/modalview.css" />
+        <link rel="stylesheet" href="{{ STATIC_URL }}ajaximage/css/bootstrap-progress.min.css" />
+        <link rel="stylesheet" href="{{ STATIC_URL }}ajaximage/css/styles.css" />
     </head>
     <body>
         <script id="autocompleteItem" type="text/template">
@@ -211,7 +213,9 @@
         <script id="infoText" type="text/template">
             <div class="w3-container w3-padding-0">
                 <h3 class="w3-left">Vad?</h3>
-                <h3 class="w3-right"><i class="fa fa-close icon clickable" id="close-sidebar-button" /></h3>
+                <div class="w3-right" id="sidebar-icons">
+                    <i class="fas fa-times icon clickable sidebar-icon" id="close-sidebar-button" title="Stäng" />
+                </div>
             </div>
             <p>
                 Detta är en tjänst för att enkelt hitta billig öl. Kriteriet är <strong>minst 40 för max 40</strong>, d.v.s.
