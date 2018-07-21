@@ -154,7 +154,7 @@ define([
 				beer_price : parseInt(this.$("#beer_price").val()),
 				beer_price_until : this.$("#beer_price_until").val(),
 				uteservering : this.$("#uteservering").prop("checked"),
-				comment : this.$("#comment").val(),
+				user_comment : this.$("#user_comment").val(),
 				opening_hours : opening_hours,
 			}, { 
 				wait: true, 

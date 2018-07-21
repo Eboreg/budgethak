@@ -46,12 +46,12 @@ class PlaceUserEditSerializer(PlaceSerializer):
     class Meta:
         model = PlaceUserEdit
         fields = (
-            'name', 'beer_price', 'beer_price_until', 'comment', 'uteservering', 'opening_hours',
+            'name', 'beer_price', 'beer_price_until', 'user_comment', 'uteservering', 'opening_hours',
         )
 
     def has_changed(self):
         for attr, value in self.validated_data.items():
-            if attr == 'comment' and value != '':
+            if attr == 'user_comment' and value != '':
                 return True
             elif attr == 'opening_hours':
                 for day in value:
