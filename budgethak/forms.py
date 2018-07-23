@@ -1,5 +1,6 @@
 from django import forms
-from ajaximage.fields import AjaxImageField
+from django.db import models
+from ajaximage.widgets import AjaxImageWidget
 from .models import Place, PlaceUserEdit, OpeningHours
 
 class PlaceForm(forms.ModelForm):
@@ -18,7 +19,7 @@ class OpeningHoursForm(forms.ModelForm):
         ]
 
 class UserImageForm(forms.ModelForm):
-#    image = AjaxImageField(upload_to="place_images", max_width=1024, null=True, blank=True) 
+    image = forms.URLField(widget=AjaxImageWidget(upload_to='form-uploads'), label="Ny bild")
 
     class Meta:
         model = Place

@@ -28,7 +28,6 @@ class PlaceUserEditable(models.Model):
     beer_price = models.PositiveSmallIntegerField(null=True, blank=True)
     beer_price_until = models.TimeField(blank=True, null=True)
     uteservering = models.NullBooleanField()
-    image = AjaxImageField(upload_to="place_images", max_width=1024, null=True, blank=True) 
 
     class Meta:
         abstract = True
@@ -43,6 +42,7 @@ class PlaceUserEdit(PlaceUserEditable):
     date_added = models.DateTimeField(auto_now_add=True)
     ip_address = models.GenericIPAddressField(null=True)
     user_comment = models.TextField(blank=True)
+    image = models.ImageField(upload_to="place_images", null=True, blank=True)
 
     def __str__(self):
         return '%s, %s, %s' % (self.name, self.place.street_address, self.place.city,)
@@ -61,6 +61,7 @@ class Place(PlaceUserEditable):
     temporarily_closed_from = models.DateField(null=True, blank=True)
     temporarily_closed_until = models.DateField(null=True, blank=True)
     comment = models.TextField(blank=True)
+    image = AjaxImageField(upload_to="place_images", max_width=1024, null=True, blank=True) 
     objects = PlaceManager()
     
     def __str__(self):
