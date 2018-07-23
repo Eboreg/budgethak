@@ -54,7 +54,7 @@ class PlaceViewSet(viewsets.ModelViewSet):
 Langar upp templates/index.html med lämplig context.
 """
 class IndexView(TemplateView):
-    template_name = 'index.html'
+    template_name = 'budgethak/index.html'
     queryset = Place.objects.only_visible()
     
     """
@@ -65,12 +65,12 @@ class IndexView(TemplateView):
         serializer = PlaceListSerializer(self.queryset, many=True)
         context['places'] = json.dumps(serializer.data, separators=(',', ':', ))
         # TODO: Skicka med ngt slags ajaximage-widget-grej
-        context['form'] = UserImageForm()
+        context['user_image_form'] = UserImageForm()
         return context
 
 
 class TestView(TemplateView):
-    template_name = 'test.html'
+    template_name = 'budgethak/test.html'
 
     def get(self, request, *args, **kwargs):
         form = UserImageForm()
