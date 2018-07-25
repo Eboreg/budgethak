@@ -79,9 +79,6 @@ class PlaceUserEditSerializer(PlaceSerializer):
         for attr, value in validated_data.items():
             if attr != 'opening_hours':
                 setattr(instance, attr, value)
-            if attr == 'image':
-                old_path = value
-        import pdb; pdb.set_trace()
         instance.save()
         if self.opening_hours_have_changed():
             try:
@@ -93,6 +90,16 @@ class PlaceUserEditSerializer(PlaceSerializer):
             except KeyError:
                 pass
         return instance
+
+    def to_representation(self, instance):
+        # Om data saknas, ersätt med motsvarande data från moder-Place:et
+        # för sändning till klient och uppdatering av Backbone-modell
+        ret = super().to_representation(instance)
+        for fieldname in ['image', 'opening_hours']:
+            if not bool(ret[fieldname]):
+                attribute = self.fields[fieldname].get_attribute(instance.place)
+                ret[fieldname] = self.fields[fieldname].to_representation(attribute)
+        return ret
 
         
 class PlaceListSerializer(serializers.ModelSerializer):

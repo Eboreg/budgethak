@@ -84,7 +84,13 @@ require.config({
 });
 
 var budgethak = budgethak || {};
-require(['views/AppView', 'backbone', 'settings', 'router'], function(AppView, Backbone, settings, router) {
+require(['views/AppView', 'jquery', 'backbone', 'settings', 'router'], function(AppView, $, Backbone, settings) {
+	$(function() {
+		$.ajaxSetup({
+			headers : { 'X-CSRFToken': $("[name='csrfmiddlewaretoken']").first().val() },
+		});
+	});
+
 	//budgethak.router = new Router();
 	//budgethak.appview = new AppView();
 	//$(document.body).append(budgethak.appview.render().el);
