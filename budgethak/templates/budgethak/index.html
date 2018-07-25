@@ -171,7 +171,11 @@
                     <img src="{{ MEDIA_URL }}<%= image %>" class="place-image w3-round w3-card-4" />
                 </p>
                 <% } %>
-                {{ user_image_form }}
+                <label for="image-input">Ny bild: </label>
+                <input type="file" id="image-input" name="image-input" />
+                <input type="hidden" id="image" />
+                <input type="hidden" id="image_upload_url" value="{{ image_upload_url }}" />
+                {% csrf_token %}
                 <div class="w3-container w3-padding-0">
                     <p>
                         <label for="beer_price">Ölpris</label>

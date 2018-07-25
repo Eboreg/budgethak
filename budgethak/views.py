@@ -2,7 +2,8 @@
 
 import json
 from ipware import get_client_ip
-from django.shortcuts import get_object_or_404, render
+from django.conf import settings
+from django.shortcuts import get_object_or_404, render, reverse
 from django.views.generic.base import TemplateView
 from django.utils.translation import gettext as _
 from rest_framework import viewsets, exceptions
@@ -66,6 +67,13 @@ class IndexView(TemplateView):
         context['places'] = json.dumps(serializer.data, separators=(',', ':', ))
         # TODO: Skicka med ngt slags ajaximage-widget-grej
         context['user_image_form'] = UserImageForm()
+        image_upload_kwargs = {
+            'upload_to': settings.AJAXIMAGE['UPLOAD_DIR'],
+            'max_width': settings.AJAXIMAGE['MAX_WIDTH'],
+            'max_height': 0,
+            'crop': 0,
+        }
+        context['image_upload_url'] = reverse('ajaximage', kwargs=image_upload_kwargs)
         return context
 
 
@@ -73,6 +81,7 @@ class TestView(TemplateView):
     template_name = 'budgethak/test.html'
 
     def get(self, request, *args, **kwargs):
-        form = UserImageForm()
+        place = Place.objects.last()
+        form = UserImageForm(instance=place)
         #form = PlaceForm()
         return render(request, self.template_name, {'form': form})

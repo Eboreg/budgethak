@@ -10,6 +10,10 @@ Vore snyggast om GET-querystring ej lades på just när man går in på "första
 
 Fixa användaruppladdning av foto: Lägg {{ form }} på lämplig plats och anpassa den!
 
+Fortsätt med image-upload; platsbild ska vara inkapslad i div med fast höjd, som är 3/4 av bredden, 
+som i sin tur är beroende av viewport.
+Bilder ska crop:as på höjden med css.
+
 BUGGAR:
 Om man går in på Place-länk med zoom angivet till t ex 15, ignoreras detta MEN querystring uppdateras ej.
 Antingen ska man hamna på angiven plats och zoomnivå ELLER så ska querystring uppdateras.

@@ -24,6 +24,7 @@ define([
 			'click #edit-place-icon': 'openPlaceEditor',
 			'click #edit-place-submit': 'submitChanges',
 			'click #edit-place-cancel': 'closePlaceEditor',
+			'change #image-input': 'uploadImage',
 		},
 		infoTemplate : _.template($("#infoText").html()),
 		placeTemplate : _.template($("#placeText").html()),
@@ -40,7 +41,8 @@ define([
 		initialize : function() {
 			this.model = Sidebar;
 			this.$el.append('<div id="sidebar-element" class="w3-container"></div>');
-			_.bindAll(this, 'onMapMarkerClick', 'onCloseButtonClick', 'placeSaveFailed', 'placeSaveSucceeded');
+			_.bindAll(this, 'onMapMarkerClick', 'onCloseButtonClick', 'placeSaveFailed', 'placeSaveSucceeded',
+				'uploadImage', 'uploadImageSuccess', 'uploadImageError');
 			this.listenTo(this.model, 'change:open', this.onOpenChange);
 			this.listenTo(this.model, 'change:infoOpen', this.onInfoOpenChange);
 			this.listenTo(this.model, 'change:place', this.onPlaceChange);
@@ -133,6 +135,31 @@ define([
 			this.$(".timepicker").timepicker(this.timePickerOptions);
 			this.$("[id|='closed_entire_day']").change(onClosedEntireDayChange);
 			this.$("[id|='closed_entire_day']").each(onClosedEntireDayChange);
+		},
+		uploadImage : function(event) {
+			console.log(event, this.$("#image-input"));
+			if (event.target.files.length > 0) {
+				var file = event.target.files[0];
+				var url = this.$("#image_upload_url").val();
+				var form = new FormData();
+				form.append('file', file);
+				form.append('csrfmiddlewaretoken', this.$("[name='csrfmiddlewaretoken']").first().val());
+				$.post({
+					url : url,
+					data : form,
+					success : this.uploadImageSuccess,
+					error : this.uploadImageError,
+					contentType : false,
+					processData : false,
+				});
+			}
+		},
+		uploadImageSuccess : function(data) {
+			this.$("#image").val(data.filename);
+			this.$(".place-image").attr("src", data.url);
+		},
+		uploadImageError : function(xhr) {
+
 		},
 		closePlaceEditor : function() {
 			this.$el.find("#sidebar-element").html(this.placeTemplate(this.model.get("place").toJSONGrouped()));
