@@ -70,8 +70,8 @@ class IndexView(TemplateView):
         image_upload_kwargs = {
             'upload_to': settings.AJAXIMAGE['UPLOAD_DIR'],
             'max_width': settings.AJAXIMAGE['MAX_WIDTH'],
-            'max_height': 0,
-            'crop': 0,
+            'max_height': settings.AJAXIMAGE['MAX_HEIGHT'],
+            'crop': int(settings.AJAXIMAGE['CROP']),
         }
         context['image_upload_url'] = reverse('ajaximage', kwargs=image_upload_kwargs)
         return context

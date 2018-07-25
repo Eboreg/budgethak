@@ -46,41 +46,52 @@ class PlaceUserEditSerializer(PlaceSerializer):
     class Meta:
         model = PlaceUserEdit
         fields = (
-            'name', 'beer_price', 'beer_price_until', 'user_comment', 'uteservering', 'opening_hours',
+            'name', 'beer_price', 'beer_price_until', 'user_comment', 'uteservering', 'opening_hours', 'image',
         )
 
     def has_changed(self):
         for attr, value in self.validated_data.items():
             if attr == 'user_comment' and value != '':
                 return True
-            elif attr == 'opening_hours':
-                for day in value:
-                    try:
-                        orig_day = self.instance.place.opening_hours.get(weekday=day['weekday'])
-                    except self.instance.place.opening_hours.model.DoesNotExist:
-                        if day['opening_time'] is not None or day['closing_time'] is not None or day['closed_entire_day'] == True:
-                            return True
-                        continue
-                    if day['opening_time'] is not None or day['closing_time'] is not None or day['closed_entire_day'] == True:
-                        if day['opening_time'] != orig_day.opening_time or day['closing_time'] != orig_day.closing_time or day['closed_entire_day'] != orig_day.closed_entire_day:
-                            return True
-            elif getattr(self.instance.place, attr) != value:
+            elif attr == 'image':
+                if value != '' and value != self.instance.place.image:
+                    return True
+            elif attr != 'opening_hours' and hasattr(self.instance.place, attr) and getattr(self.instance.place, attr) != value:
                 return True
+            elif self.opening_hours_have_changed():
+                return True
+        return False
+
+    def opening_hours_have_changed(self):
+        for day in self.validated_data['opening_hours']:
+            try:
+                orig_day = self.instance.place.opening_hours.get(weekday=day['weekday'])
+            except self.instance.place.opening_hours.model.DoesNotExist:
+                if day['opening_time'] is not None or day['closing_time'] is not None or day['closed_entire_day'] == True:
+                    return True
+                continue
+            if day['opening_time'] is not None or day['closing_time'] is not None or day['closed_entire_day'] == True:
+                if day['opening_time'] != orig_day.opening_time or day['closing_time'] != orig_day.closing_time or day['closed_entire_day'] != orig_day.closed_entire_day:
+                    return True
         return False
 
     def update(self, instance, validated_data):
         for attr, value in validated_data.items():
             if attr != 'opening_hours':
                 setattr(instance, attr, value)
+            if attr == 'image':
+                old_path = value
+        import pdb; pdb.set_trace()
         instance.save()
-        try:
-            for day in validated_data['opening_hours']:
-                oh = OpeningHoursUserEdit(place_user_edit=instance)
-                for oh_attr in day:
-                    setattr(oh, oh_attr, day[oh_attr])
-                oh.save()
-        except KeyError:
-            pass
+        if self.opening_hours_have_changed():
+            try:
+                for day in validated_data['opening_hours']:
+                    oh = OpeningHoursUserEdit(place_user_edit=instance)
+                    for oh_attr in day:
+                        setattr(oh, oh_attr, day[oh_attr])
+                    oh.save()
+            except KeyError:
+                pass
         return instance
 
         

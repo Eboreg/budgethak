@@ -3,6 +3,7 @@
 from __future__ import unicode_literals
 import os
 
+from django.conf import settings
 from django.db import models
 from django.utils.dates import WEEKDAYS
 from django.utils.translation import gettext as _
@@ -42,7 +43,9 @@ class PlaceUserEdit(PlaceUserEditable):
     date_added = models.DateTimeField(auto_now_add=True)
     ip_address = models.GenericIPAddressField(null=True)
     user_comment = models.TextField(blank=True)
-    image = models.ImageField(upload_to="place_images", null=True, blank=True)
+#    image = models.ImageField(upload_to="place_images", null=True, blank=True)
+    image = AjaxImageField(upload_to=settings.AJAXIMAGE['UPLOAD_DIR'], max_width=settings.AJAXIMAGE['MAX_WIDTH'], 
+        max_height=settings.AJAXIMAGE['MAX_HEIGHT'], crop=int(settings.AJAXIMAGE['CROP']), null=True, blank=True)
 
     def __str__(self):
         return '%s, %s, %s' % (self.name, self.place.street_address, self.place.city,)

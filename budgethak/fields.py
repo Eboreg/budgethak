@@ -6,3 +6,4 @@ class CustomTimeField(serializers.TimeField):
         if value == "":
             value = None
         return value
+

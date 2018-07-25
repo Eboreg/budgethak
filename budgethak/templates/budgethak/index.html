@@ -166,15 +166,18 @@
                 <p class="error-message" data-for="name"></p>
             </div>
             <div id="sidebar-block-1">
-                <% if (image != '') { %>
                 <p>
+                    <% if (image != '') { %>
                     <img src="{{ MEDIA_URL }}<%= image %>" class="place-image w3-round w3-card-4" />
+                    <% } %>
+                    <img src="{{ MEDIA_URL }}ajax-loader.gif" class="w3-display-middle" id="ajax-loader-image" />
                 </p>
-                <% } %>
-                <label for="image-input">Ny bild: </label>
+                <label for="image-input" class="w3-button submit">Ladda upp ny bild</label>
                 <input type="file" id="image-input" name="image-input" />
+                <button id="remove-image" class="w3-button cancel">Ta bort bild</button>
                 <input type="hidden" id="image" />
                 <input type="hidden" id="image_upload_url" value="{{ image_upload_url }}" />
+                <input type="hidden" id="original-image" value="{{ MEDIA_URL }}<%= image %>" />
                 {% csrf_token %}
                 <div class="w3-container w3-padding-0">
                     <p>

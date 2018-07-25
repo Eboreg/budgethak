@@ -26,6 +26,10 @@
 #sidebar-container .place-image {
     width: 100%;
     margin-bottom: 10px;
+    object-fit: cover;
+}
+#sidebar-container #ajax-loader-image {
+    display: none;
 }
 #sidebar-container .opening-hours-table {
     width: auto;
@@ -36,6 +40,19 @@
 }
 #sidebar-container .opening-hours-table td {
     padding: 6px 0.3em 0 0;
+}
+#sidebar-container #image-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    border: 0;
+}
+#sidebar-container #remove-image {
+    display: none;
 }
 #sidebar-container .submit {
     background-color: goldenrod;
@@ -58,6 +75,9 @@
     #sidebar-container.open,
     #sidebar-container #sidebar-element {
         width: 425px;
+    }
+    #sidebar-container .place-image {
+        max-height: 221px;
     }
 }
 

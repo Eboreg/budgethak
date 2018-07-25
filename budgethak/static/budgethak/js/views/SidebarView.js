@@ -25,6 +25,7 @@ define([
 			'click #edit-place-submit': 'submitChanges',
 			'click #edit-place-cancel': 'closePlaceEditor',
 			'change #image-input': 'uploadImage',
+			'click #remove-image': 'removeUploadedImage',
 		},
 		infoTemplate : _.template($("#infoText").html()),
 		placeTemplate : _.template($("#placeText").html()),
@@ -42,7 +43,7 @@ define([
 			this.model = Sidebar;
 			this.$el.append('<div id="sidebar-element" class="w3-container"></div>');
 			_.bindAll(this, 'onMapMarkerClick', 'onCloseButtonClick', 'placeSaveFailed', 'placeSaveSucceeded',
-				'uploadImage', 'uploadImageSuccess', 'uploadImageError');
+				'uploadImage', 'uploadImageSuccess', 'uploadImageError', 'uploadImageComplete');
 			this.listenTo(this.model, 'change:open', this.onOpenChange);
 			this.listenTo(this.model, 'change:infoOpen', this.onInfoOpenChange);
 			this.listenTo(this.model, 'change:place', this.onPlaceChange);
@@ -137,8 +138,9 @@ define([
 			this.$("[id|='closed_entire_day']").each(onClosedEntireDayChange);
 		},
 		uploadImage : function(event) {
-			console.log(event, this.$("#image-input"));
 			if (event.target.files.length > 0) {
+				this.$(".place-image").css("opacity", 0.3);
+				this.$("#ajax-loader-image").show();
 				var file = event.target.files[0];
 				var url = this.$("#image_upload_url").val();
 				var form = new FormData();
@@ -149,6 +151,7 @@ define([
 					data : form,
 					success : this.uploadImageSuccess,
 					error : this.uploadImageError,
+					complete : this.uploadImageComplete,
 					contentType : false,
 					processData : false,
 				});
@@ -157,9 +160,20 @@ define([
 		uploadImageSuccess : function(data) {
 			this.$("#image").val(data.filename);
 			this.$(".place-image").attr("src", data.url);
+			this.$("#remove-image").show();
 		},
 		uploadImageError : function(xhr) {
 
+		},
+		uploadImageComplete : function() {
+			this.$(".place-image").css("opacity", 1);
+			this.$("#ajax-loader-image").hide();
+		},
+		removeUploadedImage : function() {
+			this.$("#remove-image").hide();
+			this.$(".place-image").attr("src", this.$("#original-image").val());
+			this.$("#image").val("");
+			this.$("#image-input").val("");
 		},
 		closePlaceEditor : function() {
 			this.$el.find("#sidebar-element").html(this.placeTemplate(this.model.get("place").toJSONGrouped()));
@@ -183,6 +197,7 @@ define([
 				beer_price_until : this.$("#beer_price_until").val(),
 				uteservering : this.$("#uteservering").prop("checked"),
 				user_comment : this.$("#user_comment").val(),
+				image : this.$("#image").val(),
 				opening_hours : opening_hours,
 			}, { 
 				wait: true, 
@@ -196,7 +211,6 @@ define([
 			for (key in errors) {
 				this.$(".error-message[data-for='"+key+"']").text(errors[key].join("<br/>"));
 			}
-			console.log(model, response, options);
 		},
 		placeSaveSucceeded : function(model, response, options) {
 			this.$("#edit-place-submit").prop("disabled", false);
