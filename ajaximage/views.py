@@ -28,7 +28,7 @@ def ajaximage(request, upload_to=None, max_width=None, max_height=None, crop=Non
                        'image/gif']
 
         if file_.content_type not in image_types:
-            data = json.dumps({'error': _('Bad image format.')})
+            data = json.dumps({'error': _('Bad image format. Allowed formats are: ') + 'PNG, JPG, GIF'})
             return HttpResponse(data, content_type="application/json", status=403)
 
         file_ = resize(file_, max_width, max_height, crop)
