@@ -163,6 +163,15 @@ define([
 		},
 		uploadImageError : function(xhr) {
 			console.log(xhr);
+			var errortext;
+			if (xhr.responseJSON && xhr.responseJSON.error) {
+				errortext = xhr.responseJSON.error;
+			} else if (xhr.responseText) {
+				errortext = xhr.responseText;
+			} else {
+				errortext = "Okänt fel vid uppladdning av bild!";
+			}
+			this.$(".error-message[data-for='image']").text(errortext);
 		},
 		uploadImageComplete : function() {
 			this.$(".place-image").css("opacity", 1);
