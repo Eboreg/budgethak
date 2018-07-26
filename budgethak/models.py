@@ -46,6 +46,7 @@ class PlaceUserEdit(PlaceUserEditable):
     user_comment = models.TextField(blank=True)
     image = CustomAjaxImageField(upload_to=settings.AJAXIMAGE['UPLOAD_DIR'], max_width=settings.AJAXIMAGE['MAX_WIDTH'], 
         max_height=settings.AJAXIMAGE['MAX_HEIGHT'], crop=int(settings.AJAXIMAGE['CROP']), null=True, blank=True)
+    merged = models.BooleanField(default=False)
 
     def __str__(self):
         return '%s, %s, %s' % (self.name, self.place.street_address, self.place.city,)

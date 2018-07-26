@@ -1,4 +1,5 @@
 from django import forms
+from django.core.exceptions import ValidationError
 from django.db import models
 from ajaximage.widgets import AjaxImageWidget
 from .models import Place, PlaceUserEdit, OpeningHours
@@ -12,12 +13,19 @@ class PlaceForm(forms.ModelForm):
             'uteservering', 'temporarily_closed_from', 'temporarily_closed_until', 'image',
         ]
 
+
 class OpeningHoursForm(forms.ModelForm):
     class Meta:
         model = OpeningHours
-        fields = [
-            'weekday', 'opening_time', 'closing_time', 'closed_entire_day',
-        ]
+        fields = [ 'weekday', 'opening_time', 'closing_time', 'closed_entire_day', ]
+
+    def clean(self):
+        cleaned_data = super().clean()
+        opening_time = cleaned_data.get('opening_time')
+        closing_time = cleaned_data.get('closing_time')
+        if (opening_time == None and closing_time != None) or (opening_time != None and closing_time == None):
+            raise ValidationError("Både öppnings- och stängningstid måste vara angivna, eller ingen")
+             
 
 class UserImageForm(forms.ModelForm):
     image = forms.URLField(widget=UserImageWidget(upload_to='form-uploads'), label="Ny bild")
