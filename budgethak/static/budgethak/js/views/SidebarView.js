@@ -145,7 +145,6 @@ define([
 				var url = this.$("#image_upload_url").val();
 				var form = new FormData();
 				form.append('file', file);
-				//form.append('csrfmiddlewaretoken', this.$("[name='csrfmiddlewaretoken']").first().val());
 				$.post({
 					url : url,
 					data : form,
@@ -163,7 +162,7 @@ define([
 			this.$("#remove-image").show();
 		},
 		uploadImageError : function(xhr) {
-
+			console.log(xhr);
 		},
 		uploadImageComplete : function() {
 			this.$(".place-image").css("opacity", 1);

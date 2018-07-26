@@ -7,6 +7,7 @@ from django.http import HttpResponse
 from django.utils.text import slugify
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_POST
+from django.utils.translation import gettext as _
 from .image import resize
 from .forms import FileForm
 
@@ -27,7 +28,7 @@ def ajaximage(request, upload_to=None, max_width=None, max_height=None, crop=Non
                        'image/gif']
 
         if file_.content_type not in image_types:
-            data = json.dumps({'error': 'Bad image format.'})
+            data = json.dumps({'error': _('Bad image format.')})
             return HttpResponse(data, content_type="application/json", status=403)
 
         file_ = resize(file_, max_width, max_height, crop)

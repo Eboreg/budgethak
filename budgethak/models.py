@@ -44,9 +44,6 @@ class PlaceUserEdit(PlaceUserEditable):
     date_added = models.DateTimeField(auto_now_add=True)
     ip_address = models.GenericIPAddressField(null=True)
     user_comment = models.TextField(blank=True)
-#    image = models.ImageField(upload_to="place_images", null=True, blank=True)
-#    image = AjaxImageField(upload_to=settings.AJAXIMAGE['UPLOAD_DIR'], max_width=settings.AJAXIMAGE['MAX_WIDTH'], 
-#        max_height=settings.AJAXIMAGE['MAX_HEIGHT'], crop=int(settings.AJAXIMAGE['CROP']), null=True, blank=True)
     image = CustomAjaxImageField(upload_to=settings.AJAXIMAGE['UPLOAD_DIR'], max_width=settings.AJAXIMAGE['MAX_WIDTH'], 
         max_height=settings.AJAXIMAGE['MAX_HEIGHT'], crop=int(settings.AJAXIMAGE['CROP']), null=True, blank=True)
 
