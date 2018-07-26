@@ -145,7 +145,7 @@ define([
 				var url = this.$("#image_upload_url").val();
 				var form = new FormData();
 				form.append('file', file);
-				form.append('csrfmiddlewaretoken', this.$("[name='csrfmiddlewaretoken']").first().val());
+				//form.append('csrfmiddlewaretoken', this.$("[name='csrfmiddlewaretoken']").first().val());
 				$.post({
 					url : url,
 					data : form,
@@ -209,7 +209,8 @@ define([
 			this.$("#edit-place-submit").prop("disabled", false);
 			var errors = response.responseJSON;
 			for (key in errors) {
-				this.$(".error-message[data-for='"+key+"']").text(errors[key].join("<br/>"));
+				var errortext = typeof errors[key] == "array" ? errors[key].join("<br/>") : errors[key];
+				this.$(".error-message[data-for='"+key+"']").text(errortext);
 			}
 		},
 		placeSaveSucceeded : function(model, response, options) {

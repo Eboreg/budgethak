@@ -10,6 +10,7 @@ from django.utils.translation import gettext as _
 from ajaximage.fields import AjaxImageField
 from autoslug import AutoSlugField
 from datetime import datetime
+from .fields import CustomAjaxImageField
 
 def concat_name_city(place):
     return "-".join((place.name, place.city))
@@ -44,7 +45,9 @@ class PlaceUserEdit(PlaceUserEditable):
     ip_address = models.GenericIPAddressField(null=True)
     user_comment = models.TextField(blank=True)
 #    image = models.ImageField(upload_to="place_images", null=True, blank=True)
-    image = AjaxImageField(upload_to=settings.AJAXIMAGE['UPLOAD_DIR'], max_width=settings.AJAXIMAGE['MAX_WIDTH'], 
+#    image = AjaxImageField(upload_to=settings.AJAXIMAGE['UPLOAD_DIR'], max_width=settings.AJAXIMAGE['MAX_WIDTH'], 
+#        max_height=settings.AJAXIMAGE['MAX_HEIGHT'], crop=int(settings.AJAXIMAGE['CROP']), null=True, blank=True)
+    image = CustomAjaxImageField(upload_to=settings.AJAXIMAGE['UPLOAD_DIR'], max_width=settings.AJAXIMAGE['MAX_WIDTH'], 
         max_height=settings.AJAXIMAGE['MAX_HEIGHT'], crop=int(settings.AJAXIMAGE['CROP']), null=True, blank=True)
 
     def __str__(self):

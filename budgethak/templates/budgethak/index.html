@@ -178,7 +178,6 @@
                 <input type="hidden" id="image" />
                 <input type="hidden" id="image_upload_url" value="{{ image_upload_url }}" />
                 <input type="hidden" id="original-image" value="{{ MEDIA_URL }}<%= image %>" />
-                {% csrf_token %}
                 <div class="w3-container w3-padding-0">
                     <p>
                         <label for="beer_price">Ölpris</label>
@@ -277,5 +276,6 @@
             {% endautoescape %}
         </script>
         <script data-main="{{ STATIC_URL }}budgethak/js/app" src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.min.js"></script>
+        {% csrf_token %}
     </body>
 </html>

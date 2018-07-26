@@ -8,18 +8,10 @@ Rensa AppView från hänvisningar till placeviews.
 
 Vore snyggast om GET-querystring ej lades på just när man går in på "förstasidan".
 
-Fixa användaruppladdning av foto: Lägg {{ form }} på lämplig plats och anpassa den!
-
-Fortsätt med image-upload; platsbild ska vara inkapslad i div med fast höjd, som är 9/16 av bredden, 
-som i sin tur är beroende av viewport.
-Bilder ska crop:as på höjden med css.
-
-Lägg till flytt av bildfil från place_images/user_uploads till place_images på lämplig plats.
-Kanske i Form.pre_save()? https://docs.djangoproject.com/en/2.0/ref/models/fields/#django.db.models.Field.pre_save
-
 BUGGAR:
 Om man går in på Place-länk med zoom angivet till t ex 15, ignoreras detta MEN querystring uppdateras ej.
 Antingen ska man hamna på angiven plats och zoomnivå ELLER så ska querystring uppdateras.
+
 
 DESIGNMÅL:
 1. Alla variabla data om en viss vy ("position", "visible", "active" m.m.) ska ej lagras i vyn utan i korresponderande modell.
