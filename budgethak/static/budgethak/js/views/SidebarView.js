@@ -48,6 +48,7 @@ define([
 			this.listenTo(this.model, 'change:open', this.onOpenChange);
 			this.listenTo(this.model, 'change:infoOpen', this.onInfoOpenChange);
 			this.listenTo(this.model, 'change:place', this.onPlaceChange);
+			this.listenTo(this.model, 'change:addPlaceOpen', this.onAddPlaceOpenChange);
 			if ($(window).width() <= 600) {
 				this.$el.swipe({
 					swipeRight : _.bind(function() {
@@ -88,6 +89,14 @@ define([
 		// Stänger inte själva rutan
 		closeInfo : function() {
 			this.trigger('info-close');
+		},
+		openAddPlace : function() {
+			this.$el.find("#sidebar-element").html(this.placeAddTemplate());
+			this.place = null;
+			this.trigger('add-place-open');
+		},
+		closeAddPlace : function() {
+			this.trigger('add-place-close');
 		},
 		openPlace : function() {
 			if (this.place != this.model.get('place')) {
@@ -253,6 +262,12 @@ define([
 			} else {
 				this.openPlace();
 			}
+		},
+		onAddPlaceOpenChange : function(model, value) {
+			if (value)
+				this.openAddPlace();
+			else 
+				this.closeAddPlace();
 		},
 		// Triggas av model:sync (en gång). 
 		onPlaceModelSync : function(model) {

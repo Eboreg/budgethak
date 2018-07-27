@@ -4,6 +4,7 @@ define([
 	var Sidebar = Backbone.Model.extend({
 		defaults : {
 			infoOpen : false,
+			addPlaceOpen : false,
 			place : null,  // innehåller model för plats som är "öppen"
 			open : false,
 			fullyOpen : false, // ändras först efter transistionend-event
@@ -12,6 +13,7 @@ define([
 		initialize : function() {
 			this.on({
 				'change:infoOpen' : this.onInfoOpenChange,
+				'change:addPlaceOpen' : this.onAddPlaceOpenChange,
 				'change:place' : this.onPlaceChange,
 			}, this);
 		},
@@ -20,16 +22,27 @@ define([
 			this.set('place', null);
 		},
 		isOpen : function() {
-			return (this.get('infoOpen') || (this.get('place') !== null));
+			return (this.get('infoOpen') || this.get('addPlaceOpen') || (this.get('place') !== null));
 		},
-		onInfoOpenChange : function() {
-			if (true === this.get('infoOpen'))
+		onInfoOpenChange : function(model, value) {
+			if (true === value) {
 				this.set('place', null);
+				this.set('addPlaceOpen', false);
+			}
 			this.set('open', this.isOpen());
 		},
-		onPlaceChange : function() {
-			if (null !== this.get('place'))
+		onAddPlaceOpenChange : function(model, value) {
+			if (true === value) {
+				this.set('place', null);
 				this.set('infoOpen', false);
+			}
+			this.set('open', this.isOpen());
+		},
+		onPlaceChange : function(model, value) {
+			if (null !== value) {
+				this.set('infoOpen', false);
+				this.set('addPlaceOpen', false);
+			}
 			this.set('open', this.isOpen());
 		},
 	});
