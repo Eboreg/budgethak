@@ -44,9 +44,6 @@ class PlaceAdmin(admin.ModelAdmin):
 
 """
 TODO:
-  * Gör alla fält readonly
-  * Lägg till "merge changes"-knapp, som sätter merged=True och uppdaterar moder-Placet
-  * Lista som default bara objekt med merged=False
   * Gör så att man får välja vilka fält som ska merge:as
 """
 @admin.register(PlaceUserEdit)

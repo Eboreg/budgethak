@@ -3,10 +3,9 @@
 import json
 from ipware import get_client_ip
 from django.conf import settings
-from django.shortcuts import get_object_or_404, render, reverse
+from django.shortcuts import render, reverse
 from django.views.generic.base import TemplateView
-from django.utils.translation import gettext as _
-from rest_framework import viewsets, exceptions
+from rest_framework import viewsets
 from rest_framework.response import Response
 from .serializers import PlaceSerializer, PlaceListSerializer, PlaceUserEditSerializer
 from .forms import UserImageForm, PlaceForm

@@ -1,8 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
-from django.db import models
-from ajaximage.widgets import AjaxImageWidget
-from .models import Place, PlaceUserEdit, OpeningHours
+from .models import Place, OpeningHours
 from .widgets import UserImageWidget
 
 class PlaceForm(forms.ModelForm):
