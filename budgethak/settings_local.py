@@ -1,0 +1,5 @@
+from .settings import *
+
+HOSTNAME = 'http://127.0.0.1:8000'
+DEBUG = True
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', ]
