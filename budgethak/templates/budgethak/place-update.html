@@ -1,0 +1,17 @@
+{% extends "budgethak/place-edit-base.html" %}
+
+{% block opening-hours %}
+<% _.each(opening_hours, function(elem) { %>
+    <tr>
+        <td><%- budgethak.weekdays[elem.weekday] %></td>
+        <td>
+            <input type="text" class="timepicker" id="opening_time-<%= elem.weekday %>" value="<% print (elem != null && elem.opening_time != null ? elem.opening_time : "") %>" />
+            - <input type="text" class="timepicker" id="closing_time-<%= elem.weekday %>" value="<% print (elem != null && elem.closing_time != null ? elem.closing_time : "") %>" />
+            <input type="checkbox" id="closed_entire_day-<%= elem.weekday %>"<% print (elem != null && elem.closed_entire_day == true ? " checked" : "") %> class="w3-check" />
+            <label for="closed_entire_day-<%= elem.weekday %>">Stängt</label>
+            <p class="error-message" data-for="opening_time-<%= elem.weekday %>"></p>
+            <p class="error-message" data-for="closing_time-<%= elem.weekday %>"></p>
+        </td>
+    </tr>
+    <% }); %>
+{% endblock opening-hours %}

@@ -1,0 +1,48 @@
+<div id="menu-bar-container" class="w3-card-4">
+    <div class="w3-container menu-bar-element w3-hide-medium w3-hide-large">
+        <div class="menu-bar-element-section link" id="mobile-menu-button">
+            <i class="fa fa-bars menu-bar-icon icon clickable"></i>
+        </div>
+    </div>
+    <div class="w3-row menu-bar-row">
+        <div class="w3-container w3-card-4 menu-bar-element">
+            <div class="menu-bar-element-section link" id="my-location-icon" title="Gå till min position">
+                <i class="fa fa-location-arrow menu-bar-icon icon clickable"></i>
+            </div>
+        </div>
+        <div class="w3-container w3-card-4 menu-bar-element">
+            <div class="menu-bar-element-section link" id="filter-closed-places-icon" title="Dölj stängda platser">
+                <i class="far fa-clock menu-bar-icon icon clickable"></i>
+            </div>
+        </div>
+        <div class="w3-container w3-card-4 menu-bar-element">
+            <div class="menu-bar-element-section link" id="info-icon" title="Information">
+                <i class="fa fa-info-circle menu-bar-icon icon clickable"></i>
+            </div>
+        </div>
+        <div class="w3-container w3-card-4 menu-bar-element">
+            <div class="menu-bar-element-section link" id="add-place-icon" title="Lägg till plats">
+                <i class="fa fa-plus-circle menu-bar-icon icon clickable"></i>
+            </div>
+        </div>
+    </div>
+    <div class="w3-row menu-bar-row" id="search-row">
+        <div class="w3-container w3-card-4 menu-bar-element" id="search-element">
+            <div class="menu-bar-element-section link" id="search-icon" title="Sök platser">
+                <i class="fa fa-search menu-bar-icon icon clickable"></i>
+            </div>
+            <div class="menu-bar-element-section w3-right" id="search-field-container">
+                <input type="text" id="search-field" placeholder="Sök ..." />
+            </div>
+        </div>
+    </div>
+    <div class="w3-row menu-bar-row" id="max-beer-price-row">
+        <div class="w3-container w3-card-4 w3-left menu-bar-element" id="max-beer-price-container">
+            <div class="menu-bar-element-section" id="max-beer-price-element">
+                <i class="far fa-money-bill-alt menu-bar-icon icon w3-left" title="Max ölpris"></i>
+                <div id="max-beer-price-slider" class="w3-left w3-large"></div>
+                <p class="w3-left w3-large"><span id="max-beer-price"><%= max_beer_price %></span> kr</p>
+            </div>
+        </div>
+    </div>
+</div>

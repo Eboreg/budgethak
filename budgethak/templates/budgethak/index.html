@@ -33,228 +33,23 @@
         </script>
 
         <script id="menu-bar" type="text/template">
-            <div id="menu-bar-container" class="w3-card-4">
-                <div class="w3-container menu-bar-element w3-hide-medium w3-hide-large">
-                    <div class="menu-bar-element-section link" id="mobile-menu-button">
-                        <i class="fa fa-bars menu-bar-icon icon clickable"></i>
-                    </div>
-                </div>
-                <div class="w3-row menu-bar-row">
-                    <div class="w3-container w3-card-4 menu-bar-element">
-                        <div class="menu-bar-element-section link" id="my-location-icon" title="Gå till min position">
-                            <i class="fa fa-location-arrow menu-bar-icon icon clickable"></i>
-                        </div>
-                    </div>
-                    <div class="w3-container w3-card-4 menu-bar-element">
-                        <div class="menu-bar-element-section link" id="filter-closed-places-icon" title="Dölj stängda platser">
-                            <i class="far fa-clock menu-bar-icon icon clickable"></i>
-                        </div>
-                    </div>
-                    <div class="w3-container w3-card-4 menu-bar-element">
-                        <div class="menu-bar-element-section link" id="info-icon" title="Information">
-                            <i class="fa fa-info-circle menu-bar-icon icon clickable"></i>
-                        </div>
-                    </div>
-                    <div class="w3-container w3-card-4 menu-bar-element">
-                        <div class="menu-bar-element-section link" id="add-place-icon" title="Lägg till plats">
-                            <i class="fa fa-plus-circle menu-bar-icon icon clickable"></i>
-                        </div>
-                    </div>
-                </div>
-                <div class="w3-row menu-bar-row" id="search-row">
-                    <div class="w3-container w3-card-4 menu-bar-element" id="search-element">
-                        <div class="menu-bar-element-section link" id="search-icon" title="Sök platser">
-                            <i class="fa fa-search menu-bar-icon icon clickable"></i>
-                        </div>
-                        <div class="menu-bar-element-section w3-right" id="search-field-container">
-                            <input type="text" id="search-field" placeholder="Sök ..." />
-                        </div>
-                    </div>
-                </div>
-                <div class="w3-row menu-bar-row" id="max-beer-price-row">
-                    <div class="w3-container w3-card-4 w3-left menu-bar-element" id="max-beer-price-container">
-                        <div class="menu-bar-element-section" id="max-beer-price-element">
-                            <i class="far fa-money-bill-alt menu-bar-icon icon w3-left" title="Max ölpris"></i>
-                            <div id="max-beer-price-slider" class="w3-left w3-large"></div>
-                            <p class="w3-left w3-large"><span id="max-beer-price"><%= max_beer_price %></span> kr</p>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            {% include "budgethak/menu-bar.html" %}
         </script>
 
         <script id="place-text" type="text/template">
-            <div class="w3-container w3-padding-0">
-                <table id="sidebar-header">
-                    <tr>
-                        <td><h3 class="w3-left"><%- name %></h3></td>
-                        <td>
-                            <div class="w3-right" id="sidebar-icons">
-                                <i class="fas fa-map-marker-alt icon clickable sidebar-icon" id="place-map-marker" title="Visa plats på kartan" />
-                                <i class="fas fa-edit icon clickable sidebar-icon" id="edit-place-icon" title="Uppdatera platsinfo" />
-                                <i class="fas fa-times icon clickable sidebar-icon" id="close-sidebar-button" title="Stäng" />
-                            </div>
-                        </td>
-                    </tr>
-                </table>
-            </div>
-            <div id="sidebar-block-1">
-                <% if (image != '') { %>
-                    <p>
-                        <img src="{{ MEDIA_URL }}<%= image %>" class="place-image w3-round w3-card-4" />
-                    </p>
-                <% } %>
-                <div class="w3-container w3-padding-0">
-                    <p><%- street_address %>, <%- city %></p>
-                    <p>
-                        Ölpris: <% print (beer_price ? beer_price+" kr" : "Okänt"); %>
-                        <% print (beer_price_until ? " (t.o.m. "+beer_price_until+")" : ""); %>
-                    </p>
-                    <p>
-                        Uteservering: 
-                        <% if (true == uteservering) { %>
-                            <strong class="w3-text-green">JA</strong>
-                        <% } else if (false == uteservering) { %>
-                            <strong class="w3-text-red">NEJ</strong>
-                        <% } %>
-                    </p>
-                </div>
-            </div>
-            <div id="sidebar-block-2">
-                <% if (opening_hours.length > 0) { %>
-                <h5 class="opening-hours-headline">Öppettider</h5>
-                <table class="opening-hours-table">
-                <% _.each(opening_hours, function(elem) { %>
-                <tr>
-                    <td>
-                        <%- budgethak.weekdays[elem.start_weekday] %>
-                        <% if (elem.end_weekday != elem.start_weekday) { %>
-                        - <%- budgethak.weekdays[elem.end_weekday].toLowerCase() %>
-                        <% } %>
-                    </td>
-                    <% if (elem.closed_entire_day) { %>
-                    <td colspan="2">Stängt</td>
-                    <% } else { %>
-                    <td>
-                        <% print(elem.opening_time || '00:00'); %>
-                    </td>
-                    <td>
-                        - <% print(elem.closing_time || '00:00'); %>
-                    </td>
-                    <% } %>
-                </tr>
-                <% }); %>
-                </table>
-                <% if (open_now === true) { %>
-                    <p class="w3-text-green"><strong>Öppet just nu \o/</strong></p>
-                <% } else if (open_now === false) { %>
-                    <p class="w3-text-red"><strong>Stängt just nu :-(</strong></p>
-                <% } %>
-                <% } %> <!-- opening_hours -->
-                <% if (comment != '') { %>
-                <h5>Övrigt</h5>
-                <p><%- comment %></p>
-                <% } %>
-            </div>
+            {% include "budgethak/place-text.html" %}
         </script>
 
-        <script id="place-add" type="text/template"></script>
+        <script id="place-add" type="text/template">
+            {% include "budgethak/place-add.html" %}
+        </script>
 
         <script id="place-edit" type="text/template">
-            <div class="w3-container w3-padding-0">
-                <h3>
-                    <input class="w3-input w3-border" type="text" id="name" value="<%- name %>" />                    
-                </h3>
-                <p class="error-message" data-for="name"></p>
-            </div>
-            <div id="sidebar-block-1">
-                <p>
-                    <% if (image != '') { %>
-                    <img src="{{ MEDIA_URL }}<%= image %>" class="place-image w3-round w3-card-4" />
-                    <% } %>
-                    <img src="{{ MEDIA_URL }}ajax-loader.gif" class="w3-display-middle" id="ajax-loader-image" />
-                </p>
-                <label for="image-input" class="w3-button submit">Ladda upp ny bild</label>
-                <input type="file" id="image-input" name="image-input" />
-                <button id="remove-image" class="w3-button cancel">Ta bort bild</button>
-                <input type="hidden" id="image" />
-                <input type="hidden" id="image_upload_url" value="{{ image_upload_url }}" />
-                <input type="hidden" id="original-image" value="{{ MEDIA_URL }}<%= image %>" />
-                <p class="error-message" data-for="image"></p>
-                <div class="w3-container w3-padding-0">
-                    <p>
-                        <label for="beer_price">Ölpris</label>
-                        <input type="number" min="1" max="40" class="w3-input w3-border" id="beer_price" value="<%- beer_price %>" />
-                        <p class="error-message" data-for="beer_price"></p>
-                        <label for="beer_price_until">Ölpris gäller t.o.m. klockan</label>
-                        <input type="text" class="w3-input w3-border timepicker" id="beer_price_until" value="<%- beer_price_until %>" />
-                        <p class="error-message" data-for="beer_price_until"></p>
-                    </p>
-                    <p>
-                        <input type="checkbox" class="w3-check" id="uteservering"<% print (true == uteservering ? " checked" : "") %> />
-                        <label for="uteservering">Uteservering</label>
-                    </p>
-                </div>
-            </div>
-            <div id="sidebar-block-2">
-                <h5 class="opening-hours-headline">Öppettider</h5>
-                <table class="opening-hours-table">
-                    <% _.each(opening_hours, function(elem) { %>
-                    <tr>
-                        <td><%- budgethak.weekdays[elem.weekday] %></td>
-                        <td>
-                            <input type="text" class="timepicker" id="opening_time-<%= elem.weekday %>" value="<% print (elem != null && elem.opening_time != null ? elem.opening_time : "") %>" />
-                            - <input type="text" class="timepicker" id="closing_time-<%= elem.weekday %>" value="<% print (elem != null && elem.closing_time != null ? elem.closing_time : "") %>" />
-                            <input type="checkbox" id="closed_entire_day-<%= elem.weekday %>"<% print (elem != null && elem.closed_entire_day == true ? " checked" : "") %> class="w3-check" />
-                            <label for="closed_entire_day-<%= elem.weekday %>">Stängt</label>
-                            <p class="error-message" data-for="opening_time-<%= elem.weekday %>"></p>
-                            <p class="error-message" data-for="closing_time-<%= elem.weekday %>"></p>
-                        </td>
-                    </tr>
-                    <% }); %>
-                </table>
-                <h5>Kommentar</h5>
-                <textarea id="user_comment" class="w3-input w3-border"></textarea>
-                <button id="edit-place-submit" class="w3-button submit">Skicka</button>
-                <button id="edit-place-cancel" class="w3-button cancel">Avbryt</button>
-            </div>
+            {% include "budgethak/place-update.html" %}
         </script>
 
         <script id="info-text" type="text/template">
-            <div class="w3-container w3-padding-0">
-                <h3 class="w3-left">Vad?</h3>
-                <div class="w3-right" id="sidebar-icons">
-                    <i class="fas fa-times icon clickable sidebar-icon" id="close-sidebar-button" title="Stäng" />
-                </div>
-            </div>
-            <p>
-                Detta är en tjänst för att enkelt hitta billig öl. Kriteriet är <strong>minst 40 för max 40</strong>, d.v.s.
-                man ska, någon gång under dygnet, kunna få minst 40 cl starköl för max 40 kr.
-            </p>
-            <h3>Vem?</h3>
-            <p>
-                Jag som byggt detta heter <a href="http://robert.huseli.us/">Robert Huselius</a>.
-            </p>
-            <h3>Hur?</h3>
-            <p>
-                Denna sajt använder <a href="https://www.djangoproject.com/">Django</a>, 
-                <a href="http://www.django-rest-framework.org/">Django REST framework</a>, 
-                <a href="http://backbonejs.org/">Backbone.js</a>, 
-                <a href="http://underscorejs.org/">Underscore.js</a>, 
-                <a href="http://www.requirejs.org/">Requirejs</a>, 
-                <a href="http://www.w3schools.com/w3css/default.asp">W3.CSS</a>, 
-                <a href="http://leafletjs.com/">Leaflet</a>, 
-                <a href="http://www.openstreetmap.org/">Openstreetmap</a>,
-                <a href="http://jquery.com/">Jquery</a> 
-                och lite till.
-            </p>
-            <h3>Varför?</h3>
-            <p>
-                För att jag älskar billig öl och programmering.
-            </p>
-            <h3>
-                <img style="width:50%;" class="w3-round w3-card-4" src="{{ MEDIA_URL }}Robert.jpg" />
-            </h3>
+            {% include "budgethak/info-text.html" %}
         </script>
 
         <script id="modal" type="text/template">
