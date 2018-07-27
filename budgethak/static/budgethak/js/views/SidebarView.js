@@ -27,10 +27,11 @@ define([
 			'change #image-input': 'uploadImage',
 			'click #remove-image': 'removeUploadedImage',
 		},
-		infoTemplate : _.template($("#infoText").html()),
-		placeTemplate : _.template($("#placeText").html()),
-		placeEditTemplate : _.template($("#placeEdit").html()),
-		thankYouTemplate : _.template($("#thankYouText").html()),
+		infoTemplate : _.template($("#info-text").html()),
+		placeTemplate : _.template($("#place-text").html()),
+		placeAddTemplate : _.template($("#place-add").html()),
+		placeEditTemplate : _.template($("#place-edit").html()),
+		thankYouTemplate : _.template($("#thank-you-text").html()),
 		place : null,
 		timePickerOptions : {
 			scrollDefault : "12:00",
@@ -132,7 +133,12 @@ define([
 			var onClosedEntireDayChange = function() {
 				$(this).siblings(".timepicker").prop("disabled", $(this).prop("checked"));
 			};
-			this.$("#sidebar-element").html(this.placeEditTemplate(this.model.get("place").toJSONPadded()));
+			var place = this.model.get('place');
+			if (null === place) {
+				this.$("#sidebar-element").html(this.placeAddTemplate());
+			} else {
+				this.$("#sidebar-element").html(this.placeEditTemplate(this.model.get("place").toJSONPadded()));
+			}
 			this.$(".timepicker").timepicker(this.timePickerOptions);
 			this.$("[id|='closed_entire_day']").change(onClosedEntireDayChange);
 			this.$("[id|='closed_entire_day']").each(onClosedEntireDayChange);

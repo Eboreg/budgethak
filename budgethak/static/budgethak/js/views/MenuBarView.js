@@ -19,7 +19,7 @@ define([
 				position: 'topleft'
 			});
 			this.menuBar.onAdd = _.bind(function () {
-				var template = _.template($("#menuBar").html());
+				var template = _.template($("#menu-bar").html());
 				var $ret = $(template({
 					'max_beer_price': this.model.get('maxBeerPrice')
 				}));
@@ -89,7 +89,7 @@ define([
 			this.$el.find("#search-field-container").removeClass("open");
 		},
 		setupAutocomplete: function () {
-			var template = _.template($("#autocompleteItem").html());
+			var template = _.template($("#autocomplete-item").html());
 			var selectFunc = _.bind(function (event, ui) {
 				this.closeSearchField();
 				this.trigger('autocomplete-select', ui.item.id);
