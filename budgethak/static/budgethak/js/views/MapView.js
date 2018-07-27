@@ -4,10 +4,11 @@ define([
 	'leaflet',
 	'settings',
 	'models/Map',
+	'messagebus',
 	'jquery',
 	'leaflet-usermarker',
 	'leaflet-markercluster',
-], function(Backbone, _, L, settings, Map) {
+], function(Backbone, _, L, settings, Map, MessageBus) {
 	var MapView = Backbone.View.extend({
 		id : 'map-element',
 		// Vi kan inte använda events-hashen eftersom den behandlas före initialize(), varför ej map:* kommer att funka
@@ -17,6 +18,7 @@ define([
 			'zoomend' : 'onMapZoomEnd',
 			'moveend' : 'onMapMoveEnd',
 			'locationfound' : 'onMapLocationFound',
+			'locationerror' : 'onMapLocationError',
 		},
 	
 		initialize : function() {
@@ -83,6 +85,7 @@ define([
 		gotoUserLocation : function() {
 			// Vi söker efter användarens plats först när denne aktivt ber om det.
 			// När den hittas, triggar kartan "locationfound"-event.
+			// Om något går fel, triggas "locationerror".
 			if (null === this.model.get('userLocation')) {
 				this.map.locate({
 					watch : true,
@@ -132,6 +135,9 @@ define([
 		onMapLocationFound : function(location) {
 			this.model.set('userLocation', location);
 			this.trigger('map-location-found', location);
+		},
+		onMapLocationError : function(error) {
+			MessageBus.trigger('show', '<p>Kunde inte hämta din position!</p><p>Felmeddelande: '+error.message+'</p>');
 		},
 		// Klickat någonstans på kartan men ej på en marker
 		onMapClick : function() {

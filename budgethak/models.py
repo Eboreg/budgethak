@@ -25,6 +25,7 @@ class PlaceManager(models.Manager):
         #queryset = [p for p in queryset if not p.is_temporarily_closed() and p.visible]
         return super(PlaceManager, self).filter(id__in=custom_list)
 
+
 class PlaceUserEditable(models.Model):
     name = models.CharField(max_length=50, blank=False)
     beer_price = models.PositiveSmallIntegerField(null=True, blank=True)
@@ -38,6 +39,9 @@ class PlaceUserEditable(models.Model):
         os.unlink(self.image.path)
         super(PlaceUserEditable, self).delete(*args, **kwargs)
 
+class PlaceUserEditManager(models.Manager):
+    def get_queryset(self):
+        return super().get_queryset().select_related('place')
 
 class PlaceUserEdit(PlaceUserEditable):
     place = models.ForeignKey("Place", related_name="user_edits", on_delete=models.CASCADE)
@@ -47,6 +51,7 @@ class PlaceUserEdit(PlaceUserEditable):
     image = CustomAjaxImageField(upload_to=settings.AJAXIMAGE['UPLOAD_DIR'], max_width=settings.AJAXIMAGE['MAX_WIDTH'], 
         max_height=settings.AJAXIMAGE['MAX_HEIGHT'], crop=int(settings.AJAXIMAGE['CROP']), null=True, blank=True)
     merged = models.BooleanField(default=False)
+    objects = PlaceUserEditManager()
 
     def __str__(self):
         return '%s, %s, %s' % (self.name, self.place.street_address, self.place.city,)
