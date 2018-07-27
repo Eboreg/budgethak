@@ -1,7 +1,6 @@
 from django import forms
 from django.core.exceptions import ValidationError
 from .models import Place, OpeningHours
-from .widgets import UserImageWidget
 
 class PlaceForm(forms.ModelForm):
     class Meta:
@@ -23,11 +22,3 @@ class OpeningHoursForm(forms.ModelForm):
         closing_time = cleaned_data.get('closing_time')
         if (opening_time == None and closing_time != None) or (opening_time != None and closing_time == None):
             raise ValidationError("Både öppnings- och stängningstid måste vara angivna, eller ingen")
-             
-
-class UserImageForm(forms.ModelForm):
-    image = forms.URLField(widget=UserImageWidget(upload_to='form-uploads'), label="Ny bild")
-
-    class Meta:
-        model = Place
-        fields = ['image',]

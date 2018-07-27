@@ -8,14 +8,12 @@ from django.views.generic.base import TemplateView
 from rest_framework import viewsets
 from rest_framework.response import Response
 from .serializers import PlaceSerializer, PlaceListSerializer, PlaceUserEditSerializer
-from .forms import UserImageForm, PlaceForm
+from .forms import PlaceForm
 from .models import Place, PlaceUserEdit
 
 """
 REST-API.
 Åtkomst via /api/places/.
-Senare, när användare får föreslå ställen, kan jag ändra till ModelViewSet och
-implementera create(), update(), partial_update() och destroy()
 """
 class PlaceViewSet(viewsets.ModelViewSet):
     queryset = Place.objects.only_visible()
@@ -64,8 +62,6 @@ class IndexView(TemplateView):
         context = super(IndexView, self).get_context_data(**kwargs)
         serializer = PlaceListSerializer(self.queryset, many=True)
         context['places'] = json.dumps(serializer.data, separators=(',', ':', ))
-        # TODO: Skicka med ngt slags ajaximage-widget-grej
-        context['user_image_form'] = UserImageForm()
         image_upload_kwargs = {
             'upload_to': settings.AJAXIMAGE['UPLOAD_DIR'],
             'max_width': settings.AJAXIMAGE['MAX_WIDTH'],
@@ -76,11 +72,8 @@ class IndexView(TemplateView):
         return context
 
 
+"""
+Kan fyllas på med vad man nu önskar testa.
+"""
 class TestView(TemplateView):
     template_name = 'budgethak/test.html'
-
-    def get(self, request, *args, **kwargs):
-        place = Place.objects.last()
-        form = UserImageForm(instance=place)
-        #form = PlaceForm()
-        return render(request, self.template_name, {'form': form})
