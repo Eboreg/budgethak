@@ -15,4 +15,3 @@ class Command(BaseCommand):
                     self.stderr.write(str(e))
                 else:
                     self.stdout.write("Raderade %s" % (image.name,))
-
