@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 
+from django.conf import settings
 from .fields import CustomTimeField
 from .models import Place, OpeningHours, PlaceUserEdit, OpeningHoursUserEdit
 from rest_framework import serializers
+from templated_email import send_templated_mail
 
 class OpeningHoursSerializer(serializers.ModelSerializer):
     opening_time = CustomTimeField(allow_null=True)
@@ -89,6 +91,12 @@ class PlaceUserEditSerializer(PlaceSerializer):
                     oh.save()
             except KeyError:
                 pass
+        send_templated_mail(
+            template_name='place_edited',
+            from_email=settings.SERVER_EMAIL,
+            recipient_list=[a[1] for a in settings.ADMINS],
+            context={ 'placeuseredit': instance, 'hostname': settings.HOSTNAME, },
+        )
         return instance
 
     def to_representation(self, instance):

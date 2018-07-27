@@ -1,0 +1,6 @@
+{% block subject %}[Budgethak] Plats uppdaterad: {{placeuseredit.place}}{% endblock %}
+{% block html %}
+<p>Plats: <a href="{{hostname}}{% url 'admin:budgethak_placeuseredit_change' placeuseredit.pk %}">{{placeuseredit.place}}</a></p>
+<p>IP: {{placeuseredit.ip_address}}</p>
+<p>Kommentar: {{placeuseredit.user_comment}}</p>
+{% endblock html %}
