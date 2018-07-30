@@ -18,10 +18,14 @@ Modal vid misslyckad geolocation ska bara visas en gång.
 
 
 DESIGNMÅL:
-1. Alla variabla data om en viss vy ("position", "visible", "active" m.m.) ska ej lagras i vyn utan i korresponderande modell.
-2. Vyer ska endast uppdatera DOM på signal från modell. Modellens state styr vyn. (Undantag: panorering m.m. i kartan)
-3. Vyer går alltså inte direkt från användarinteraktion till DOM-uppdatering, utan alltid via uppdatering av modellen.
-4. Vyer bör i idealfallet inte känna till någon annan modul än sin modell. Undantag AppView som knyter ihop allesammans.
+1. Alla variabla data om en viss vy ("position", "visible", "active" m.m.) ska ej lagras i vyn utan i
+   korresponderande modell.
+2. Vyer ska endast uppdatera DOM på signal från modell. Modellens state styr vyn. (Undantag: panorering 
+   m.m. i kartan)
+3. Vyer går alltså inte direkt från användarinteraktion till DOM-uppdatering, utan alltid via uppdatering 
+   av modellen.
+4. Vyer bör i idealfallet inte känna till någon annan modul än sin modell och EventBus. Undantag AppView 
+   som knyter ihop allesammans.
 5. Modeller ska vara helt vy-agnostiska och inte känna till dem alls.
 6. Vyer är i första hand ansvariga för att hålla sina modeller uppdaterade som följd av egna DOM-händelser,
    och trigga events EFTER att så har skett.

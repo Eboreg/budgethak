@@ -42,7 +42,6 @@ define([
     // Refaktorera dessa som har att göra med AppView:filterPlaces() när jag är mer klar i huvudet:
     EventBus.listenTo(MenuBar, 'change:maxBeerPrice', function(model, value) { });
     EventBus.listenTo(MenuBar, 'change:filterClosedPlaces', function(model, value) { });
-
     EventBus.listenTo(MenuBar, 'change:searchFieldOpen', function(model, value) { });
     EventBus.listenTo(Modal, 'change:open', function(model, value) { });
     EventBus.listenTo(Modal, 'change:content', function(model, value) { });
@@ -78,6 +77,9 @@ define([
         }
     });
     EventBus.listenTo(PlaceCollection, 'change:opened', function(model, value) { });
+    EventBus.listenTo(PlaceCollection, 'change', function(model) {
+
+    });
 
     return EventBus;
 });
