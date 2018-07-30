@@ -72,7 +72,11 @@ define([
     EventBus.listenTo(PlaceCollection, 'remove', function(model) { });
     EventBus.listenTo(PlaceCollection, 'update', function(collection) { });
     EventBus.listenTo(PlaceCollection, 'reset', function(collection) { });
-    EventBus.listenTo(PlaceCollection, 'change:visible', function(model, value) { });
+    EventBus.listenTo(PlaceCollection, 'change:visible', function(model, value) {
+        if (!value && Sidebar.get("place") === model) {
+            Sidebar.set("place", null);
+        }
+    });
     EventBus.listenTo(PlaceCollection, 'change:opened', function(model, value) { });
 
     return EventBus;

@@ -264,10 +264,7 @@ define([
 		// Triggas av model:change (tills platsinfo stängts). 
 		// Reagerar på förändringar i själva modellen som this.model.place pekar på.
 		onPlaceModelChange : function(model) {
-			if (!model.get('visible')) {
-				this.closePlace();
-				this.model.close();
-			} else {
+			if (model.get('visible')) {
 				this.$el.find("#sidebar-element").html(this.placeTemplate(model.toJSONGrouped()));
 			}
 		},
