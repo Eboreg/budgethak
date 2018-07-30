@@ -6,13 +6,13 @@ define([
 	'backbone',
 	'underscore',
 	'jquery',
-	'messagebus',
+	'eventbus',
 	'models/Sidebar',
 	'models/Place',
 	'jquery-touchswipe',
 	'jquery-timepicker',
 	'ajaximage',
-], function(Backbone, _, $, MessageBus, Sidebar) {
+], function(Backbone, _, $, EventBus, Sidebar) {
 	var SidebarView = Backbone.View.extend({
 		//el : '#sidebar-container',
 		id : 'sidebar-container',
@@ -84,19 +84,10 @@ define([
 		openInfo : function() {
 			this.$el.find("#sidebar-element").html(this.infoTemplate());
 			this.place = null;
-			this.trigger('info-open');
-		},
-		// Stänger inte själva rutan
-		closeInfo : function() {
-			this.trigger('info-close');
 		},
 		openAddPlace : function() {
 			this.$el.find("#sidebar-element").html(this.placeAddTemplate());
 			this.place = null;
-			this.trigger('add-place-open');
-		},
-		closeAddPlace : function() {
-			this.trigger('add-place-close');
 		},
 		openPlace : function() {
 			if (this.place != this.model.get('place')) {
@@ -239,7 +230,7 @@ define([
 		placeSaveSucceeded : function(model, response, options) {
 			this.$("#edit-place-submit").prop("disabled", false);
 			this.closePlaceEditor();
-			MessageBus.trigger('show', this.thankYouTemplate());
+			EventBus.trigger('modal', this.thankYouTemplate());
 		},
 
 		/* MODELL-EVENTS */
@@ -252,8 +243,6 @@ define([
 		onInfoOpenChange : function(model, value) {
 			if (value)
 				this.openInfo();
-			else
-				this.closeInfo();
 		},
 		// Reagerar när this.model.place pekas om på null eller ny platsmodell
 		onPlaceChange : function(model, value) {
@@ -266,8 +255,6 @@ define([
 		onAddPlaceOpenChange : function(model, value) {
 			if (value)
 				this.openAddPlace();
-			else 
-				this.closeAddPlace();
 		},
 		// Triggas av model:sync (en gång). 
 		onPlaceModelSync : function(model) {

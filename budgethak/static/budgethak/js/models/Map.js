@@ -9,6 +9,7 @@ define([
 			location : settings.defaultLocation,
 			userLocation : null,
 			userMarkerSet : false,
+			name : 'Map',
 		},
 	});
 	return new Map();

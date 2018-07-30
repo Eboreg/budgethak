@@ -6,7 +6,8 @@ define([
 	'models/Map',
 	'urljs',
 	'settings',
-], function(Backbone, _, AppView, Map, Url, settings) {
+	'eventbus',
+], function(Backbone, _, AppView, Map, Url, settings, EventBus) {
 	var Router = Backbone.Router.extend({
 		routes : {
 			'place/:slug/' : 'renderPlace',
@@ -35,7 +36,7 @@ define([
 		},
 		setUpListeners : _.once(function() {
 			this.listenTo(AppView, 'user-opened-place', this.navigateToPlace);
-			this.listenTo(AppView, 'user-opened-info', function() { this.navigate('info/'); });
+			this.listenTo(EventBus, 'user-opened-info', function() { this.navigate('info/'); });
 			this.listenTo(AppView, 'user-closed-sidebar', function() { this.navigate(''); });
 			this.listenTo(Map, 'change:zoom', this.updateZoomParam);
 			this.listenTo(Map, 'change:location', this.updateLocationParams);

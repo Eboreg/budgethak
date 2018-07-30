@@ -5,6 +5,7 @@ define([
         defaults : {
             content : "",
             open : false,
+            name : "Modal",
         }
     });
     return new Modal();

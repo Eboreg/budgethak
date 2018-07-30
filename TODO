@@ -14,6 +14,8 @@ BUGGAR:
 Om man går in på Place-länk med zoom angivet till t ex 15, ignoreras detta MEN querystring uppdateras ej.
 Antingen ska man hamna på angiven plats och zoomnivå ELLER så ska querystring uppdateras.
 
+Modal vid misslyckad geolocation ska bara visas en gång.
+
 
 DESIGNMÅL:
 1. Alla variabla data om en viss vy ("position", "visible", "active" m.m.) ska ej lagras i vyn utan i korresponderande modell.

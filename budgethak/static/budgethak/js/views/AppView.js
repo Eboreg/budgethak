@@ -26,17 +26,10 @@ define([
 			this.listenTo(this.model, 'change:filterClosedPlaces change:maxBeerPrice', this.filterPlaces);
 			//this.listenTo(PlaceCollection, 'change:visible', )   // ???
 			MenuBarView.on('my-location-click', MapView.gotoUserLocation, MapView);
-			this.listenTo(MenuBarView, 'info-icon-click', this.infoIconClicked);
-			this.listenTo(MenuBarView, 'add-place-icon-click', this.addPlaceIconClicked);
 			this.listenTo(MenuBarView, 'filter-closed-places-click', this.toggleFilterClosedPlaces);
 			this.listenTo(MenuBarView, 'max-beer-price-change', this.setMaxBeerPrice);
 			this.listenTo(MenuBarView, 'autocomplete-select', this.autocompleteSelected);
 			this.listenTo(SidebarView, 'transitionend', MapView.reloadMapSize);
-			this.listenTo(SidebarView, 'place-close', this.onPlaceClose);
-			this.listenTo(SidebarView, 'info-open', this.onInfoOpen);
-			this.listenTo(SidebarView, 'info-close', this.onInfoClose);
-			this.listenTo(SidebarView, 'add-place-open', this.onAddPlaceOpen);
-			this.listenTo(SidebarView, 'add-place-close', this.onAddPlaceClose);
 			this.listenTo(SidebarView, 'map-marker-click', this.flyToPlace);
 			this.listenTo(SidebarView, 'close-button-click', function() { this.trigger('user-closed-sidebar'); })
 			window.setInterval(this.cron30min, 60000);
@@ -90,7 +83,7 @@ define([
 			SidebarView.model.set('infoOpen', true);
 			MenuBarView.model.set('infoActive', true);
 			if (params)
-				Map.set({ zoom : params.zoom, location : { lat : params.lat, lng : params.lng }});
+				Map.set({ zoom : params.zoom, location : params.location });
 			this.render();
 		},
 		cron30min : function() {
@@ -139,28 +132,6 @@ define([
 				this.trigger('user-closed-sidebar');
 			}
 		},
-		/* Brygga MenuBarView -> SidebarView 
-		 * När MenuBarView:s info-icon klickas, ändrar vi Sidebar:s infoOpen så får SidebarView agera på detta */
-		infoIconClicked : function() {
-			var infoOpen = MenuBarView.model.get('infoActive');
-			SidebarView.model.set('infoOpen', infoOpen);
-			if (infoOpen) {
-				this.trigger('user-opened-info');
-			} else {
-				this.trigger('user-closed-sidebar');
-			}
-		},
-		/* Brygga MenuBarView -> SidebarView 
-		 * När MenuBarView:s add-place-icon klickas, ändrar vi Sidebar:s addPlaceOpen så får SidebarView agera på detta */
-		addPlaceIconClicked : function() {
-			var addPlaceOpen = MenuBarView.model.get('addPlaceActive');
-			SidebarView.model.set('addPlaceOpen', addPlaceOpen);
-			if (addPlaceOpen) {
-				this.trigger('user-opened-add-place');
-			} else {
-				this.trigger('user-closed-sidebar');
-			}
-		},
 		/* Brygga MenuBarView -> PlaceCollection -> PlaceView */
 		toggleFilterClosedPlaces : function(value) {
 			this.model.set('filterClosedPlaces', value);
@@ -192,27 +163,6 @@ define([
 				flyFunc();
 			else
 				this.listenToOnce(SidebarView, 'fully-open', flyFunc);
-		},
-		onPlaceClose : function(place) {
-			place.set('opened', false);
-		},
-		/* Brygga SidebarView() -> Router och MenuBarView() */
-		onInfoOpen : function() {
-			MenuBarView.model.set('infoActive', true);
-		},
-		/* Brygga SidebarView -> MenuBarView */
-		onInfoClose : function() {
-			MenuBarView.model.set('infoActive', false);
-		},
-		/* Brygga SidebarView() -> MenuBarView() */
-		onAddPlaceOpen : function() {
-			var place = PlaceCollection.createEmptyPlace();
-			MenuBarView.model.set('place', place);
-			MenuBarView.model.set('addPlaceActive', true);
-		},
-		/* Brygga SidebarView -> MenuBarView */
-		onAddPlaceClose : function() {
-			MenuBarView.model.set('addPlaceActive', false);
 		},
 	});
 	return new AppView();

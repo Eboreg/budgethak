@@ -9,6 +9,7 @@ define([
 			open : false,
 			fullyOpen : false, // ändras först efter transistionend-event
 			transition : true,
+			name : "Sidebar",
 		},
 		initialize : function() {
 			this.on({

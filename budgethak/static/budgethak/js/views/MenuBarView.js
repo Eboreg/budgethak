@@ -135,11 +135,9 @@ define([
 		},
 		onInfoIconClick: function () {
 			this.model.set('infoActive', !this.model.get('infoActive'));
-			this.trigger('info-icon-click');
 		},
 		onAddPlaceIconClick: function() {
 			this.model.set('addPlaceActive', !this.model.get('addPlaceActive'));
-			this.trigger('add-place-icon-click');
 		},
 
 		/* MODELL-EVENTS */
