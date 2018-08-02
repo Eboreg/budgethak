@@ -5,7 +5,7 @@ module.exports = {
     "entry": "./src/app.js",
     "output": {
         "path": path.resolve(__dirname, '/budgethak/static/budgethak/js'),
-        "filename": "bundle.js"
+        "filename": "bundle.js",
     },
     "module": {
         "rules": [
@@ -13,15 +13,19 @@ module.exports = {
                 "test": /\.css$/,
                 "use": [
                     "style-loader",
-                    "css-loader"
-                ]
+                    "css-loader",
+                ],
             },
             {
                 "enforce": "pre",
                 "test": /\.(js|jsx)$/,
                 "exclude": /node_modules/,
-                "use": "jshint-loader"
+                "use": "jshint-loader",
             },
-        ]
-    }
+            {
+                test: /\.html$/,
+                use: 'underscore-template-loader',
+            },
+        ],
+    },
 };
