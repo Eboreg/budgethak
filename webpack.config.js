@@ -1,27 +1,26 @@
-const path = require('path');
+var path = require('path');
 
 module.exports = {
-    "mode": "development",
-    "entry": "./src/app.js",
-    "output": {
-        "path": path.resolve(__dirname, 'budgethak/static/budgethak/js'),
-        "filename": "bundle.js",
+    'mode': 'development',
+    'entry': './src/App.js',
+    'output': {
+        'path': path.resolve(__dirname, 'budgethak/static/budgethak/js'),
+        'filename': 'bundle.js',
     },
-    "module": {
-        "rules": [
+    'module': {
+        'rules': [
             {
-                "test": /\.css$/,
-                "use": [
-                    "style-loader",
-                    "css-loader",
+                'test': /\.css$/,
+                'use': [
+                    'style-loader',
+                    'css-loader',
                 ],
             },
             {
-                "enforce": "pre",
-                "test": /\.(js|jsx)$/,
-                "exclude": /node_modules/,
-                //"use": "jshint-loader",
-                "use": "eslint-loader",
+                'enforce': 'pre',
+                'test': /\.(js|jsx)$/,
+                'exclude': /node_modules/,
+                'use': 'eslint-loader',
             },
             {
                 test: /\.html$/,
@@ -29,7 +28,7 @@ module.exports = {
             },
         ],
     },
-    "resolve": {
-        "extensions": [ ".js", ".css", ".html", ],
+    'resolve': {
+        'extensions': [ '.js', '.css', '.html', ],
     },
 };

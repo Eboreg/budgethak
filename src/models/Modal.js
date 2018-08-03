@@ -1,12 +1,11 @@
-define([
-	'backbone',
-], function(Backbone) {
-    var Modal = Backbone.Model.extend({
-        defaults : {
-            content : "",
-            open : false,
-            name : "Modal",
-        }
-    });
-    return new Modal();
+var Backbone = require('backbone');
+
+var Modal = Backbone.Model.extend({
+    defaults : {
+        content : '',
+        open : false,
+        name : 'Modal',
+    }
 });
+
+module.exports = Modal;
