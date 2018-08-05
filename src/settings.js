@@ -1,4 +1,4 @@
-var L = require('leaflet');
+import L from 'leaflet';
 
 var settings = {
     urlroot : '/',
@@ -27,4 +27,4 @@ var settings = {
     mapboxAccessToken: 'pk.eyJ1Ijoia2xhYXR1IiwiYSI6ImNqaWxrb3lqNTI3amYzcW43M21neDZ5cnoifQ.Rqpgr56qRWaByXSqWT0OrQ',
 };
 
-module.exports = settings;
+export default settings;

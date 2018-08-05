@@ -1,4 +1,4 @@
-var Backbone = require('backbone');
+import Backbone from 'backbone';
 
 var Sidebar = Backbone.Model.extend({
     defaults : {
@@ -47,4 +47,4 @@ var Sidebar = Backbone.Model.extend({
     },
 });
 
-module.exports = Sidebar;
+export default Sidebar;

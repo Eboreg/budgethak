@@ -66,15 +66,15 @@
             <p>Det är nu inskickat till admin för kontroll.</p>
         </script>
 
-        <section id="app">
+        <script id="app-template" type="text/template">
             <div id="main-wrapper">
                 <div id="map-element"></div>
-                <div id="sidebar-container">
-                    <div id="sidebar-element"></div>
-                </div>
-                <div class="w3-modal" id="modal-container"></div>
+                <div id="sidebar-container" class="w3-card-8"></div>
+                <div id="modal-container"></div>
             </div>
-        </section>
+        </script>
+
+        <section id="app"></section>
 
         <script>
             budgethak = {};
@@ -83,7 +83,7 @@
             budgethak.bootstrap = {{ places }};
             {% endautoescape %}
         </script>
-        <script data-main="{{ STATIC_URL }}budgethak/js/app" src="//cdnjs.cloudflare.com/ajax/libs/require.js/2.3.5/require.min.js"></script>
+        <script src="{{ STATIC_URL }}budgethak/js/bundle.js"></script>
         {% csrf_token %}
     </body>
 </html>

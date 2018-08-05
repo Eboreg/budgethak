@@ -1,5 +1,5 @@
-var Marionette = require('backbone.marionette');
+import Marionette from 'backbone.marionette';
 
-var EventBus = Marionette.Object.extend({
+export var EventBus = Marionette.Object.extend({
     
-})
+});

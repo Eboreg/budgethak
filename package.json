@@ -2,7 +2,7 @@
   "name": "budgethak",
   "version": "1.0.0",
   "description": "Mitt pågående webbprojekt för att hitta billig öl.",
-  "main": "./budgethak/static/js/App.js",
+  "main": "./budgethak/static/js/app.js",
   "directories": {
     "lib": "lib"
   },
@@ -20,6 +20,9 @@
   },
   "homepage": "https://github.com/Eboreg/budgethak#readme",
   "dependencies": {
+    "babel-core": "^6.26.3",
+    "babel-loader": "^7.1.5",
+    "babel-preset-env": "^1.7.0",
     "backbone": "^1.3.3",
     "backbone.marionette": "^3.5.1",
     "jquery": "^3.3.1",

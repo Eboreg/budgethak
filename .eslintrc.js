@@ -2,12 +2,13 @@ module.exports = {
     "env": {
         "browser": true,
         "node": true,
-        "commonjs": true,
-        "amd": true
+        //"commonjs": true,
+        //"amd": true
     },
     "extends": "eslint:recommended",
     "parserOptions": {
-        "ecmaVersion": 5
+        "ecmaVersion": 6,
+        "sourceType": "module"
     },
     "rules": {
         "indent": [
@@ -28,6 +29,7 @@ module.exports = {
         ],
         "no-unused-vars": [
             "warn"
-        ]
+        ],
+        "no-console": "off",
     }
 };

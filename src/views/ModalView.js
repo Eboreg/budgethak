@@ -1,24 +1,28 @@
-var Marionette = require('backbone.marionette');
-var Modal = require('../models/Modal');
+import Marionette from 'backbone.marionette';
+import Modal from '../models/Modal';
 
 var ModalView = Marionette.View.extend({
     model: new Modal(),
-    el: '#modal-container',
+    className : 'w3-modal',
     template: '#modal',
     channelName: 'modal',
+    ui: {
+        close: '#close-modal',
+        content: '#modal-content',
+    },
     events : {
         'click' : 'conditionalClose',
-        'click #close-modal' : 'close',
+        'click @ui.close' : 'close',
     },
     radioRequests: {
-        'show': function(message) {
-            this.model.set('content', message);
-            this.model.set('open', true);
-        },
+        'show': 'show',
+    },
+    show: function(message) {
+        this.getUI('content').html(message);
     },
     modelEvents: {
-        'change:content': this.contentChanged,
-        'change:open': this.openChanged,
+        'change:content': 'contentChanged',
+        'change:open': 'openChanged',
     },
     contentChanged: function(model, value) {
         this.$('#modal-content').html(value);
@@ -43,4 +47,4 @@ var ModalView = Marionette.View.extend({
     },
 });
 
-module.exports = ModalView;
+export default ModalView;

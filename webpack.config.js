@@ -2,7 +2,7 @@ var path = require('path');
 
 module.exports = {
     'mode': 'development',
-    'entry': './src/App.js',
+    'entry': './src/app.js',
     'output': {
         'path': path.resolve(__dirname, 'budgethak/static/budgethak/js'),
         'filename': 'bundle.js',
@@ -16,6 +16,14 @@ module.exports = {
                     'css-loader',
                 ],
             },
+            // {
+            //     test: /\.js?$/,
+            //     exclude: /node_modules/,
+            //     loader: 'babel-loader',
+            //     query: {
+            //         presets: ['env']
+            //     }
+            // },
             {
                 'enforce': 'pre',
                 'test': /\.(js|jsx)$/,
