@@ -1,0 +1,3 @@
+#!/bin/sh
+pip list --format=legacy | sed 's/ .*$/ /' | tr -d '\n' | xargs pip install -U
+
