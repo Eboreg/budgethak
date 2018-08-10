@@ -1,0 +1,50 @@
+<div class="w3-container w3-padding-0">
+    <h3>
+        <input class="w3-input w3-border" type="text" id="name" value="<%- name %>" />                    
+    </h3>
+    <p class="error-message" data-for="name"></p>
+</div>
+<div id="sidebar-block-1">
+    <p>
+        <% if (typeof image != 'undefined' && image != '') { %>
+        <img src="{{ MEDIA_URL }}<%= image %>" class="place-image w3-round w3-card-4" />
+        <% } %>
+        <img src="{{ MEDIA_URL }}ajax-loader.gif" class="w3-display-middle" id="ajax-loader-image" />
+    </p>
+    <label for="image-input" class="w3-button submit">Ladda upp ny bild</label>
+    <input type="file" id="image-input" name="image-input" />
+    <button id="remove-image" class="w3-button cancel">Ta bort bild</button>
+    <input type="hidden" id="image" />
+    <input type="hidden" id="image_upload_url" value="{{ image_upload_url }}" />
+    <% if (typeof image != 'undefined' && image != '') { %>
+    <input type="hidden" id="original-image" value="{{ MEDIA_URL }}<%= image %>" />
+    <% } else { %>
+    <input type="hidden" id="original-image" value="" />
+    <% } %>
+    <p class="error-message" data-for="image"></p>
+    <div class="w3-container w3-padding-0">
+        <p>
+            <label for="beer_price">Ölpris</label>
+            <input type="number" min="1" max="40" class="w3-input w3-border" id="beer_price" value="<%- beer_price %>" />
+            <p class="error-message" data-for="beer_price"></p>
+            <label for="beer_price_until">Ölpris gäller t.o.m. klockan</label>
+            <input type="text" class="w3-input w3-border timepicker" id="beer_price_until" value="<%- beer_price_until %>" />
+            <p class="error-message" data-for="beer_price_until"></p>
+        </p>
+        <p>
+            <input type="checkbox" class="w3-check" id="uteservering"<% print (true == uteservering ? " checked" : "") %> />
+            <label for="uteservering">Uteservering</label>
+        </p>
+    </div>
+</div>
+<div id="sidebar-block-2">
+    <h5 class="opening-hours-headline">Öppettider</h5>
+    <table class="opening-hours-table">
+        {% block opening-hours %}
+        {% endblock opening-hours %}
+    </table>
+    <h5>Kommentar</h5>
+    <textarea id="user_comment" class="w3-input w3-border"></textarea>
+    <button id="edit-place-submit" class="w3-button submit">Skicka</button>
+    <button id="edit-place-cancel" class="w3-button cancel">Avbryt</button>
+</div>

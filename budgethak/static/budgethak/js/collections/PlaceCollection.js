@@ -10,6 +10,11 @@ define([
 	var PlaceCollection = Backbone.Collection.extend({
 		model: Place,
 		url: 'api/places/',
+		defaults : {
+			visible : false, opened : false, slug : "", name : "", street_address : "", city : "",
+			lat : "", lng : "", beer_price : "", beer_price_until : "", comment : "",
+			uteservering : false, image : "", opening_hours : [],
+		},
 
 		initialize: function () {
 			_.bindAll(this, 'autocomplete');
@@ -51,6 +56,11 @@ define([
 				}
 			}
 			response(matches);
+		},
+		createEmptyPlace : function() {
+			var place = new Place(this.defaults);
+			this.add(place);
+			return place;
 		},
 	});
 	return new PlaceCollection();

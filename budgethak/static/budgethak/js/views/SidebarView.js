@@ -6,13 +6,13 @@ define([
 	'backbone',
 	'underscore',
 	'jquery',
-	'messagebus',
+	'eventbus',
 	'models/Sidebar',
 	'models/Place',
 	'jquery-touchswipe',
 	'jquery-timepicker',
 	'ajaximage',
-], function(Backbone, _, $, MessageBus, Sidebar) {
+], function(Backbone, _, $, EventBus, Sidebar) {
 	var SidebarView = Backbone.View.extend({
 		//el : '#sidebar-container',
 		id : 'sidebar-container',
@@ -48,6 +48,7 @@ define([
 			this.listenTo(this.model, 'change:open', this.onOpenChange);
 			this.listenTo(this.model, 'change:infoOpen', this.onInfoOpenChange);
 			this.listenTo(this.model, 'change:place', this.onPlaceChange);
+			this.listenTo(this.model, 'change:addPlaceOpen', this.onAddPlaceOpenChange);
 			if ($(window).width() <= 600) {
 				this.$el.swipe({
 					swipeRight : _.bind(function() {
@@ -83,11 +84,10 @@ define([
 		openInfo : function() {
 			this.$el.find("#sidebar-element").html(this.infoTemplate());
 			this.place = null;
-			this.trigger('info-open');
 		},
-		// Stänger inte själva rutan
-		closeInfo : function() {
-			this.trigger('info-close');
+		openAddPlace : function() {
+			this.$el.find("#sidebar-element").html(this.placeAddTemplate());
+			this.place = null;
 		},
 		openPlace : function() {
 			if (this.place != this.model.get('place')) {
@@ -230,7 +230,7 @@ define([
 		placeSaveSucceeded : function(model, response, options) {
 			this.$("#edit-place-submit").prop("disabled", false);
 			this.closePlaceEditor();
-			MessageBus.trigger('show', this.thankYouTemplate());
+			EventBus.trigger('modal', this.thankYouTemplate());
 		},
 
 		/* MODELL-EVENTS */
@@ -243,8 +243,6 @@ define([
 		onInfoOpenChange : function(model, value) {
 			if (value)
 				this.openInfo();
-			else
-				this.closeInfo();
 		},
 		// Reagerar när this.model.place pekas om på null eller ny platsmodell
 		onPlaceChange : function(model, value) {
@@ -254,6 +252,10 @@ define([
 				this.openPlace();
 			}
 		},
+		onAddPlaceOpenChange : function(model, value) {
+			if (value)
+				this.openAddPlace();
+		},
 		// Triggas av model:sync (en gång). 
 		onPlaceModelSync : function(model) {
 			this.onPlaceModelChange(model);
@@ -262,10 +264,7 @@ define([
 		// Triggas av model:change (tills platsinfo stängts). 
 		// Reagerar på förändringar i själva modellen som this.model.place pekar på.
 		onPlaceModelChange : function(model) {
-			if (!model.get('visible')) {
-				this.closePlace();
-				this.model.close();
-			} else {
+			if (model.get('visible')) {
 				this.$el.find("#sidebar-element").html(this.placeTemplate(model.toJSONGrouped()));
 			}
 		},

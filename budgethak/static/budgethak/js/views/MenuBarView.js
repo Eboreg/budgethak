@@ -9,12 +9,10 @@ define([
 	'jquery-ui',
 ], function (Backbone, _, MenuBar, PlaceCollection, settings, L, $) {
 	var MenuBarView = Backbone.View.extend({
-		collection : PlaceCollection,
-
 		initialize: function () {
 			this.model = MenuBar;
 			_.bindAll(this, 'onMobileMenuButtonClick', 'onMyLocationClick', 'onFilterClosedPlacesClick', 'onSearchIconClick',
-				'onInfoIconClick', 'setupAutocomplete', 'onMaxBeerPriceSliderChange');
+				'onInfoIconClick', 'onAddPlaceIconClick', 'setupAutocomplete', 'onMaxBeerPriceSliderChange');
 			this.menuBar = L.control({
 				position: 'topleft'
 			});
@@ -27,6 +25,7 @@ define([
 			}, this);
 			this.listenTo(this.model, 'change:filterClosedPlaces', this.onFilterClosedPlacesChange);
 			this.listenTo(this.model, 'change:infoActive', this.onInfoActiveChange);
+			this.listenTo(this.model, 'change:addPlaceActive', this.onAddPlaceActiveChange);
 			this.listenTo(this.model, 'change:mobileMenuOpen', this.onMobileMenuOpenChange);
 		},
 		render: function (map) {
@@ -35,12 +34,12 @@ define([
 			var menuBarElement = this.menuBar.getContainer();
 			// När maxpris-slider slide:as, ska text bredvid den uppdateras:
 			var slideFunc = _.bind(function (event, ui) {
-				this.$el.find("#max-beer-price").text(ui.value);
+				this.$("#max-beer-price").text(ui.value);
 			}, this);
 			L.DomEvent.disableClickPropagation(menuBarElement);
 			L.DomEvent.disableScrollPropagation(menuBarElement);
 			// Lägg till maxpris-slider och bind till event:
-			this.$el.find("#max-beer-price-slider").slider({
+			this.$("#max-beer-price-slider").slider({
 				value: this.model.get('maxBeerPrice'),
 				min: settings.minBeerPrice,
 				max: settings.maxBeerPrice,
@@ -49,21 +48,22 @@ define([
 				change: this.onMaxBeerPriceSliderChange,
 			});
 			if (this.model.get('infoActive'))
-				this.$el.find("#info-icon").addClass("active");
+				this.$("#info-icon").addClass("active");
 			if (this.model.get('filterClosedPlaces')) {
-				this.$el.find("#filter-closed-places-icon").addClass("active");
-				this.$el.find("#filter-closed-places-icon").attr("title", "Visa stängda platser");
+				this.$("#filter-closed-places-icon").addClass("active");
+				this.$("#filter-closed-places-icon").attr("title", "Visa stängda platser");
 			}
 			this.bindDOMEvents();
 			return this;
 		},
 		// Verkar ej som om vi kan göra detta i vanliga events-hashen pga elementen finns ej DOM från början
 		bindDOMEvents: function () {
-			this.$el.find("#mobile-menu-button").click(this.onMobileMenuButtonClick);
-			this.$el.find("#my-location-icon").click(this.onMyLocationClick);
-			this.$el.find("#filter-closed-places-icon").click(this.onFilterClosedPlacesClick);
-			this.$el.find("#search-icon").click(this.onSearchIconClick);
-			this.$el.find("#info-icon").click(this.onInfoIconClick);
+			this.$("#mobile-menu-button").click(this.onMobileMenuButtonClick);
+			this.$("#my-location-icon").click(this.onMyLocationClick);
+			this.$("#filter-closed-places-icon").click(this.onFilterClosedPlacesClick);
+			this.$("#search-icon").click(this.onSearchIconClick);
+			this.$("#info-icon").click(this.onInfoIconClick);
+			this.$("#add-place-icon").click(this.onAddPlaceIconClick);
 			// På mobiler ska sökfältet alltid synas när menyn är öppen
 			if ($(window).width() > 600) {
 				var transitionendFunc = _.bind(function (event) {
@@ -71,22 +71,22 @@ define([
 						// searchFieldOpen är ett deskriptivt fält, inte något som events ska reagera på utan som bara ska kollas
 						this.model.set("searchFieldOpen", !this.model.get("searchFieldOpen"));
 						if (this.model.get("searchFieldOpen")) {
-							this.$el.find("#search-field").focus();
+							this.$("#search-field").focus();
 						}
 					}
 				}, this);
-				this.$el.find("#search-field-container").on("transitionend", transitionendFunc);
-				this.$el.find("#search-field").focusout(_.bind(function () {
+				this.$("#search-field-container").on("transitionend", transitionendFunc);
+				this.$("#search-field").focusout(_.bind(function () {
 					this.closeSearchField();
 				}, this));
 			}
 			this.setupAutocomplete();
 		},
 		openSearchField: function () {
-			this.$el.find("#search-field-container").addClass("open");
+			this.$("#search-field-container").addClass("open");
 		},
 		closeSearchField: function () {
-			this.$el.find("#search-field-container").removeClass("open");
+			this.$("#search-field-container").removeClass("open");
 		},
 		setupAutocomplete: function () {
 			var template = _.template($("#autocomplete-item").html());
@@ -103,12 +103,12 @@ define([
 					this.menu.element.css('max-height', maxHeight);
 				},
 			});
-			this.$el.find("#search-field").autocomplete({
-				source: this.collection.autocomplete,
+			this.$("#search-field").autocomplete({
+				source: PlaceCollection.autocomplete,
 				minLength: 1,
 				select: selectFunc,
 			});
-			this.$el.find("#search-field").focus(function () {
+			this.$("#search-field").focus(function () {
 				$(this).autocomplete("search");
 			});
 		},
@@ -135,30 +135,38 @@ define([
 		},
 		onInfoIconClick: function () {
 			this.model.set('infoActive', !this.model.get('infoActive'));
-			this.trigger('info-icon-click');
+		},
+		onAddPlaceIconClick: function() {
+			this.model.set('addPlaceActive', !this.model.get('addPlaceActive'));
 		},
 
 		/* MODELL-EVENTS */
 		onFilterClosedPlacesChange: function (model, value) {
 			if (value) {
-				this.$el.find("#filter-closed-places-icon").addClass("active");
-				this.$el.find("#filter-closed-places-icon").attr("title", "Visa stängda platser");
+				this.$("#filter-closed-places-icon").addClass("active");
+				this.$("#filter-closed-places-icon").attr("title", "Visa stängda platser");
 			} else {
-				this.$el.find("#filter-closed-places-icon").removeClass("active");
-				this.$el.find("#filter-closed-places-icon").attr("title", "Dölj stängda platser");
+				this.$("#filter-closed-places-icon").removeClass("active");
+				this.$("#filter-closed-places-icon").attr("title", "Dölj stängda platser");
 			}
 		},
 		onInfoActiveChange: function (model, value) {
 			if (value)
-				this.$el.find("#info-icon").addClass("active");
+				this.$("#info-icon").addClass("active");
 			else
-				this.$el.find("#info-icon").removeClass("active");
+				this.$("#info-icon").removeClass("active");
+		},
+		onAddPlaceActiveChange : function(model, value) {
+			if (value)
+				this.$("#add-place-icon").addClass("active");
+			else 
+				this.$("#add-place-icon").removeClass("active");
 		},
 		onMobileMenuOpenChange: function (model, value) {
 			if (value)
-				this.$el.find(".menu-bar-row").css("display", "flex");
+				this.$(".menu-bar-row").css("display", "flex");
 			else
-				this.$el.find(".menu-bar-row").hide();
+				this.$(".menu-bar-row").hide();
 		},
 	});
 	return new MenuBarView();
