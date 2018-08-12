@@ -1,9 +1,8 @@
-<div class="w3-container w3-padding-0">
-    <h3 class="w3-left">Vad?</h3>
-    <div class="w3-right" id="sidebar-icons">
-        <i class="fas fa-times icon clickable sidebar-icon" id="close-sidebar-button" title="Stäng" />
-    </div>
-</div>
+{% extends "budgethak/sidebar-base.html" %}
+
+{% block title %}Vad?{% endblock %}
+
+{% block content %}
 <p>
     Detta är en tjänst för att enkelt hitta billig öl. Kriteriet är <strong>minst 40 för max 40</strong>, d.v.s.
     man ska, någon gång under dygnet, kunna få minst 40 cl starköl för max 40 kr.
@@ -32,3 +31,4 @@
 <h3>
     <img style="width:50%;" class="w3-round w3-card-4" src="{{ MEDIA_URL }}Robert.jpg" />
 </h3>
+{% endblock content %}
