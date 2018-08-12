@@ -1,9 +1,9 @@
-var Backbone = require('backbone');
-var Place = require('../models/Place');
-var settings = require('../settings');
-var $ = require('jquery');
-var _ = require('underscore');
-require('jqueryui');
+import Backbone from 'backbone';
+import Place from '../models/Place';
+import settings from '../settings';
+import $ from 'jquery';
+import _ from 'underscore';
+import 'jquery-ui';
 
 var PlaceCollection = Backbone.Collection.extend({
     model: Place,
@@ -17,7 +17,7 @@ var PlaceCollection = Backbone.Collection.extend({
     initialize: function () {
         _.bindAll(this, 'autocomplete');
         // Modeller i JSON-format, bootstrappade via Djangos IndexView
-        this.reset(window.budgethak.bootstrap);
+        //this.reset(window.budgethak.bootstrap);
     },
     autocomplete: function (request, response) {
         // Returnerar aldrig fler än settings.maxAutocompleteMatches träffar.
@@ -62,4 +62,4 @@ var PlaceCollection = Backbone.Collection.extend({
     },
 });
 
-module.exports = PlaceCollection;
+export default PlaceCollection;

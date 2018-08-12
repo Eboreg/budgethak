@@ -1,3 +1,5 @@
+import _ from 'underscore';
+import Radio from 'backbone.radio';
 import Marionette from 'backbone.marionette';
 import Modal from '../models/Modal';
 
@@ -5,7 +7,6 @@ var ModalView = Marionette.View.extend({
     model: new Modal(),
     className : 'w3-modal',
     template: '#modal',
-    channelName: 'modal',
     ui: {
         close: '#close-modal',
         content: '#modal-content',
@@ -14,18 +15,14 @@ var ModalView = Marionette.View.extend({
         'click' : 'conditionalClose',
         'click @ui.close' : 'close',
     },
-    radioRequests: {
-        'show': 'show',
+    initialize: function() {
+        _.bindAll(this, 'show');
+        this.channel = Radio.channel('modal');
+        this.channel.reply('show', this.show);
     },
     show: function(message) {
         this.getUI('content').html(message);
-    },
-    modelEvents: {
-        'change:content': 'contentChanged',
-        'change:open': 'openChanged',
-    },
-    contentChanged: function(model, value) {
-        this.$('#modal-content').html(value);
+        this.open();
     },
     conditionalClose : function(e) {
         // Gå bara vidare om klicket är på det grå fältet utanför rutan
@@ -33,17 +30,10 @@ var ModalView = Marionette.View.extend({
             this.close();
     },
     close : function() {
-        this.model.set('open', false);
+        this.$el.hide();
     },
     open : function() {
-        this.model.set('open', true);
-    },
-    openChanged: function(model, value) {
-        if (true == value) {
-            this.$el.show();
-        } else {
-            this.$el.hide();
-        }
+        this.$el.show();
     },
 });
 

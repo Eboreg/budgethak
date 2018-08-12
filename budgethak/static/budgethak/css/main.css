@@ -3,7 +3,9 @@
     padding: 0;
     /*vertical-align: top;*/
 }
-
+html {
+    overflow-y: hidden;
+}
 html, body, #app, #main-wrapper, #map-element, #map-wrapper {
     height: 100%;
 }

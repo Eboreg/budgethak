@@ -3,8 +3,9 @@ var Backbone = require('backbone');
 var Place = Backbone.Model.extend({
     idAttribute : 'slug',
     defaults : {
-        visible : true,
-        opened : false,
+        visible : true, opened : false, slug : '', name : '', street_address : '', city : '',
+        lat : '', lng : '', beer_price : '', beer_price_until : '', comment : '',
+        uteservering : false, image : '', opening_hours : [],
     },
     url : function() {
         // Fix för trasiga REST-requests (utan trailing slash)

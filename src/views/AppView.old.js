@@ -110,7 +110,14 @@ define([
                 var placeview = new PlaceView({
                     model : place,
                 });
-                placeview.markercluster = MapView.markercluster;
+                placeview.
+            MapView.markercluster.addLayers(markers);
+        },
+        /* Brygga PlaceView -> SidebarView */
+        placeMarkerClicked : function(place) {
+            if (place.get('opened')) {
+                SidebarView.model.set('place', place);
+                this.listenToOnce(SidebarView, 'fully-open', fmarkercluster = MapView.markercluster;
                 placeview.mapview = MapView;
                 markers.push(placeview.marker);
                 this.listenTo(placeview, 'marker-click', this.placeMarkerClicked);

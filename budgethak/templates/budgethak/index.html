@@ -52,6 +52,10 @@
             {% include "budgethak/info-text.html" %}
         </script>
 
+        <script id="sidebar-template" type="text/template">
+            <div id="sidebar-element" class="w3-container"></div>
+        </script>
+
         <script id="modal" type="text/template">
             <div class="w3-modal-content">
                 <div class="w3-container">
@@ -68,7 +72,7 @@
 
         <script id="app-template" type="text/template">
             <div id="main-wrapper">
-                <div id="map-element"></div>
+                <div id="map-wrapper"></div>
                 <div id="sidebar-container" class="w3-card-8"></div>
                 <div id="modal-container"></div>
             </div>

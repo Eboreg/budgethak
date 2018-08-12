@@ -1,11 +1,9 @@
-var Backbone = require('backbone');
+import Backbone from 'backbone';
 
 var Modal = Backbone.Model.extend({
     defaults : {
         content : '',
-        open : false,
-        name : 'Modal',
     }
 });
 
-module.exports = Modal;
+export default Modal;
