@@ -23,7 +23,7 @@ var AppView = Marionette.View.extend({
     onRender: function() {
         this.showChildView('sidebar', new SidebarView());
         this.showChildView('modal', new ModalView());
-        var mapView = new MapView({collection: this.collection});
+        var mapView = new MapView({ collection: this.collection, sort: false });
         this.showChildView('map', mapView);
         this.showChildView('menuBar', new MenuBarView({map: mapView.map, collection: this.collection}));
     }

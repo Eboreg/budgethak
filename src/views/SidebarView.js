@@ -4,7 +4,6 @@ import _ from 'underscore';
 import $ from 'jquery';
 import 'jquery-touchswipe';
 import 'timepicker';
-//import 'timepicker/jquery.timepicker.css';
 import Place from '../models/Place';
 
 var SidebarView = Marionette.View.extend({
@@ -12,7 +11,7 @@ var SidebarView = Marionette.View.extend({
     className: 'w3-card-8',
     ui: {
         element: '#sidebar-element',
-        close: '#close-sidebar-button',
+        close: '.close',
     },
     events: {
         'transitionend' : 'onTransitionEnd',

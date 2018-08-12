@@ -3,12 +3,20 @@ import Radio from 'backbone.radio';
 import _ from 'underscore';
 import L from 'leaflet';
 import 'leaflet.markercluster';
+import PlaceView from './PlaceView';
 import MenuBarView from './MenuBarView';
 import settings from '../settings';
 
-var MapView = Marionette.View.extend({
+var MapView = Marionette.CollectionView.extend({
     id : 'map-element',
     template: _.noop,
+    childView: PlaceView,
+    childViewOptions: function() {
+        return { 
+            markercluster: this.markercluster,
+            map: this.map,
+        };
+    },
 
     initialize: function() {
         this.channel = Radio.channel('map');
