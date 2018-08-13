@@ -1,0 +1,15 @@
+<div class="w3-container w3-padding-0">
+    <table id="sidebar-header">
+        <tr>
+            <td><h3 class="w3-left">{% block title %}{% endblock %}</h3></td>
+            <td>
+                <div class="w3-right" id="sidebar-icons">
+                    {% block header-icons %}{% endblock %}
+                    <i class="fas fa-times icon clickable sidebar-icon close" id="close-sidebar-button" title="Stäng" />
+                </div>
+            </td>
+        </tr>
+    </table>
+</div>
+{% block content %}
+{% endblock content %}
