@@ -1,7 +1,7 @@
-import Marionette from 'backbone.marionette';
+import AppRouter from 'marionette.approuter';
 import Controller from './controller';
 
-var Router = Marionette.AppRouter.extend({
+var Router = AppRouter.extend({
     appRoutes: {
         'place/:slug/' : 'renderPlace',
         'info/' : 'renderInfo',

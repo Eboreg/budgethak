@@ -16,7 +16,7 @@ var MapView = Marionette.CollectionView.extend({
             map: this.map,
         };
     },
-    viewFilter: 'visible',
+    viewFilter: { visible: true, },
 
     initialize: function() {
         this.channel = Radio.channel('map');
@@ -77,7 +77,7 @@ var MapView = Marionette.CollectionView.extend({
         }
     },
     changeMaxBeerPrice: function(value) {
-
+        //this.viewFilter
     },
     activateFilterClosedPlaces: function() {
 

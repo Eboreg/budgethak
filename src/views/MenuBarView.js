@@ -8,7 +8,7 @@ import 'jquery-ui/ui/widgets/autocomplete';
 import 'jquery-ui/ui/widgets/slider';
 
 var MenuBarView = Marionette.View.extend({
-    template: '#menu-bar',
+    template: _.template($('#menu-bar').html()),
     templateContext: {
         max_beer_price: settings.maxBeerPrice,
     },

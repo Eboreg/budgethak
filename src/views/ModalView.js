@@ -1,4 +1,5 @@
 import _ from 'underscore';
+import $ from 'jquery';
 import Radio from 'backbone.radio';
 import Marionette from 'backbone.marionette';
 import Modal from '../models/Modal';
@@ -6,7 +7,7 @@ import Modal from '../models/Modal';
 var ModalView = Marionette.View.extend({
     model: new Modal(),
     className : 'w3-modal',
-    template: '#modal',
+    template: _.template($('#modal').html()),
     ui: {
         close: '#close-modal',
         content: '#modal-content',

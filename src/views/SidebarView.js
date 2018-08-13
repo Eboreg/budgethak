@@ -17,7 +17,7 @@ var SidebarView = Marionette.View.extend({
         'transitionend' : 'onTransitionEnd',
         'click @ui.close': 'close',
     },
-    template: '#sidebar-template',
+    template: _.template($('#sidebar-template').html()),
 
     initialize : function(options) {
         this.transition = true;
@@ -30,8 +30,8 @@ var SidebarView = Marionette.View.extend({
             this.open();
         }
         this.channel = Radio.channel('sidebar');
-        this.infoTemplate = Marionette.TemplateCache.get('#info-text');
-        this.placeAddTemplate = Marionette.TemplateCache.get('#place-add');
+        this.infoTemplate = _.template('#info-text');
+        this.placeAddTemplate = _.template('#place-add');
         if ($(window).width() <= 600) {
             this.$el.swipe({
                 swipeRight : _.bind(function() {
