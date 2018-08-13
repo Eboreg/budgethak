@@ -12,6 +12,8 @@ Fixa add-place-funktionalitet.
 
 leaflet-usermarker??
 
+Gör kommentar obligatorisk vid Place-update och kanske även create. Minst X antal tecken.
+
 BUGGAR:
 Om man går in på Place-länk med zoom angivet till t ex 15, ignoreras detta MEN querystring uppdateras ej.
 Antingen ska man hamna på angiven plats och zoomnivå ELLER så ska querystring uppdateras.

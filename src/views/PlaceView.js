@@ -16,6 +16,7 @@ var PlaceView = Marionette.View.extend({
         });
     },
     render: function() {
+        this.triggerMethod('before:render', this);
         if (this.model.get('opened')) {
             this.marker.setIcon(settings.placeIconActive);
             this.map.addLayer(this.marker);
@@ -23,7 +24,14 @@ var PlaceView = Marionette.View.extend({
         if (this.model.get('visible')) {
             this.markercluster.addLayer(this.marker);
         }
+        this._isRendered = true;
+        this.triggerMethod('render', this);
+        return this;
     },
+    _removeElement: function() {
+        this.markercluster.removeLayer(this.marker);
+        this.map.removeLayer(this.marker);
+    }
 });
 
 export default PlaceView;

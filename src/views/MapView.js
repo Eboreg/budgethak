@@ -4,7 +4,6 @@ import _ from 'underscore';
 import L from 'leaflet';
 import 'leaflet.markercluster';
 import PlaceView from './PlaceView';
-import MenuBarView from './MenuBarView';
 import settings from '../settings';
 
 var MapView = Marionette.CollectionView.extend({
@@ -17,6 +16,7 @@ var MapView = Marionette.CollectionView.extend({
             map: this.map,
         };
     },
+    viewFilter: 'visible',
 
     initialize: function() {
         this.channel = Radio.channel('map');
