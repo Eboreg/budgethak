@@ -44,15 +44,17 @@ var MenuBarView = Marionette.View.extend({
         this.map = options.map;
         this.autocompleteSource = this.collection.autocomplete;
         this.searchFieldOpen = false;
-        this.maxBeerPrice = settings.maxBeerPrice;
         this.mobileMenuOpen = false;
-        this.filterClosedPlaces = false;
         this.infoActive = false;
         this.addPlaceActive = false;
         this.control = L.control({
             position: 'topleft'
         });
-        _.bindAll(this, 'changeMaxBeerPrice', 'activateInfo', 'deactivateInfo');
+        this.placeFilter = {
+            maxBeerPrice: settings.maxBeerPrice,
+            filterClosedPlaces: false,
+        };
+        _.bindAll(this, 'onMaxBeerPriceChange', 'activateInfo', 'deactivateInfo');
         this.channel.reply('activate:info', this.activateInfo);
         this.channel.reply('deactivate:info', this.deactivateInfo);
         this.listenTo(this.sidebarChannel, 'close', function() {
@@ -73,52 +75,16 @@ var MenuBarView = Marionette.View.extend({
         L.DomEvent.disableScrollPropagation(this.el);
         // Lägg till maxpris-slider och bind till event:
         $('#max-beer-price-slider').slider({
-            value: this.maxBeerPrice,
+            value: this.placeFilter.maxBeerPrice,
             min: settings.minBeerPrice,
             max: settings.maxBeerPrice,
             step: settings.beerPriceSliderStep,
             slide: slideFunc,
-            change: this.changeMaxBeerPrice,
+            change: this.onMaxBeerPriceChange,
         });
         if (this.infoActive)
-            this.$('#info-icon').addClass('active');
+            this.activateInfo();
         this.setupAutocomplete();
-    },
-    activateInfo: function() {
-        this.infoActive = true;
-        this.getUI('info').addClass('active');
-        this.deactivateAddPlace();
-    },
-    deactivateInfo: function() {
-        this.infoActive = false;
-        this.getUI('info').removeClass('active');
-    },
-    activateFilterClosedPlaces: function() {
-        this.filterClosedPlaces = true;
-        this.getUI('filterClosedPlaces').addClass('active');
-    },
-    deactivateFilterClosedPlaces: function() {
-        this.filterClosedPlaces = false;
-        this.getUI('filterClosedPlaces').removeClass('active');
-    },
-    activateAddPlace: function() {
-        this.addPlaceActive = true;
-        this.getUI('addPlace').addClass('active');
-        this.deactivateInfo();
-    },
-    deactivateAddPlace: function() {
-        this.addPlaceActive = false;
-        this.getUI('addPlace').removeClass('active');
-    },
-    openSearchField: function () {
-        if ($(window).width() > 600) {
-            this.getUI('searchFieldContainer').addClass('open');
-        }
-    },
-    closeSearchField: function () {
-        if ($(window).width() > 600) {
-            this.getUI('searchFieldContainer').removeClass('open');
-        }
     },
     setupAutocomplete: function () {
         var template = _.template($('#autocomplete-item').html());
@@ -146,12 +112,45 @@ var MenuBarView = Marionette.View.extend({
             $(this).autocomplete('search');
         });
     },
-    changeMaxBeerPrice: function (event, ui) {
-        this.maxBeerPrice = ui.value;
-        this.mapChannel.request('change:maxBeerPrice', ui.value);
+    placeFilterChange: function() {
+        this.channel.trigger('filter', this.placeFilter);
     },
 
-    /* this.triggers */
+    /* Funktioner för att ändra i UI */
+    activateInfo: function() {
+        this.infoActive = true;
+        this.getUI('info').addClass('active');
+        this.deactivateAddPlace();
+    },
+    deactivateInfo: function() {
+        this.infoActive = false;
+        this.getUI('info').removeClass('active');
+    },
+    activateAddPlace: function() {
+        this.addPlaceActive = true;
+        this.getUI('addPlace').addClass('active');
+        this.deactivateInfo();
+    },
+    deactivateAddPlace: function() {
+        this.addPlaceActive = false;
+        this.getUI('addPlace').removeClass('active');
+    },
+
+    /* Svar på UI-events */
+    openSearchField: function () {
+        if ($(window).width() > 600) {
+            this.getUI('searchFieldContainer').addClass('open');
+        }
+    },
+    closeSearchField: function () {
+        if ($(window).width() > 600) {
+            this.getUI('searchFieldContainer').removeClass('open');
+        }
+    },
+    onMaxBeerPriceChange: function (event, ui) {
+        this.placeFilter.maxBeerPrice = ui.value;
+        this.placeFilterChange();
+    },
     onMobileMenuButtonClick: function () {
         this.mobileMenuOpen = !this.mobileMenuOpen;
         if (this.mobileMenuOpen)
@@ -171,14 +170,14 @@ var MenuBarView = Marionette.View.extend({
         this.mapChannel.request('goto:myLocation');
     },
     onFilterClosedPlacesClick: function () {
-        if (this.filterClosedPlaces) {
-            this.deactivateFilterClosedPlaces();
-            this.getUI('filterClosedPlaces').attr('title', 'Dölj stängda platser');
-            this.mapChannel.request('deactivate:filter:closedPlaces');
+        if (this.placeFilter.filterClosedPlaces) {
+            this.placeFilter.filterClosedPlaces = false;
+            this.placeFilterChange();
+            this.getUI('filterClosedPlaces').removeClass('active').attr('title', 'Dölj stängda platser');
         } else {
-            this.activateFilterClosedPlaces();
-            this.getUI('filterClosedPlaces').attr('title', 'Visa stängda platser');
-            this.mapChannel.request('activate:filter:closedPlaces');
+            this.placeFilter.filterClosedPlaces = true;
+            this.placeFilterChange();
+            this.getUI('filterClosedPlaces').addClass('active').attr('title', 'Visa stängda platser');
         }
     },
     onInfoClick: function () {

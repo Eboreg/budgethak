@@ -1,16 +1,11 @@
-import AppRouter from 'marionette.approuter';
-import Controller from './controller';
+import EventRouter from 'backbone.eventrouter';
 
-var Router = AppRouter.extend({
-    appRoutes: {
-        'place/:slug/' : 'renderPlace',
-        'info/' : 'renderInfo',
-        '*default' : 'renderMap',
-    },
-    initialize: function(options) {
-        this.controller = new Controller({
-            initialData: this.getOption('initialData'),
-        });
+var Router = EventRouter.extend({
+    channelName: 'router',
+    routeTriggers: {
+        'home': '',
+        'info': 'info/',
+        'place': 'place/:slug/',
     },
 });
 

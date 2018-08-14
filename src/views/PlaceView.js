@@ -1,10 +1,9 @@
 import Marionette from 'backbone.marionette';
-import _ from 'underscore';
 import L from 'leaflet';
 import settings from '../settings';
 
 var PlaceView = Marionette.View.extend({
-    template: _.noop,
+    template: false,
     modelEvents: {
         'change:visible change:opened': 'render',
     },
@@ -17,20 +16,25 @@ var PlaceView = Marionette.View.extend({
     },
     render: function() {
         this.triggerMethod('before:render', this);
-        if (this.model.get('opened')) {
+        if (!this.model.get('visible')) {
+            if (this._isRendered) {
+                this.detach();
+            }
+        } else if (this.model.get('opened')) {
             this.marker.setIcon(settings.placeIconActive);
             this.map.addLayer(this.marker);
-        }
-        if (this.model.get('visible')) {
+        } else {
             this.markercluster.addLayer(this.marker);
         }
         this._isRendered = true;
         this.triggerMethod('render', this);
         return this;
     },
-    _removeElement: function() {
+    detach: function() {
+        this.triggerMethod('before:detach', this);
         this.markercluster.removeLayer(this.marker);
         this.map.removeLayer(this.marker);
+        this.triggerMethod('detach', this);
     }
 });
 

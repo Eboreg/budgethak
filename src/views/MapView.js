@@ -77,10 +77,12 @@ var MapView = Marionette.CollectionView.extend({
         }
     },
     changeMaxBeerPrice: function(value) {
-        //this.viewFilter
+        // Nej, vi kan inte göra så; alla aktuella filter måste iakttas samtidigt
+        this.children.each(function(view) {
+            view.model.set('visible', view.model.get('beer_price') <= parseInt(value));
+        });
     },
     activateFilterClosedPlaces: function() {
-
     },
     deactivateFilterClosedPlaces: function() {
 
