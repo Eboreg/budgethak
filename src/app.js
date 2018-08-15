@@ -9,18 +9,18 @@ import PlaceCollection from './collections/PlaceCollection';
 
 var app = new Marionette.Application({
     region: '#app',
+    routerEvents: {
 
-    onStart : function(app, options) {
+    },
+    onBeforeStart: function(app, options) {
         Radio.DEBUG = true;
-        //var controller = new Controller(options);
         var router = new Router();
         var routerChannel = router.getChannel();
-        routerChannel.on('info', function() {
-            console.log('info');
-        });
-        routerChannel.on('home', function() {
-            console.log('home');
-        });
+        this.bindEvents(routerChannel, this.routerEvents);
+        this.collection = new PlaceCollection(options.initialData);
+    },
+    onStart : function(app, options) {
+        //var controller = new Controller(options);
         Backbone.history.start({
             pushState : true,
             hashChange : false,
