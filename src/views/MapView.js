@@ -17,33 +17,32 @@ var MapView = Marionette.CollectionView.extend({
         };
     },
     viewFilter: { visible: true, },
+    collectionEvents: {
+        'change:opened': 'onPlaceOpenedChange',
+    },
+    options: {
+        radioRequests: {
+            'goto:myLocation': 'gotoMyLocation',
+        },
+        rendered: false,
+        zoom: settings.defaultZoom,
+        location: settings.defaultLocation,
+        userLocation: null,
+        userMarker: null,
+        lastOpenPlace: null,
+    },
 
-    initialize: function() {
+    initialize: function(options) {
         this.channel = Radio.channel('map');
         this.modalChannel = Radio.channel('modal');
-        this.rendered = false;
-        this.zoom = settings.defaultZoom;
-        this.location = settings.defaultLocation;
-        this.userLocation = null;
-        this.userMarker = null;
+        this.options = _.extend(this.options, options);
+        this.mergeOptions(this.options, [
+            'radioRequests', 'zoom', 'rendered', 'location', 'userLocation', 'userMarker', 'lastOpenPlace',
+        ]);
+        this.bindRequests(this.channel, this.radioRequests);
         this.markercluster = L.markerClusterGroup({
             maxClusterRadius : settings.maxClusterRadius,
         });
-        _.bindAll(this, 'gotoMyLocation', 'changeMaxBeerPrice', 'activateFilterClosedPlaces', 
-            'deactivateFilterClosedPlaces');
-        this.channel.reply('goto:myLocation', this.gotoMyLocation);
-        this.channel.reply('change:maxBeerPrice', this.changeMaxBeerPrice);
-        this.channel.reply('activate:filter:closedPlaces', this.activateFilterClosedPlaces);
-        this.channel.reply('deactivate:filter:closedPlaces', this.deactivateFilterClosedPlaces);
-    },
-    onAttach: function() {
-        if (!this.rendered) {
-            this.renderMap();
-        } else {
-            this.flyTo(this.location);
-        }
-    },
-    renderMap: function() {
         this.map = L.map(this.el, {
             maxZoom : settings.maxZoom,
             zoomControl : false,
@@ -58,6 +57,15 @@ var MapView = Marionette.CollectionView.extend({
             position : 'bottomleft',
         }).addAttribution('Map data &copy; <a href="http://openstreetmap.org">OpenStreetMap</a> contributors, <a href="http://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>')
             .addTo(this.map);
+    },
+    onAttach: function() {
+        if (!this.rendered) {
+            this.renderMap();
+        } else {
+            this.flyTo(this.location);
+        }
+    },
+    renderMap: function() {
         this.map.setView(this.location, this.zoom);
     },
     gotoMyLocation: function() {
@@ -76,19 +84,28 @@ var MapView = Marionette.CollectionView.extend({
             this.map.flyTo(this.userLocation.latlng, 17);
         }
     },
-    changeMaxBeerPrice: function(value) {
-        // Nej, vi kan inte göra så; alla aktuella filter måste iakttas samtidigt
+    filterPlaces: function(filters) {
         this.children.each(function(view) {
-            view.model.set('visible', view.model.get('beer_price') <= parseInt(value));
+            if (view.model.get('beer_price') <= parseInt(filters.maxBeerPrice) 
+                && (!filters.filterClosedPlaces || view.model.get('open_now')))
+                view.model.set('visible', true);
+            else
+                view.model.set('visible', false);
         });
     },
-    activateFilterClosedPlaces: function() {
-    },
-    deactivateFilterClosedPlaces: function() {
 
+    /* collectionEvents */
+    onPlaceOpenedChange: function(place, value) {
+        if (value) {
+            // Om plats öppnats, stäng ev föregående öppen plats
+            if (this.lastOpenPlace !== null) {
+                this.lastOpenPlace.set('opened', false);
+            }
+            this.lastOpenPlace = place;
+        }
     },
 
-    /* this.triggers */
+    /* triggerMethods */
     onMapLoad: function() {
         this.map.addLayer(this.markercluster);
         this.rendered = true;
@@ -111,9 +128,9 @@ var MapView = Marionette.CollectionView.extend({
         this.userMarker.setLatLng(event.latlng);
         this.userMarker.setAccuracy(event.accuracy);
     },
-    onMapLocationerror: function(error) {
+    onMapLocationerror: _.once(function(error) {
         this.modalChannel.request('show', '<p>Kunde inte hämta din position!</p><p>Felmeddelande: '+error.message+'</p>');
-    },
+    }),
 
     /**
      * Delegerar valda Leaflet-events till View-events med namn 'map:<leaflet-eventnamn>'.

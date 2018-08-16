@@ -3,6 +3,7 @@
  */
 
 import Marionette from 'backbone.marionette';
+import Radio from 'backbone.radio';
 import _ from 'underscore';
 import $ from 'jquery';
 import MapView from './MapView';
@@ -11,6 +12,7 @@ import SidebarView from './SidebarView';
 import ModalView from './ModalView';
 
 var AppView = Marionette.View.extend({
+    channelName: 'appview',
     el: '#app',
     template: _.template($('#app-template').html()),
     regions: {
@@ -28,7 +30,10 @@ var AppView = Marionette.View.extend({
         var mapView = new MapView({ collection: this.collection, sort: false });
         this.showChildView('map', mapView);
         this.showChildView('menuBar', new MenuBarView({map: mapView.map, collection: this.collection}));
-    }
+    },
+    filterPlaces: function(filters) {
+        this.getChildView('map').filterPlaces(filters);
+    },
 });
 
 export default AppView;

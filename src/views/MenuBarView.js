@@ -14,6 +14,8 @@ var MenuBarView = Marionette.View.extend({
     },
     ui: {
         myLocation: '#my-location-icon',
+        myLocationIcon: '#my-location-icon .icon',
+        myLocationAjaxLoader: '#my-location-icon .ajax-loader',
         mobileMenu: '#mobile-menu-button',
         filterClosedPlaces: '#filter-closed-places-icon',
         info: '#info-icon',
@@ -50,7 +52,7 @@ var MenuBarView = Marionette.View.extend({
         this.control = L.control({
             position: 'topleft'
         });
-        this.placeFilter = {
+        this.placeFilters = {
             maxBeerPrice: settings.maxBeerPrice,
             filterClosedPlaces: false,
         };
@@ -75,7 +77,7 @@ var MenuBarView = Marionette.View.extend({
         L.DomEvent.disableScrollPropagation(this.el);
         // Lägg till maxpris-slider och bind till event:
         $('#max-beer-price-slider').slider({
-            value: this.placeFilter.maxBeerPrice,
+            value: this.placeFilters.maxBeerPrice,
             min: settings.minBeerPrice,
             max: settings.maxBeerPrice,
             step: settings.beerPriceSliderStep,
@@ -112,8 +114,8 @@ var MenuBarView = Marionette.View.extend({
             $(this).autocomplete('search');
         });
     },
-    placeFilterChange: function() {
-        this.channel.trigger('filter', this.placeFilter);
+    placeFiltersChange: function() {
+        this.channel.trigger('filter', this.placeFilters);
     },
 
     /* Funktioner för att ändra i UI */
@@ -148,8 +150,8 @@ var MenuBarView = Marionette.View.extend({
         }
     },
     onMaxBeerPriceChange: function (event, ui) {
-        this.placeFilter.maxBeerPrice = ui.value;
-        this.placeFilterChange();
+        this.placeFilters.maxBeerPrice = ui.value;
+        this.placeFiltersChange();
     },
     onMobileMenuButtonClick: function () {
         this.mobileMenuOpen = !this.mobileMenuOpen;
@@ -167,16 +169,18 @@ var MenuBarView = Marionette.View.extend({
         }
     },
     onMyLocationClick: function () {
+        // this.getUI('myLocationIcon').hide();
+        // this.getUI('myLocationAjaxLoader').show();
         this.mapChannel.request('goto:myLocation');
     },
     onFilterClosedPlacesClick: function () {
-        if (this.placeFilter.filterClosedPlaces) {
-            this.placeFilter.filterClosedPlaces = false;
-            this.placeFilterChange();
+        if (this.placeFilters.filterClosedPlaces) {
+            this.placeFilters.filterClosedPlaces = false;
+            this.placeFiltersChange();
             this.getUI('filterClosedPlaces').removeClass('active').attr('title', 'Dölj stängda platser');
         } else {
-            this.placeFilter.filterClosedPlaces = true;
-            this.placeFilterChange();
+            this.placeFilters.filterClosedPlaces = true;
+            this.placeFiltersChange();
             this.getUI('filterClosedPlaces').addClass('active').attr('title', 'Visa stängda platser');
         }
     },

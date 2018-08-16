@@ -49,6 +49,10 @@
 .menu-bar-element-section.active .menu-bar-icon {
     color: gold;
 }
+#my-location-icon .ajax-loader {
+    width: 24px;
+    display: none;
+}
 #search-field {
     vertical-align: text-top;
     border: 1px solid #ccc;

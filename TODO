@@ -14,18 +14,18 @@ leaflet-usermarker??
 
 Gör kommentar obligatorisk vid Place-update och kanske även create. Minst X antal tecken.
 
+Kanske visa ajax-loader på my-location-icon tills resultat uppnåtts.
+
 BUGGAR:
 Om man går in på Place-länk med zoom angivet till t ex 15, ignoreras detta MEN querystring uppdateras ej.
 Antingen ska man hamna på angiven plats och zoomnivå ELLER så ska querystring uppdateras.
-
-Modal vid misslyckad geolocation ska bara visas en gång.
 
 
 DESIGNMÅL 2.0:
 1. Modeller ska vara fokuserade på att innehålla data som skickas till templates. Övriga state-data
    håller vyerna reda på.
 2. Vyer bör i idealfallet inte känna till någon annan modul än sin modell och EventBus. Undantag AppView 
-   som knyter ihop allesammans.
+   som knyter ihop allesammans, och vyer som har "barn" (MapView).
 3. Modeller ska vara helt vy-agnostiska och inte känna till dem alls.
 4. Vyer är i första hand ansvariga för att hålla sina modeller uppdaterade som följd av egna DOM-händelser,
    och trigga events EFTER att så har skett.
