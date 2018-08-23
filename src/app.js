@@ -16,27 +16,11 @@ var App = Marionette.Application.extend({
             lng : settings.defaultLocation.lng,
         },
     },
-    routerEvents: {
-        'home': 'showHome',
-        'info': 'showInfo',
-        'place': 'showPlace',
-    },
-    mapEvents: {
-        'openPlace': 'onOpenPlace',
-        'closePlace': 'onClosePlace',
-    },
-    menuBarEvents: {
-        'filter': 'onPlaceFilterChange',
-    },
     
     initialize: function(options) {
         Radio.DEBUG = true;
         this.collection = new PlaceCollection(options.initialData);
         this.router = new Router();
-        this.bindEvents(this.router.getChannel(), this.routerEvents);
-        this.bindEvents(Radio.channel('menubar'), this.menuBarEvents);
-        this.bindEvents(Radio.channel('map'), this.mapEvents);
-        this.appView = new AppView({ collection: this.collection });
     },
     onStart : function() {
         Backbone.history.start({
@@ -44,17 +28,10 @@ var App = Marionette.Application.extend({
             hashChange : false,
             root : settings.urlroot
         });
-    },
-    showHome: function() {
-        this.appView.render();
+        this.showView(new AppView({ collection: this.collection }));
     },
     showInfo: function() {},
     showPlace: function(slug) {},
-    onPlaceFilterChange: function(filters) {
-        this.appView.filterPlaces(filters);
-    },
-    onOpenPlace: function(place) {},
-    onClosePlace: function(place) {},
 });
 
 var app = new App({ initialData: window.budgethak.bootstrap });

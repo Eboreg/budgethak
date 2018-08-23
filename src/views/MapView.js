@@ -16,20 +16,18 @@ var MapView = Marionette.CollectionView.extend({
             map: this.map,
         };
     },
+    childViewEventPrefix: 'childview',
     viewFilter: { visible: true, },
     collectionEvents: {
         'change:opened': 'onPlaceOpenedChange',
     },
     options: {
-        radioRequests: {
-            'goto:myLocation': 'gotoMyLocation',
-        },
         rendered: false,
         zoom: settings.defaultZoom,
         location: settings.defaultLocation,
         userLocation: null,
         userMarker: null,
-        lastOpenPlace: null,
+        openPlaceView: null,
     },
 
     initialize: function(options) {
@@ -37,9 +35,9 @@ var MapView = Marionette.CollectionView.extend({
         this.modalChannel = Radio.channel('modal');
         this.options = _.extend(this.options, options);
         this.mergeOptions(this.options, [
-            'radioRequests', 'zoom', 'rendered', 'location', 'userLocation', 'userMarker', 'lastOpenPlace',
+            'zoom', 'rendered', 'location', 'userLocation', 'userMarker', 'openPlaceView',
         ]);
-        this.bindRequests(this.channel, this.radioRequests);
+        _.bindAll(this, 'filterPlaces', 'gotoMyLocation', 'flyToPlace', 'resize');
         this.markercluster = L.markerClusterGroup({
             maxClusterRadius : settings.maxClusterRadius,
         });
@@ -67,6 +65,18 @@ var MapView = Marionette.CollectionView.extend({
     },
     renderMap: function() {
         this.map.setView(this.location, this.zoom);
+        this.map.on('resize zoomend moveend click', function(e) {
+            console.log(e.type);
+        });
+    },
+    flyTo: function(location) {
+        this.map.flyTo(location, 17);
+    },
+    flyToPlace: function(place) {
+        this.flyTo({lat: place.get('lat'), lng: place.get('lng')});
+    },
+    resize: function() {
+        this.map.invalidateSize({animate: false, pan: false});
     },
     gotoMyLocation: function() {
         // Vi söker efter användarens plats först när denne aktivt ber om det.
@@ -93,19 +103,32 @@ var MapView = Marionette.CollectionView.extend({
                 view.model.set('visible', false);
         });
     },
-
-    /* collectionEvents */
-    onPlaceOpenedChange: function(place, value) {
-        if (value) {
-            // Om plats öppnats, stäng ev föregående öppen plats
-            if (this.lastOpenPlace !== null) {
-                this.lastOpenPlace.set('opened', false);
-            }
-            this.lastOpenPlace = place;
+    closePlace: function() {
+        // Stäng öppen plats, oavsett vilken den är
+        if (this.openPlaceView) {
+            this.openPlaceView.close();
+            this.openPlaceView = null;
         }
+        this.map.fire('click');
     },
 
     /* triggerMethods */
+    onChildviewMarkerClick: function(placeview) {
+        if (placeview === this.openPlaceView) {
+            // Om klick på öppen plats: stäng den
+            placeview.close();
+            this.openPlaceView = null;
+            this.channel.trigger('place:close');
+        } else {
+            // Stäng ev. tidigare öppen plats
+            if (this.openPlaceView) {
+                this.openPlaceView.close();
+            }
+            placeview.open();
+            this.openPlaceView = placeview;
+            this.channel.trigger('place:open', placeview.model);
+        }
+    },
     onMapLoad: function() {
         this.map.addLayer(this.markercluster);
         this.rendered = true;

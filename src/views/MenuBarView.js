@@ -38,17 +38,21 @@ var MenuBarView = Marionette.View.extend({
         'click @ui.addPlace': 'addPlace:click',
         'transitionend @ui.searchFieldContainer': 'searchFieldContainer:transition:end',
     },
+    options: {
+        searchFieldOpen: false,
+        mobileMenuOpen: false,
+        infoActive: false,
+        addPlaceActive: false,
+    },
 
     initialize: function (options) {
         this.channel = Radio.channel('menubar');
-        this.mapChannel = Radio.channel('map');
-        this.sidebarChannel = Radio.channel('sidebar');
-        this.map = options.map;
         this.autocompleteSource = this.collection.autocomplete;
-        this.searchFieldOpen = false;
-        this.mobileMenuOpen = false;
-        this.infoActive = false;
-        this.addPlaceActive = false;
+        this.options = _.extend(this.options, options);
+        this.mergeOptions(this.options, [
+            'searchFieldOpen', 'mobileMenuOpen', 'infoActive', 'addPlaceActive', 'map'
+        ]);
+        _.bindAll(this, 'onMaxBeerPriceChange');
         this.control = L.control({
             position: 'topleft'
         });
@@ -56,13 +60,6 @@ var MenuBarView = Marionette.View.extend({
             maxBeerPrice: settings.maxBeerPrice,
             filterClosedPlaces: false,
         };
-        _.bindAll(this, 'onMaxBeerPriceChange', 'activateInfo', 'deactivateInfo');
-        this.channel.reply('activate:info', this.activateInfo);
-        this.channel.reply('deactivate:info', this.deactivateInfo);
-        this.listenTo(this.sidebarChannel, 'close', function() {
-            this.deactivateAddPlace();
-            this.deactivateInfo();
-        });
     },
     onRender: function () {
         this.control.onAdd = _.bind(function () {
@@ -73,7 +70,7 @@ var MenuBarView = Marionette.View.extend({
         var slideFunc = _.bind(function (event, ui) {
             this.$('#max-beer-price').text(ui.value);
         }, this);
-        L.DomEvent.disableClickPropagation(this.el);
+        //L.DomEvent.disableClickPropagation(this.el);
         L.DomEvent.disableScrollPropagation(this.el);
         // Lägg till maxpris-slider och bind till event:
         $('#max-beer-price-slider').slider({
@@ -137,6 +134,10 @@ var MenuBarView = Marionette.View.extend({
         this.addPlaceActive = false;
         this.getUI('addPlace').removeClass('active');
     },
+    deactivateButtons: function() {
+        this.deactivateAddPlace();
+        this.deactivateInfo();
+    },
 
     /* Svar på UI-events */
     openSearchField: function () {
@@ -171,7 +172,7 @@ var MenuBarView = Marionette.View.extend({
     onMyLocationClick: function () {
         // this.getUI('myLocationIcon').hide();
         // this.getUI('myLocationAjaxLoader').show();
-        this.mapChannel.request('goto:myLocation');
+        this.channel.trigger('click:myLocation');
     },
     onFilterClosedPlacesClick: function () {
         if (this.placeFilters.filterClosedPlaces) {
@@ -187,19 +188,19 @@ var MenuBarView = Marionette.View.extend({
     onInfoClick: function () {
         if (this.infoActive) {
             this.deactivateInfo();
-            this.sidebarChannel.request('close');
+            this.channel.trigger('click:close:info');
         } else {
             this.activateInfo();
-            this.sidebarChannel.request('open:info');
+            this.channel.trigger('click:open:info');
         }
     },
     onAddPlaceClick: function() {
         if (this.addPlaceActive) {
             this.deactivateAddPlace();
-            this.sidebarChannel.request('close');
+            this.channel.trigger('click:close:addPlace');
         } else {
             this.activateAddPlace();
-            this.sidebarChannel.request('open:addPlace');
+            this.channel.trigger('click:open:addPlace');
         }
     },
 });

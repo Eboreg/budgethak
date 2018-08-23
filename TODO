@@ -1,10 +1,6 @@
 Klura på hur sidebar och annat ska renderas på padda.
 
-Skriva fler tester.
-
 Fixa ":active"-motsvarighet för touchskärm.
-
-Rensa AppView från hänvisningar till placeviews.
 
 Vore snyggast om GET-querystring ej lades på just när man går in på "förstasidan".
 
@@ -16,9 +12,14 @@ Gör kommentar obligatorisk vid Place-update och kanske även create. Minst X an
 
 Kanske visa ajax-loader på my-location-icon tills resultat uppnåtts.
 
+Lyft över image-upload-grejs från gamla SidebarView till nya.
+
 BUGGAR:
 Om man går in på Place-länk med zoom angivet till t ex 15, ignoreras detta MEN querystring uppdateras ej.
 Antingen ska man hamna på angiven plats och zoomnivå ELLER så ska querystring uppdateras.
+
+Att köra L.DomEvent.disableClickPropagation(this.el) i MenuBarView gör så att NÄSTA klick VAR SOM HELST
+i Leaflet (karta/marker/etc) ignoreras?! Varför?
 
 
 DESIGNMÅL 2.0:
