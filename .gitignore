@@ -2,7 +2,7 @@
 /static
 *.pyc
 **/__pycache__
-/.vscode
-.vscode/settings.json
+.vscode
 media/place_images/user_uploads
 budgethak/settings_private.py
+/node_modules/**
